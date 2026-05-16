@@ -5,6 +5,9 @@ description: Verify a repo's .github/workflows/ and CODEOWNERS align with the CI
 
 # GitHub Enterprise CI review
 
+<!-- no-shim: claude — vendor-neutral procedure; .claude/commands/github-enterprise-ci-review.md invokes canonical directly. -->
+<!-- no-shim: codex -->
+
 Check that a repo's CI/CD baseline matches [`../../../standards/ci-cd-standard.md`](../../../standards/ci-cd-standard.md). Catches drift from the workspace-wide baseline.
 
 ## Inputs

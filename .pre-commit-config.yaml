@@ -88,3 +88,10 @@ repos:
         language: system
         pass_filenames: false
         files: ^infra/
+      - id: check-commit-message
+        name: conventional-commits prefix on commit messages
+        entry: bash scripts/check-commit-message.sh
+        language: system
+        stages: [commit-msg]
+        # commit-msg hooks receive the message file path as $1.
+        # pre-commit handles the file argument automatically.

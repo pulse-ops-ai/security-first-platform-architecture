@@ -39,6 +39,34 @@ for f in "${CHANGED_FILES[@]}"; do
 done
 echo
 
+# ---------- Trusted-bot exemption ----------
+#
+# Dependabot bumps the github-actions ecosystem on a weekly cadence (see
+# .github/dependabot.yml). Each PR touches .github/workflows/*.yml, which
+# would normally classify Tier 2 and require an OpenSpec proposal. That
+# friction defeats the point of the bot.
+#
+# Trust model for the exemption:
+#   - Dependabot is authenticated by GitHub (GITHUB_ACTOR is set by the
+#     workflow runtime; cannot be spoofed from a fork PR).
+#   - The bumps only change action versions, pinned to SHAs or tags.
+#   - Other CI gates (pre-commit, gitleaks, codeowners-check, action
+#     pinning checks) still run — Dependabot cannot land arbitrary code.
+#   - If Dependabot bumps a major version with a behavior change, that's
+#     a real architecture event but it's the act of upgrading we trust,
+#     not the bot's discretion — pin reviews catch this.
+#
+# Adds further-trusted bots here only with explicit deliberation. This
+# is the most conservative exemption that solves the friction.
+
+if [[ "${GITHUB_ACTOR:-}" == "dependabot[bot]" ]]; then
+  echo "Tier classification: 1"
+  echo "Reason: Dependabot-authored PR (GITHUB_ACTOR=dependabot[bot]) — trusted-bot exemption."
+  echo
+  echo "openspec-triage: PASS (Tier 1 — no OpenSpec required)"
+  exit 0
+fi
+
 # ---------- Tier classification ----------
 #
 # Rules (mirror team-os/openspec-policy.md):
@@ -87,6 +115,9 @@ is_tier3_file() {
 }
 
 is_tier2_file() {
+  # Tier 2 paths. Markdown/doc files under scripts/ are excluded because
+  # they don't change CI behavior — only executable/code files under
+  # scripts/ do (.sh, .py, .rb, .js, .ts and similar).
   case "$1" in
     architecture/profiles/*.md|architecture/*.md|\
     standards/*.md|\
@@ -98,9 +129,20 @@ is_tier2_file() {
     .github/workflows/*)         return 0 ;;
     .github/CODEOWNERS)          return 0 ;;
     .pre-commit-config.yaml)     return 0 ;;
-    scripts/*)                   return 0 ;;
     AGENTS.md|CLAUDE.md)         return 0 ;;
     team-os/*)                   return 0 ;;
+  esac
+  # scripts/ — only .sh files (or other code) are CI gates. Markdown
+  # like scripts/README.md is documentation and Tier 1.
+  case "$1" in
+    scripts/*.sh|scripts/*.py|scripts/*.rb|scripts/*.js|scripts/*.ts)
+      return 0 ;;
+    scripts/*.md|scripts/*.txt)
+      return 1 ;;
+    scripts/*)
+      # Unknown extension under scripts/ — err safely toward Tier 2
+      # (it might be a new executable file type).
+      return 0 ;;
   esac
   return 1
 }

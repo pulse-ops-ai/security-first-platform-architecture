@@ -37,4 +37,8 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
-- [`proposals/2026-05-16-enforcement-and-skill-rigor/`](proposals/2026-05-16-enforcement-and-skill-rigor/) — Tier 2, in_review
+- [`proposals/2026-05-17-coverage-and-polish/`](proposals/2026-05-17-coverage-and-polish/) — Tier 2, in_review (PR-4)
+
+## Archived proposals
+
+- [`archive/2026-05-16-enforcement-and-skill-rigor/`](archive/2026-05-16-enforcement-and-skill-rigor/) — Tier 2, accepted, architecture-complete (merged in PR-3)

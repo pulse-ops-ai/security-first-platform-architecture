@@ -5,6 +5,9 @@ description: Review a change for compliance with the security-first platform arc
 
 # Architecture review
 
+<!-- no-shim: claude — this skill's procedure is vendor-neutral; the .claude/commands/architecture-review.md slash command invokes the canonical directly without a separate shim. -->
+<!-- no-shim: codex — same reasoning; if Codex needs an adapter later, bootstrap one with scripts/sync-agent-skills.sh. -->
+
 Audit a change against the eight-layer control model and the security-first platform principles. The goal is to catch architectural drift early, before it solidifies in code.
 
 ## Inputs

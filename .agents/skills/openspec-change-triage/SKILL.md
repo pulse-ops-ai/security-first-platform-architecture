@@ -5,6 +5,9 @@ description: Decide whether a change needs OpenSpec, and validate that an existi
 
 # OpenSpec change triage
 
+<!-- no-shim: claude — vendor-neutral procedure; .claude/commands/openspec-change-triage.md invokes canonical directly. -->
+<!-- no-shim: codex -->
+
 Classify a change against [`../../../team-os/openspec-policy.md`](../../../team-os/openspec-policy.md) and, if a proposal exists, verify it follows the OpenSpec standard.
 
 ## Inputs

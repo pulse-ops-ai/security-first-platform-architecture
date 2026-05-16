@@ -11,4 +11,4 @@ Operational documentation for this repo: how to maintain the architecture, how t
 
 ## Documents
 
-_None yet._ Add operational docs as the team accumulates them.
+- [`branch-protection.md`](branch-protection.md) — desired branch-protection state for `main` and the `gh api` commands to apply or audit it. Not code-enforced; this is the operational runbook.
