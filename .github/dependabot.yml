@@ -1,0 +1,26 @@
+version: 2
+
+# Dependabot for this repo only covers GitHub Actions. Pre-commit hook
+# revisions are handled separately by .github/workflows/pre-commit-autoupdate.yml
+# (Dependabot has no native ecosystem for pre-commit).
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore
+      include: scope
+    # Group minor + patch bumps into one PR each week per ecosystem;
+    # majors get their own PR for explicit review.
+    groups:
+      actions-minor-patch:
+        update-types:
+          - minor
+          - patch

@@ -82,3 +82,9 @@ repos:
         # Match config-shaped files; the script also self-filters by extension.
         files: \.(ya?ml|env|env\..*|json|tf|tfvars|sh)$|(^|/)\.env($|\..+)
         exclude: (^|/)(\.secrets\.baseline|pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$
+      - id: check-infra-secrets
+        name: check infra/ for account IDs and region defaults
+        entry: bash scripts/check-infra-secrets.sh
+        language: system
+        pass_filenames: false
+        files: ^infra/

@@ -41,3 +41,6 @@
 # Top-level agent contract.
 /AGENTS.md                              @platform-team @architecture-leads
 /CLAUDE.md                              @platform-team
+
+# Security policy — platform team + security leads.
+/SECURITY.md                            @platform-team @security-leads
