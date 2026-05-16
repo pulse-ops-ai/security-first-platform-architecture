@@ -22,4 +22,8 @@ Architecture Decision Records (ADRs) for this repo. An ADR captures **why** a de
 
 ## ADRs
 
-_None yet._
+### Foundational (retroactive capture of decisions embedded in PR #1)
+
+- [`ADR-0001-adopt-eight-layer-control-model.md`](ADR-0001-adopt-eight-layer-control-model.md) — Separate the platform into eight control layers (L1 network → L8 semantic). Profiles map vendors to layers; the layers are constant.
+- [`ADR-0002-agents-are-clients-not-insiders.md`](ADR-0002-agents-are-clients-not-insiders.md) — Every agent authenticates, authorizes, and routes through the same controls as any other client. No privileged back-channel.
+- [`ADR-0003-internal-identity-envelope-as-z4-trust.md`](ADR-0003-internal-identity-envelope-as-z4-trust.md) — A short-lived signed envelope issued by L6 is the canonical L6→L7 trust mechanism inside Z4. Format is vendor-neutral; claims and verification rules are uniform.
