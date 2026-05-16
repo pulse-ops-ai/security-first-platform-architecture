@@ -1,13 +1,17 @@
 # Documentation Standard
 
-How documentation is structured in every repo.
+How documentation is structured in every repo. The structural rules about *which files must exist* live in [`repo-contract.md`](repo-contract.md). This document covers *how* the documentation inside those files is organized.
 
 ## Top-level docs
 
+The repo contract defines a **Universal Floor** of docs every repo has:
+
 - `README.md` — what the repo is, how to navigate it, who to ask.
-- `AGENTS.md` — agent contract (separate from `README.md`; agents read it first).
-- `CLAUDE.md` — adapter for Claude Code (routes to `AGENTS.md`).
+- `AGENTS.md` — universal agent contract (separate from `README.md`; agents read it first).
 - `LICENSE` — required.
+- `security-first-adoption.md` — adoption record per the [repo contract](repo-contract.md).
+
+Vendor-specific adapter files (`CLAUDE.md`, `.github/copilot-instructions.md`, etc.) exist only when that tool is in use. See [`repo-contract.md`](repo-contract.md) for the full rule.
 
 ## The `docs/` tree
 
