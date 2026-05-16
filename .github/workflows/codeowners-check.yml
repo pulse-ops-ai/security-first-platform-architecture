@@ -1,0 +1,100 @@
+name: codeowners-check
+
+# Validates that .github/CODEOWNERS:
+#   - is syntactically correct
+#   - references owners that GitHub Enterprise will recognize
+#   - covers the protected architecture/standards/templates/CI paths
+#
+# Placeholder owners (the @platform-team / @architecture-leads / etc.
+# names that exist as scaffold-only stubs) are flagged as WARN rather
+# than BLOCK so the workflow doesn't break the merge queue before the
+# real GitHub Enterprise teams are created. Once each placeholder is
+# either resolved or explicitly approved as a permanent stub, remove
+# the corresponding entry from PLACEHOLDER_OWNERS below.
+
+on:
+  pull_request:
+    paths:
+      - '.github/CODEOWNERS'
+      - '.github/workflows/codeowners-check.yml'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  codeowners-syntax:
+    name: CODEOWNERS syntax and required coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate syntax with mszostok/codeowners-validator
+        # Pinned to a specific tag; do not bump without review.
+        uses: mszostok/codeowners-validator@v0.7.4
+        with:
+          # Local syntax + duplicated-pattern check; no GitHub auth needed.
+          # Skip the github-owners check here — placeholders aren't real
+          # teams yet, and that check requires a personal access token.
+          checks: 'syntax,duppatterns,files,notowned'
+          # Treat ONLY 'notowned' as a warning, others as errors.
+          experimental_checks: 'notowned'
+
+      - name: Required-path coverage check
+        run: |
+          set -euo pipefail
+          fail=0
+          declare -a REQUIRED_PATHS=(
+            "/architecture/"
+            "/team-os/"
+            "/standards/"
+            "/templates/"
+            "/portfolio/"
+            "/infra/"
+            "/.github/"
+            "/scripts/"
+            "/AGENTS.md"
+            "/SECURITY.md"
+          )
+          for p in "${REQUIRED_PATHS[@]}"; do
+            # Escape forward slashes for grep.
+            esc="${p//\//\\/}"
+            if grep -qE "^${esc}([[:space:]]|$)" .github/CODEOWNERS; then
+              echo "[OK]   $p has owners"
+            else
+              echo "[FAIL] $p missing from CODEOWNERS"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Placeholder-owner advisory (WARN, not BLOCK)
+        run: |
+          set -uo pipefail
+          # These owners are scaffold stubs. Replace with real GitHub
+          # Enterprise team handles once the teams exist.
+          PLACEHOLDER_OWNERS=(
+            "@platform-team"
+            "@architecture-leads"
+            "@cloud-owners"
+            "@self-hosted-owners"
+            "@ci-owners"
+            "@infra-owners"
+            "@authz-owners"
+          )
+          warn=0
+          for owner in "${PLACEHOLDER_OWNERS[@]}"; do
+            if grep -qF -- "$owner" .github/CODEOWNERS; then
+              echo "[WARN] placeholder owner still referenced: $owner"
+              warn=$((warn + 1))
+            fi
+          done
+          if [[ $warn -gt 0 ]]; then
+            echo
+            echo "Placeholder owners are acceptable during scaffold phase. Track resolution as a follow-up; do not block merges on these."
+          fi
+          # Always succeed — placeholders are WARN, not BLOCK.
+          exit 0

@@ -1,0 +1,57 @@
+name: openspec-triage
+
+# Classifies the PR's diff into Tier 1 / Tier 2 / Tier 3 per
+# team-os/openspec-policy.md, and verifies any required OpenSpec
+# proposal is present and well-formed.
+#
+# Tier 1: no OpenSpec required → passes.
+# Tier 2/3: must include a proposal directory under openspec/proposals/.
+#
+# Underlying logic: scripts/openspec-triage.sh
+
+on:
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'architecture/**'
+      - 'standards/**'
+      - 'templates/**'
+      - 'team-os/**'
+      - '.agents/skills/**'
+      - '.github/workflows/**'
+      - '.github/CODEOWNERS'
+      - '.pre-commit-config.yaml'
+      - 'scripts/**'
+      - 'openspec/**'
+      - '.github/workflows/openspec-triage.yml'
+      - 'scripts/openspec-triage.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  openspec-triage:
+    name: Tier classification + proposal presence
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need history to diff against the base branch.
+          fetch-depth: 0
+
+      - name: Resolve base ref
+        id: base
+        run: |
+          # For a pull_request event, the base SHA is available directly.
+          # For workflow_dispatch, fall back to origin/main.
+          if [[ -n "${{ github.event.pull_request.base.sha }}" ]]; then
+            echo "ref=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run openspec-triage
+        run: bash scripts/openspec-triage.sh "${{ steps.base.outputs.ref }}"

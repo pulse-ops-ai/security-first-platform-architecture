@@ -8,11 +8,14 @@ These are intentionally simple bash scripts so they can be run locally without a
 
 | Script | Purpose |
 |---|---|
-| [`validate-architecture.sh`](validate-architecture.sh) | Confirm required architecture files exist and check for vendor-name leaks |
+| [`validate-architecture.sh`](validate-architecture.sh) | Confirm required architecture files exist; check for vendor-name leaks in `architecture/*.md` and vendor-file-as-universal leaks in `team-os/` and `standards/` |
 | [`validate-doc-indexes.sh`](validate-doc-indexes.sh) | Detect drift between `INDEX.md` files and the files they should reference |
 | [`validate-skills.sh`](validate-skills.sh) | Confirm every `.agents/skills/<name>/` has a compliant `SKILL.md` (frontmatter + Procedure + Output) and that `.agents/skills/INDEX.md` lists them all |
 | [`sync-agent-skills.sh`](sync-agent-skills.sh) | `--check` enforces canonical ↔ vendor-shim drift rules and reports coverage; `--bootstrap <name> --vendor claude\|codex` scaffolds a new shim from a canonical skill |
 | [`check-inline-secrets.sh`](check-inline-secrets.sh) | Block sensitive keys being assigned literal values in YAML / env / JSON / Terraform / shell configs. Focused complement to gitleaks and detect-secrets — catches credentials hidden behind shell-style defaults like `${VAR:-literal}` that entropy scanners miss |
+| [`check-infra-secrets.sh`](check-infra-secrets.sh) | Scan `infra/` for 12-digit AWS account IDs, real ARNs with account IDs, and hard-coded region defaults outside example files. Reference infra must contain examples only |
+| [`check-network-as-identity.sh`](check-network-as-identity.sh) | Heuristic source-code scanner for the "trust the network as identity" anti-pattern (client-IP-as-identity, internal-CIDR-trust, mesh-only identity, fail-open authz, hard-coded long-lived credentials). Used by the `security-control-review` skill |
+| [`openspec-triage.sh`](openspec-triage.sh) | Classify a PR's diff into Tier 1/2/3 per `team-os/openspec-policy.md`; verify any required OpenSpec proposal is present and well-formed. Used by the `openspec-change-triage` skill and the `openspec-triage.yml` workflow |
 
 ## Running locally
 
@@ -24,9 +27,12 @@ bash scripts/validate-doc-indexes.sh
 bash scripts/validate-skills.sh
 bash scripts/sync-agent-skills.sh --check
 bash scripts/check-inline-secrets.sh        # scans all tracked config files
+bash scripts/check-infra-secrets.sh         # scans infra/ for account IDs and region defaults
+bash scripts/check-network-as-identity.sh . # heuristic source-tree scan
+bash scripts/openspec-triage.sh origin/main # tier classification + proposal presence
 ```
 
-Each script exits non-zero on findings. `sync-agent-skills.sh --check` exits non-zero only on hard drift; missing optional shims/commands are warnings.
+Each script exits non-zero on findings. `sync-agent-skills.sh --check` exits non-zero only on hard drift; missing optional shims/commands are warnings. `check-network-as-identity.sh` produces heuristic findings; review each one before concluding.
 
 ## `check-inline-secrets.sh` — usage notes
 

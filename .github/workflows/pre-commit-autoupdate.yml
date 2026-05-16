@@ -1,0 +1,72 @@
+name: pre-commit-autoupdate
+
+# Weekly: runs `pre-commit autoupdate` and opens a PR if any hook
+# revision bumped. Complements .github/dependabot.yml which handles
+# the github-actions ecosystem (pre-commit hooks are not a Dependabot
+# ecosystem).
+#
+# Configured to not auto-merge — a human reviews the bumped revs and
+# confirms the hook chain still passes locally before merging.
+
+on:
+  schedule:
+    - cron: '17 8 * * 1'   # Mondays 08:17 UTC, off the hour to avoid spike windows
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autoupdate:
+    name: pre-commit autoupdate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install pre-commit
+        run: pipx install pre-commit || pip install pre-commit
+
+      - name: Run pre-commit autoupdate
+        id: autoupdate
+        run: |
+          pre-commit autoupdate | tee /tmp/autoupdate.log
+          # Capture whether anything actually changed.
+          if git diff --quiet -- .pre-commit-config.yaml; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Sanity-check that hooks still pass
+        if: steps.autoupdate.outputs.changed == 'true'
+        run: |
+          # Run all hooks to make sure the new revs are compatible with
+          # the repo state. If any hook fails, do NOT open a PR — flag it.
+          pre-commit run --all-files --show-diff-on-failure
+
+      - name: Create pull request
+        if: steps.autoupdate.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore(deps): pre-commit autoupdate'
+          branch: chore/pre-commit-autoupdate
+          delete-branch: true
+          title: 'chore(deps): pre-commit autoupdate'
+          body: |
+            Automated pre-commit hook rev bumps from the weekly autoupdate job.
+
+            ```
+            ${{ steps.autoupdate.outputs.changed == 'true' && 'See diff for revs bumped' || 'No changes' }}
+            ```
+
+            Sanity check: `pre-commit run --all-files` was run on this branch and passed before the PR was opened. A reviewer should still spot-check that no hook behavior changed materially.
+          labels: |
+            dependencies
+            pre-commit
