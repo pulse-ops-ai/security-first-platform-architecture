@@ -52,7 +52,11 @@ if [[ ! -f "$MSG_FILE" ]]; then
   exit 2
 fi
 
-# Strip comments and trailing whitespace from the first non-blank line.
+# Pull the first non-blank, non-comment line.
+# (grep -v '^#' drops Git-comment lines; sed prints the first line that
+# starts with a non-whitespace character and quits.) Trailing whitespace
+# on the line is tolerated by the regex below (it uses `.+` not `\S+$`),
+# so we don't trim it explicitly.
 FIRST_LINE="$(grep -v '^#' "$MSG_FILE" | sed -n '/^[^[:space:]]/{p;q}')"
 
 if [[ -z "$FIRST_LINE" ]]; then

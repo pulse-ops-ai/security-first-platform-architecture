@@ -61,7 +61,7 @@ The markers are HTML comments so they don't render in the doc body but the valid
 ## Files moved
 
 - `openspec/proposals/2026-05-16-enforcement-and-skill-rigor/` → `openspec/archive/2026-05-16-enforcement-and-skill-rigor/`
-- Frontmatter updated: `status: in_review` → `status: accepted`. Added `accepted_date: 2026-05-16`, `archived_date: 2026-05-17`, `merged_pr: 3`.
+- Frontmatter updated: `status: in_review` → `status: accepted`. Added `accepted_date: 2026-05-16`, `archived_date: 2026-05-16`, `merged_pr: 3`.
 
 ## Contract changes
 
