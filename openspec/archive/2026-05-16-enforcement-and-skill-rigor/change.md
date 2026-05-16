@@ -57,7 +57,7 @@ None — `completion_state: architecture-complete`. No consumer must act.
 
 ## Rollback
 
-Each change is independently revertable:
+Each change is independently revertible:
 
 - Workflows: delete the `.yml` file; the gate disappears.
 - Scripts: delete the file; any skill or hook referencing it will fail until the reference is updated.

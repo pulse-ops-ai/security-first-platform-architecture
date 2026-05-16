@@ -43,7 +43,7 @@ None — `completion_state: architecture-complete`. No consumer must act.
 
 ## Cutover plan
 
-No cutover. Each change is additive and independently revertable. The new commit-msg hook starts gating commits as soon as `.pre-commit-config.yaml` lands.
+No cutover. Each change is additive and independently revertible. The new commit-msg hook starts gating commits as soon as `.pre-commit-config.yaml` lands.
 
 ## Definition of done
 

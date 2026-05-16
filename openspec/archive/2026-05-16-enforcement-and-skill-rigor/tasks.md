@@ -41,7 +41,7 @@ All other tasks are independent.
 
 ## Cutover plan
 
-No cutover. Each change is additive and independently revertable.
+No cutover. Each change is additive and independently revertible.
 
 ## Definition of done
 
