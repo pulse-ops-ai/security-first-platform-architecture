@@ -1,0 +1,28 @@
+name: docs-healthcheck
+
+# Verifies that every folder with multiple markdown files has an INDEX.md,
+# that each INDEX.md references existing files, and that no markdown file
+# is orphaned (present in folder, missing from index).
+#
+# Underlying logic lives in scripts/validate-doc-indexes.sh.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '.github/workflows/docs-healthcheck.yml'
+      - 'scripts/validate-doc-indexes.sh'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  docs-healthcheck:
+    name: Doc indexes are in sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run validate-doc-indexes
+        run: bash scripts/validate-doc-indexes.sh

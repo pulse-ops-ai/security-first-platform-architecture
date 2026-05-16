@@ -1,0 +1,43 @@
+# CODEOWNERS for security-first-platform-architecture
+#
+# This file assigns reviewers to areas of the repo. Replace placeholder owners
+# with real GitHub Enterprise team handles or usernames before relying on it.
+#
+# Syntax: <path-pattern>  <owner-1> <owner-2> ...
+
+# Default: platform team owns everything not otherwise assigned.
+*                                       @platform-team
+
+# Architecture documents — require platform review.
+/architecture/                          @platform-team @architecture-leads
+
+# Profiles — require platform review plus the relevant profile owner.
+/architecture/profiles/self-hosted-vps.md   @platform-team @self-hosted-owners
+/architecture/profiles/aws-managed.md       @platform-team @cloud-owners
+/architecture/profiles/hybrid-tailnet.md    @platform-team @cloud-owners @self-hosted-owners
+
+# TeamOS and standards — operating model is platform-owned.
+/team-os/                               @platform-team
+/standards/                             @platform-team @architecture-leads
+
+# Templates and canonical skills — platform-owned but lighter review for additive changes.
+/templates/                             @platform-team
+/.agents/skills/                        @platform-team
+
+# Portfolio — cross-repo coordination, platform-owned.
+/portfolio/                             @platform-team
+
+# Reference infrastructure — platform + infra owners.
+/infra/                                 @platform-team @infra-owners
+/infra/profiles/self-hosted-vps/        @platform-team @infra-owners @self-hosted-owners
+/infra/profiles/aws-managed/            @platform-team @infra-owners @cloud-owners
+/infra/profiles/hybrid-tailnet/         @platform-team @infra-owners @cloud-owners @self-hosted-owners
+/infra/policies/                        @platform-team @infra-owners @authz-owners
+
+# CI and scripts.
+/.github/                               @platform-team @ci-owners
+/scripts/                               @platform-team @ci-owners
+
+# Top-level agent contract.
+/AGENTS.md                              @platform-team @architecture-leads
+/CLAUDE.md                              @platform-team

@@ -1,0 +1,39 @@
+# tunnel.example.yaml
+#
+# Reference cloudflared tunnel configuration for the hybrid-tailnet
+# profile. Used when an on-prem service needs to be reachable through
+# the Cloudflare edge alongside cloud-hosted services.
+#
+# Notes:
+#   - Tunnel credentials (the `credentials-file` path) are populated by
+#     `cloudflared tunnel login` / `cloudflared tunnel create`. The real
+#     credentials JSON MUST NOT be committed; it lives on the on-prem
+#     host with restricted file permissions.
+#   - This file is the static config; replace placeholders before use.
+#   - The tunnel terminates at Cloudflare; the public origin is fronted
+#     by Cloudflare WAF and routed to the cloud L2 edge or directly to
+#     on-prem services per ingress rules.
+
+tunnel: __TUNNEL_ID__
+credentials-file: /etc/cloudflared/__TUNNEL_ID__.json
+
+# Ingress rules are evaluated top-down. The last rule must be a catch-all
+# returning an HTTP error so misconfigurations fail closed.
+ingress:
+
+  # On-prem service exposed via Cloudflare → cloudflared → local service.
+  - hostname: onprem-api.__DOMAIN__
+    service: http://localhost:8080
+    originRequest:
+      noTLSVerify: false
+      connectTimeout: 10s
+      tlsTimeout: 10s
+      tcpKeepAlive: 30s
+
+  # Anything else: fail closed.
+  - service: http_status:404
+
+# Loglevel = info; emit JSON for ingestion into the observability pipeline.
+loglevel: info
+transport-loglevel: warn
+metrics: 127.0.0.1:2000     # bind to localhost only; scrape via tailnet

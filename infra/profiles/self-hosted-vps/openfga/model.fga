@@ -1,0 +1,54 @@
+// model.fga — Reference OpenFGA authorization model for the security-first
+// platform architecture. Demonstrates the relationship shapes required by:
+//   - multi-tenancy (tenant scoping)
+//   - agent-as-client model (agents act on behalf of users, principal_type=agent)
+//   - on-behalf-of / actor relationships
+//
+// This is a STARTING POINT. Real models add resource types, action sets,
+// and any product-specific relationships. Replace and extend in your
+// solution-infra repo.
+//
+// Architecture cross-references:
+//   ../../../architecture/multi-tenancy.md
+//   ../../../architecture/agent-as-client-model.md
+//   ../../../architecture/internal-identity-envelope.md
+
+model
+  schema 1.1
+
+// ---- Principals ----
+
+type user
+
+type service
+
+type agent
+  relations
+    // The user the agent is acting on behalf of, when applicable.
+    define actor: [user]
+    // The tenant the agent is provisioned for.
+    define provisioned_in: [tenant]
+    // An agent can act for a user only if the user has delegated and the
+    // tenant intersection is non-empty.
+    define can_act_for: actor
+
+// ---- Tenancy ----
+
+type tenant
+  relations
+    define member: [user, agent]
+    define admin: [user]
+    define service_account: [service]
+
+// ---- Generic resource (replace with product-specific types) ----
+
+type resource
+  relations
+    define tenant: [tenant]
+    define owner: [user, agent]
+    // Read: owners, tenant members, and agents acting for tenant members.
+    define viewer: [user, agent, tenant#member] or owner
+    // Write: owners and tenant admins.
+    define editor: [user, agent, tenant#admin] or owner
+    // Delete: tenant admins only.
+    define deleter: [user, tenant#admin]

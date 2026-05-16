@@ -1,0 +1,41 @@
+name: skills-healthcheck
+
+# Verifies that:
+#   1. Every .agents/skills/<name>/ has a SKILL.md with YAML frontmatter
+#      and the required body sections (Procedure, Output). This is the
+#      canonical structural check.
+#         → scripts/validate-skills.sh
+#
+#   2. Vendor shims under .claude/skills/, .codex/skills/, and Claude
+#      slash commands under .claude/commands/ stay in sync with the
+#      canonical skills. Drift (orphan shim, name mismatch, missing
+#      Procedure/Output) fails. Missing optional shims/commands warn.
+#         → scripts/sync-agent-skills.sh --check
+
+on:
+  pull_request:
+    paths:
+      - '.agents/skills/**'
+      - '.claude/skills/**'
+      - '.codex/skills/**'
+      - '.claude/commands/**'
+      - '.github/workflows/skills-healthcheck.yml'
+      - 'scripts/validate-skills.sh'
+      - 'scripts/sync-agent-skills.sh'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  skills-healthcheck:
+    name: Skills follow the SKILL.md standard and stay in sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate canonical SKILL.md structure
+        run: bash scripts/validate-skills.sh
+
+      - name: Validate canonical ↔ shim/command drift
+        run: bash scripts/sync-agent-skills.sh --check

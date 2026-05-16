@@ -1,0 +1,55 @@
+# tuples.example.yaml
+#
+# Reference OpenFGA tuples illustrating typical relationships for the
+# security-first platform model in ./model.fga. Real tuples come from
+# your application's lifecycle (user signup, tenant provisioning, agent
+# enrollment) — not from a static file. This file exists so reviewers
+# can see the intended shape.
+#
+# Format mirrors the `fga model write tuples` input format. Adjust as
+# needed for your tooling.
+
+tuples:
+
+  # ---- Tenant membership ----
+  - user: "user:__PLACEHOLDER_USER_1__"
+    relation: "member"
+    object: "tenant:__PLACEHOLDER_TENANT_A__"
+
+  - user: "user:__PLACEHOLDER_USER_2__"
+    relation: "admin"
+    object: "tenant:__PLACEHOLDER_TENANT_A__"
+
+  # ---- Agent provisioning + actor delegation ----
+  - user: "tenant:__PLACEHOLDER_TENANT_A__"
+    relation: "provisioned_in"
+    object: "agent:__PLACEHOLDER_AGENT_1__"
+
+  - user: "user:__PLACEHOLDER_USER_1__"
+    relation: "actor"
+    object: "agent:__PLACEHOLDER_AGENT_1__"
+
+  # ---- Resource ownership ----
+  - user: "user:__PLACEHOLDER_USER_1__"
+    relation: "owner"
+    object: "resource:__PLACEHOLDER_RESOURCE_1__"
+
+  - user: "tenant:__PLACEHOLDER_TENANT_A__"
+    relation: "tenant"
+    object: "resource:__PLACEHOLDER_RESOURCE_1__"
+
+assertions:
+
+  # The agent acting for user_1 in tenant A should be able to view the
+  # resource owned by user_1 in tenant A.
+  - user: "agent:__PLACEHOLDER_AGENT_1__"
+    relation: "viewer"
+    object: "resource:__PLACEHOLDER_RESOURCE_1__"
+    expectation: true
+
+  # An unrelated agent must NOT see the resource even if other tenants
+  # exist. (Verifies tenant scoping plus actor delegation.)
+  - user: "agent:__PLACEHOLDER_ROGUE_AGENT__"
+    relation: "viewer"
+    object: "resource:__PLACEHOLDER_RESOURCE_1__"
+    expectation: false

@@ -1,0 +1,31 @@
+# terraform.tfvars.example
+#
+# Example tfvars for the example-dev environment. Copy to terraform.tfvars
+# in your solution-infra repo and replace the placeholders.
+#
+# DO NOT commit a real terraform.tfvars to this architecture repo.
+
+solution_name = "example-solution"
+environment   = "dev"
+
+# Region must be set explicitly. No default in this repo.
+region = "__YOUR_REGION__"          # e.g., us-east-2
+
+# Network
+vpc_cidr             = "10.0.0.0/16"
+azs                  = ["__YOUR_AZ_1__", "__YOUR_AZ_2__"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+public_subnet_cidrs  = ["10.0.0.0/24",  "10.0.1.0/24"]   # set to [] for fully-private
+
+# Edge
+edge_kind                   = "alb"   # or "api_gateway"
+certificate_arn             = "__ACM_CERTIFICATE_ARN__"
+waf_managed_rule_groups     = ["AWSManagedRulesCommonRuleSet", "AWSManagedRulesKnownBadInputsRuleSet"]
+default_rate_limit_per_5min = 2000
+
+# Identity
+mfa_configuration = "ON"
+
+# Observability
+operational_retention_days = 30
+audit_retention_days       = 365

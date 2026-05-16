@@ -1,0 +1,128 @@
+# docker-compose.example.yml
+#
+# Reference Docker Compose composition for the self-hosted-vps profile.
+# DO NOT deploy directly. Copy into your solution-infra repo, rename to
+# docker-compose.yml, and replace all __PLACEHOLDER__ values with real
+# inputs sourced from your secret manager.
+#
+# Secrets MUST come from a secret manager or `.env` file outside source
+# control. Never commit real values.
+#
+# Architecture mapping:
+#   L2 edge       → kong (public), traefik (internal)
+#   L3 identity   → keycloak
+#   L4 authz      → openfga
+#   L5 guardrails → kong plugins + redis
+#   L7 services   → bff + each backend service
+#
+# See ../../../architecture/profiles/self-hosted-vps.md for the contract
+# each service must satisfy.
+
+version: "3.9"
+
+networks:
+  edge:        # public-facing routing (Cloudflare Tunnel → Kong)
+    driver: bridge
+  internal:    # service-to-service routing (Traefik + services)
+    driver: bridge
+    internal: true   # no external egress
+
+volumes:
+  keycloak_data:
+  openfga_data:
+  redis_data:
+
+services:
+
+  # ---------- L1/L2: Cloudflare Tunnel ----------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      # Real token comes from secret manager; never inline.
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?must be set}
+    networks: [edge]
+    depends_on: [kong]
+
+  # ---------- L2: Kong CE (public gateway) ----------
+  kong:
+    image: kong:3-ubuntu
+    restart: unless-stopped
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /etc/kong/kong.yml
+      KONG_PROXY_LISTEN: "0.0.0.0:8000, 0.0.0.0:8443 ssl"
+      KONG_ADMIN_LISTEN: "127.0.0.1:8001"
+      KONG_LOG_LEVEL: notice
+    volumes:
+      - ./kong/kong.example.yml:/etc/kong/kong.yml:ro
+    networks: [edge, internal]
+    depends_on: [keycloak, openfga, redis]
+
+  # ---------- L2: Traefik (internal router) ----------
+  traefik:
+    image: traefik:v3
+    restart: unless-stopped
+    command:
+      - --configFile=/etc/traefik/static.yml
+    volumes:
+      - ./traefik/static.example.yml:/etc/traefik/static.yml:ro
+      - ./traefik/dynamic.example.yml:/etc/traefik/dynamic.yml:ro
+    networks: [internal]
+
+  # ---------- L3: Keycloak ----------
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    restart: unless-stopped
+    command: ["start", "--import-realm"]
+    environment:
+      KC_DB: dev-mem                    # reference only; use postgres in real deploys
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?must be set}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?must be set}
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./keycloak/realm-export.example.json:/opt/keycloak/data/import/realm.json:ro
+    networks: [internal]
+
+  # ---------- L4: OpenFGA ----------
+  openfga:
+    image: openfga/openfga:latest
+    restart: unless-stopped
+    command: run
+    environment:
+      OPENFGA_DATASTORE_ENGINE: memory  # reference only; use postgres in real deploys
+      OPENFGA_LOG_FORMAT: json
+    volumes:
+      - openfga_data:/data
+    networks: [internal]
+
+  # ---------- L5: Redis (rate-limit counters) ----------
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks: [internal]
+
+  # ---------- L6/L7: example services ----------
+  # Replace these stubs with your real services. Each service MUST verify
+  # the internal identity envelope (see ../../../architecture/internal-identity-envelope.md).
+  bff-example:
+    image: __YOUR_REGISTRY__/bff:__TAG__
+    restart: unless-stopped
+    environment:
+      ENVELOPE_SIGNING_KEY_REF: ${ENVELOPE_SIGNING_KEY_REF:?must be set}
+      OPENFGA_API_URL: http://openfga:8080
+      KEYCLOAK_ISSUER: http://keycloak:8080/realms/internal
+    networks: [internal]
+
+  service-example:
+    image: __YOUR_REGISTRY__/service:__TAG__
+    restart: unless-stopped
+    environment:
+      ENVELOPE_VERIFY_KEY_REF: ${ENVELOPE_VERIFY_KEY_REF:?must be set}
+      OPENFGA_API_URL: http://openfga:8080
+    networks: [internal]

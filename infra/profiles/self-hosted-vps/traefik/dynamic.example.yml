@@ -1,0 +1,37 @@
+# traefik/dynamic.example.yml
+#
+# Reference Traefik dynamic configuration for internal routing in the
+# self-hosted-vps profile. Defines internal routers, services, and
+# middlewares for east-west calls between the BFF and backend services.
+#
+# Public traffic does NOT enter through Traefik in this profile.
+
+http:
+  middlewares:
+    require-envelope:
+      # Reject any internal call that does not carry the signed internal
+      # identity envelope header. Real verification happens in the service
+      # itself; this middleware enforces presence so misconfigurations are
+      # caught at the routing layer rather than downstream.
+      headers:
+        customRequestHeaders:
+          X-Envelope-Required: "true"
+
+    propagate-request-id:
+      headers:
+        customRequestHeaders:
+          X-Forwarded-Proto: "internal"
+
+  routers:
+    service-example:
+      rule: "Host(`service-example.internal`)"
+      entryPoints: [internal]
+      service: service-example
+      middlewares: [require-envelope, propagate-request-id]
+
+  services:
+    service-example:
+      loadBalancer:
+        servers:
+          - url: "http://service-example:8080"
+        passHostHeader: true
