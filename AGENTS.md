@@ -24,10 +24,12 @@ This is the **security-first platform architecture and TeamOS adoption kit**. It
 |---|---|
 | Architecture concepts | [`architecture/INDEX.md`](architecture/INDEX.md) |
 | Deployment profile mapping | [`architecture/profiles/`](architecture/profiles/) |
+| **Foundational decisions (trade-off records)** | [`docs/decisions/INDEX.md`](docs/decisions/INDEX.md) |
+| Product framing (promises, non-promises, owners, adoption path) | [`docs/product/INDEX.md`](docs/product/INDEX.md) |
 | Reference infrastructure (example configs, modules, policies — **no live secrets**) | [`infra/`](infra/) |
 | How the team operates | [`team-os/INDEX.md`](team-os/INDEX.md) |
 | Repo and doc standards | [`standards/INDEX.md`](standards/INDEX.md) |
-| Product / ops / decisions docs | [`docs/INDEX.md`](docs/INDEX.md) |
+| Operational runbooks | [`docs/operations/INDEX.md`](docs/operations/INDEX.md) |
 | Cross-repo epics & dependencies | [`portfolio/INDEX.md`](portfolio/INDEX.md) |
 | Executable skills (canonical) | [`.agents/skills/INDEX.md`](.agents/skills/INDEX.md) |
 | Templates (consuming repo, ADR, OpenSpec, dependency) | [`templates/`](templates/) |

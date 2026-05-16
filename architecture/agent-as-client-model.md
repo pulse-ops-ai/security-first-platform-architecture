@@ -1,5 +1,7 @@
 # Agents Are Clients, Not Insiders
 
+> See [`ADR-0002`](../docs/decisions/ADR-0002-agents-are-clients-not-insiders.md) for the trade-off record — alternatives weighed, why no privileged back-channel for agents.
+
 ## The rule
 
 > **Agents must authenticate, authorize, and route through the same gateway and policy chain as any other caller.**

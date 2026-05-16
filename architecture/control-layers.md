@@ -1,5 +1,7 @@
 # The Eight Control Layers
 
+> See [`ADR-0001`](../docs/decisions/ADR-0001-adopt-eight-layer-control-model.md) for the trade-off record — alternatives weighed, why eight and not three / four / five.
+
 A security-first platform separates control into eight layers. Each layer has a single responsibility, a contract with the layers above and below, and an explicit place where each implementation profile must satisfy it.
 
 ```

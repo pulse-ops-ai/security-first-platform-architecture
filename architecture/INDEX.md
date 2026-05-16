@@ -1,6 +1,8 @@
-# architecture/ — Index
+# architecture/ — Engineering entry point
 
-This is the implementation-neutral reference architecture. Vendor mappings live under [`profiles/`](profiles/).
+This is the implementation-neutral reference architecture. Vendor mappings live under [`profiles/`](profiles/). For *why* these specific choices were made, see [`Related decisions`](#related-decisions) at the bottom.
+
+For product-level framing (what this repo promises, who owns it, how consumers adopt), use [`../docs/product/INDEX.md`](../docs/product/INDEX.md).
 
 ## Concepts
 
@@ -25,3 +27,13 @@ This is the implementation-neutral reference architecture. Vendor mappings live 
 
 - [`deployment-profiles.md`](deployment-profiles.md) — how to use a profile
 - [`profiles/`](profiles/) — concrete mappings (self-hosted VPS, AWS-managed, hybrid tailnet)
+
+## Related decisions
+
+The architecture's load-bearing commitments are captured as ADRs. Each is immutable once accepted; reverse via a new ADR that supersedes.
+
+- [`ADR-0001 — Adopt the eight-layer control model`](../docs/decisions/ADR-0001-adopt-eight-layer-control-model.md) — rationale for the eight-layer split and the alternatives that were rejected.
+- [`ADR-0002 — Agents are clients, not insiders`](../docs/decisions/ADR-0002-agents-are-clients-not-insiders.md) — why agents traverse the same controls as any other caller.
+- [`ADR-0003 — Internal identity envelope is the Z4 trust mechanism`](../docs/decisions/ADR-0003-internal-identity-envelope-as-z4-trust.md) — why a signed envelope is the L6→L7 trust contract, not mesh identity or re-called L4.
+
+Full ADR index: [`../docs/decisions/INDEX.md`](../docs/decisions/INDEX.md).

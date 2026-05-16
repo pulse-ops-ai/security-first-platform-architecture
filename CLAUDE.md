@@ -9,6 +9,8 @@ You are working in **`security-first-platform-architecture`** — the reusable, 
 1. [`AGENTS.md`](AGENTS.md) — universal agent contract
 2. The index for whatever folder you are about to edit:
    - [`architecture/INDEX.md`](architecture/INDEX.md)
+   - [`docs/decisions/INDEX.md`](docs/decisions/INDEX.md) — foundational decisions (immutable ADRs)
+   - [`docs/product/INDEX.md`](docs/product/INDEX.md) — what this repo promises, who owns it, how consumers adopt
    - [`team-os/INDEX.md`](team-os/INDEX.md)
    - [`standards/INDEX.md`](standards/INDEX.md)
    - [`docs/INDEX.md`](docs/INDEX.md)
