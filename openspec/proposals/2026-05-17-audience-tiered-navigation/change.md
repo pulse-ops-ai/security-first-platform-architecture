@@ -76,6 +76,6 @@ No rollback is irreversible.
 - `validate-doc-indexes.sh` — passes (the new `## Related decisions` section in `architecture/INDEX.md` references `../docs/decisions/ADR-*.md` paths that exist).
 - `validate-skills.sh`, `sync-agent-skills.sh --check` — unaffected.
 - `check-infra-secrets.sh`, `check-network-as-identity.sh` — unaffected.
-- `openspec-triage.sh origin/main` — classifies as Tier 2 because `AGENTS.md`, `architecture/*.md`, and `architecture/INDEX.md` are touched; this proposal directory is present.
+- `openspec-triage.sh origin/main` — classifies as **Tier 3** (path-based; triggered by `architecture/agent-as-client-model.md` and `architecture/internal-identity-envelope.md` being in the Tier-3 path list) and PASSes with this proposal directory present. The proposal declares `tier: 2` to match the navigation-only intent of the diff; the script-vs-intent mismatch is documented in [`proposal.md`](proposal.md) § *Note on tier classification*. No BLOCK fires; CI is unblocked.
 - `pre-commit run --all-files` — 18 hooks pass.
 - Manual: each of the six audience entry points in the new `README.md` table resolves to an existing file with real content.

@@ -42,7 +42,7 @@ No cutover. Each change is additive or in-place restructuring. The new README is
 - [x] All architecture-side tasks resolved
 - [x] All four pre-existing validators PASS (architecture, doc-indexes, skills, sync-agent-skills)
 - [x] `check-infra-secrets.sh` and `check-network-as-identity.sh` PASS
-- [x] `openspec-triage.sh` correctly classifies this PR as Tier 2 with proposal present
+- [x] `openspec-triage.sh` classifies this PR as Tier 3 (path-based heuristic) and PASSes with the proposal present; the proposal declares `tier: 2` to match the navigation-only intent. The script-vs-intent mismatch is documented in `proposal.md` § *Note on tier classification* and is a known limitation of the path-based classifier (same pattern accepted in PR-3 for `scripts/*`). No BLOCK fires; CI is unblocked.
 - [x] `pre-commit run --all-files` — 18 hooks PASS
 - [x] Manual: each entry point in the new README routes to a file with real content
 - [x] No ADR required (Tier 2)
