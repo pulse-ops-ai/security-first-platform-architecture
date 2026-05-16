@@ -73,7 +73,7 @@ None — `completion_state: architecture-complete`. Consumers see the new slash 
 
 ## Rollback
 
-Each change is independently revertable:
+Each change is independently revertible:
 
 - Delete a `.claude/commands/<name>.md` to remove a slash command.
 - Remove the HTML-comment markers from a SKILL.md to re-trigger the corresponding sync warning (and bootstrap an actual shim if Claude-specific semantics emerge).
