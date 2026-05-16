@@ -56,8 +56,11 @@ The full ADR index is at [`../decisions/INDEX.md`](../decisions/INDEX.md).
 2. **Copy the consuming-repo template** from [`../../templates/consuming-repo/`](../../templates/consuming-repo/). Remove any adapter files for tools the team doesn't use.
 3. **Fill in `security-first-adoption.md`** — the centerpiece of adoption readiness. It records the architecture-repo ref the consumer pins, the deployment profile, the implemented control layers, any deviations with compensating controls, owners, and the review cadence. Template: [`../../templates/consuming-repo/security-first-adoption.md`](../../templates/consuming-repo/security-first-adoption.md).
 4. **Open a dependency record** in this repo's [`../../portfolio/dependencies/`](../../portfolio/dependencies/) declaring the consumer's pinned ref and any Tier 2/3 architecture-repo changes pending integration.
-5. **Run the healthchecks** locally: `bash scripts/validate-architecture.sh` and the consumer's own `repo-healthcheck` skill invocation.
-6. **Configure CI** to run the three required workflows (`architecture-healthcheck.yml`, `docs-healthcheck.yml`, `skills-healthcheck.yml`) plus this repo's `openspec-triage` and `codeowners-check` if the consumer adopts the OpenSpec policy.
+5. **Run the consumer-facing healthchecks** locally inside your repo:
+   - `pre-commit run --all-files` (after installing pre-commit hooks following the architecture repo's `.pre-commit-config.yaml` template).
+   - The `repo-healthcheck` skill (canonical: `.agents/skills/repo-healthcheck/SKILL.md` in the architecture repo; or via the `/repo-healthcheck` Claude command). This verifies your Universal Floor against the repo contract.
+   - **Note:** `scripts/validate-architecture.sh` is the **architecture repo's own** scanner (vendor-neutrality in `architecture/*.md`, `team-os/`, and `standards/`). Consumers do not run it — there is nothing for it to scan in your repo. Consumers run `repo-healthcheck` instead.
+6. **Configure CI** to run the three required workflows (`architecture-healthcheck.yml`, `docs-healthcheck.yml`, `skills-healthcheck.yml`) plus this repo's `openspec-triage` and `codeowners-check` if the consumer adopts the OpenSpec policy. Copy or reference these from this repo's `.github/workflows/`.
 
 A worked walkthrough is on the roadmap for the first consumer onboarding (see *Current state* below).
 

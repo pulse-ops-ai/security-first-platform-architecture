@@ -37,7 +37,9 @@ No cutover. Each change is additive or in-place restructuring. The new README is
 
 ## Definition of done
 
-`completion_state: architecture-complete`:
+`completion_state: architecture-complete`.
+
+### Pre-merge (verified in this PR)
 
 - [x] All architecture-side tasks resolved
 - [x] All four pre-existing validators PASS (architecture, doc-indexes, skills, sync-agent-skills)
@@ -47,5 +49,10 @@ No cutover. Each change is additive or in-place restructuring. The new README is
 - [x] Manual: each entry point in the new README routes to a file with real content
 - [x] No ADR required (Tier 2)
 - [x] No dependency records (no consumer impact)
-- [x] Proposal status moved from `in_review` → `accepted` on merge
-- [x] After PR merge: proposal directory moves to `openspec/archive/` in the next PR (per the established pattern)
+
+### Post-merge (happens after this PR lands)
+
+These items cannot be `[x]` while the PR is open. They are checked off by the merging maintainer or by the next PR in the chain.
+
+- [ ] Proposal `status:` moves from `in_review` → `accepted` (set by the merging maintainer, or in the same commit that archives this proposal)
+- [ ] Proposal directory moves to `openspec/archive/` in the next PR (per the established `PR-N+1 archives PR-N` pattern; PR-5 → PR-9 was the last instance)
