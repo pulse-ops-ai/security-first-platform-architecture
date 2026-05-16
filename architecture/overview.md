@@ -24,7 +24,7 @@ This architecture solves that by **separating control concerns into eight indepe
 - Engineering teams operating multiple solution products in a shared workspace (`trupryce`, `findevil`, `levelup-platform`, etc.) who need a shared architectural language.
 - Platform teams who need to support both self-hosted and cloud-managed deployments simultaneously.
 - Teams adopting agentic systems who need agents to be treated as authenticated clients rather than privileged insiders.
-- Teams using coding agents (Claude Code, Codex) and need a TeamOS that gives those agents the right context.
+- Teams using coding agents who need a TeamOS that gives those agents the right context, regardless of which agent or tool is in use.
 
 ## What it is not
 

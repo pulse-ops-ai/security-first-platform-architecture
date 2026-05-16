@@ -28,7 +28,9 @@ A `templates/` folder is faster than a paragraph telling an agent how to constru
 
 ### 4. Adapters route, the contract decides
 
-`AGENTS.md` is the universal contract. `CLAUDE.md`, `.claude/`, `.codex/` are **adapters** that route a specific agent to the contract. Adapters never overrule. If a rule belongs to all agents, it goes in `AGENTS.md` and the adapter cross-references it.
+`AGENTS.md` is the universal contract. Vendor-specific adapter files — current examples include `CLAUDE.md` + `.claude/` for Claude Code, `.codex/` for Codex, `.github/copilot-instructions.md` for GitHub Copilot, `.cursorrules` for Cursor — are **adapters** that route a specific tool to the contract. Adapters never overrule. If a rule belongs to all agents, it goes in `AGENTS.md` and the adapter cross-references it.
+
+A consuming repo only needs the adapter files for the tools it actually uses. A repo that uses only one agent does not need to ship the others' adapters.
 
 ## How an agent uses this context
 

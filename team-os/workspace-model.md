@@ -14,7 +14,7 @@ The TeamOS assumes a **sibling-repo clone model**. All repositories in the platf
   # future solution repos sit here too
 ```
 
-Coding agents (Claude Code, Codex) are typically launched in **one** of these directories at a time, but the sibling layout means cross-repo lookups are cheap when needed.
+Coding agents are typically launched inside **one** of these directories at a time. The sibling layout means cross-repo lookups (greps, dependency record reads, sibling-repo inspections) are cheap when needed.
 
 ## Why sibling, not monorepo
 
@@ -30,35 +30,32 @@ Coding agents (Claude Code, Codex) are typically launched in **one** of these di
 
 ## The architecture repo's role
 
-- **Source of truth** for `AGENTS.md`, `CLAUDE.md`, standards, templates, and architecture documents.
+- **Source of truth** for `AGENTS.md`, standards, templates, and architecture documents.
 - **Adoption kit** for new and existing solution repos.
 - **Coordination point** for cross-repo work via the `portfolio/` folder.
 
-Consuming repos **do not** copy this repo. They reference it (by name, by template snapshot, or by Git SHA) and align to it.
+Consuming repos **do not** copy this repo. They **adopt** it (by name, by template snapshot, or by Git ref) and record the adoption in their own `security-first-adoption.md` (see the [repo contract](../standards/repo-contract.md)).
 
 ## What consuming repos must have
 
-Per [`../standards/repo-contract.md`](../standards/repo-contract.md), every consuming repo has:
+The canonical list lives in [`../standards/repo-contract.md`](../standards/repo-contract.md). The contract distinguishes:
 
-- `AGENTS.md` (its own, derived from the template)
-- `CLAUDE.md` (its own, derived from the template)
-- `docs/INDEX.md`
-- `.agents/skills/INDEX.md`
-- `openspec/` directory (even if empty initially)
-- `.github/workflows/` with at least the doc/skill/architecture healthchecks
+- the **universal floor** — files every consuming repo MUST have regardless of tooling, and
+- **vendor-specific adapter files** — required only when that tool is in use.
 
-See [`../templates/consuming-repo/`](../templates/consuming-repo/).
+Do not restate the floor here; the contract is the source of truth and is what the validators check against.
 
 ## Bootstrapping a new solution repo
 
 1. Clone it as a sibling under `~/work/security-first-platform/`.
 2. Copy `templates/consuming-repo/*` into the new repo.
 3. Fill in repo-specific names, owners, and links.
-4. Add a dependency record back to the architecture repo: see [`../templates/dependency-record/dependency-template.md`](../templates/dependency-record/dependency-template.md).
-5. Run the healthcheck skills.
+4. Fill in `security-first-adoption.md` — the adoption record that pins which architecture-repo ref this consumer tracks.
+5. Open a dependency record back to the architecture repo: see [`../templates/dependency-record/dependency-template.md`](../templates/dependency-record/dependency-template.md).
+6. Run the healthcheck skills.
 
 ## What this is not
 
 - Not a Bazel/Pants/Nx workspace. There is no shared build system.
-- Not a Git submodule layout. Each repo is independent.
-- Not a strict requirement for CI — CI can clone repos individually as needed. The sibling model is for local developer & agent ergonomics.
+- Not a Git submodule layout. Each repo is independent and pinned by ref rather than vendored.
+- Not a guarantee about cross-repo CI. Each repo's CI clones what it needs explicitly; the sibling layout is for **local** developer and agent ergonomics. Workflows that need cross-repo context (e.g., a `cross-repo-impact-review` job) check out the relevant sibling on demand via `actions/checkout` with an explicit `repository:` input.
