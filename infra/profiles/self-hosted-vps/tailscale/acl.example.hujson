@@ -1,0 +1,61 @@
+// acl.example.hujson
+//
+// Reference Tailscale ACL for the self-hosted-vps profile.
+// Operator devices and the VPS host join a tailnet for SSH-less admin
+// access. End-user traffic does NOT enter the platform via the tailnet —
+// it enters via Cloudflare Tunnel → Kong. The tailnet is for operators
+// and the optional east-west bridge only.
+//
+// Replace the tag and group placeholders before applying. Real ACLs
+// belong in a solution-infra repo, not here.
+
+{
+  // ---- Groups: who is who ----
+  "groups": {
+    "group:platform-admins":   ["__PLACEHOLDER_ADMIN_1__"],
+    "group:platform-readers":  ["__PLACEHOLDER_READER_1__"],
+  },
+
+  // ---- Tag owners: who can assign these tags to nodes ----
+  "tagOwners": {
+    "tag:vps-host":      ["group:platform-admins"],
+    "tag:agent-runtime": ["group:platform-admins"],
+  },
+
+  // ---- ACLs: explicit allow rules; deny is default ----
+  "acls": [
+    // Admins reach the VPS host on SSH and admin API.
+    {
+      "action": "accept",
+      "src":    ["group:platform-admins"],
+      "dst":    ["tag:vps-host:22", "tag:vps-host:8001"]
+    },
+
+    // Read-only operators get a narrower view (e.g., observability).
+    {
+      "action": "accept",
+      "src":    ["group:platform-readers"],
+      "dst":    ["tag:vps-host:9090"]   // example: Prometheus
+    },
+
+    // Agent runtimes reach the public edge (Kong) like any client.
+    // Tailnet identity does NOT bypass the gateway — agents still
+    // authenticate at L3.
+    {
+      "action": "accept",
+      "src":    ["tag:agent-runtime"],
+      "dst":    ["tag:vps-host:443"]
+    }
+  ],
+
+  // ---- SSH: short-lived, MFA-required ----
+  "ssh": [
+    {
+      "action":      "check",
+      "src":         ["group:platform-admins"],
+      "dst":         ["tag:vps-host"],
+      "users":       ["root", "ops"],
+      "checkPeriod": "12h"
+    }
+  ]
+}

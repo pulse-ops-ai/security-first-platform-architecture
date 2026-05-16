@@ -1,0 +1,84 @@
+# .pre-commit-config.yaml
+#
+# Pre-commit hooks for the security-first-platform-architecture repo.
+# Documentation-heavy repo — hooks focus on file hygiene, secret
+# detection, and the canonical skills validation that gates CI.
+#
+# Local development:
+#   pip install pre-commit   (or: pipx install pre-commit)
+#   pre-commit install
+#   pre-commit run --all-files
+#
+# Versions below are pinned; `pre-commit autoupdate` bumps them in PRs.
+
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+
+repos:
+
+  # ----- Generic file hygiene -----
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+        # Allow multi-document YAML (workflows often have one doc).
+        args: [--allow-multiple-documents]
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+
+  # ----- Shell script syntax check -----
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+
+  # ----- Secret scanning: gitleaks -----
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  # ----- Secret scanning: detect-secrets -----
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        # The baseline itself must not be scanned — it contains the hashes
+        # of accepted findings, which look like secrets when re-scanned.
+        exclude: ^\.secrets\.baseline$
+
+  # ----- Repo-local validation: canonical skills + drift -----
+  - repo: local
+    hooks:
+      - id: validate-skills
+        name: validate-skills.sh (canonical SKILL.md structure)
+        entry: bash scripts/validate-skills.sh
+        language: system
+        pass_filenames: false
+        files: ^(\.agents/skills/|scripts/validate-skills\.sh)
+      - id: sync-agent-skills
+        name: sync-agent-skills.sh --check (canonical ↔ shim drift)
+        entry: bash scripts/sync-agent-skills.sh --check
+        language: system
+        pass_filenames: false
+        files: ^(\.agents/skills/|\.claude/skills/|\.claude/commands/|\.codex/skills/|scripts/sync-agent-skills\.sh)
+      - id: check-inline-secrets
+        name: check inline secrets in config files
+        entry: bash scripts/check-inline-secrets.sh
+        language: system
+        # Match config-shaped files; the script also self-filters by extension.
+        files: \.(ya?ml|env|env\..*|json|tf|tfvars|sh)$|(^|/)\.env($|\..+)
+        exclude: (^|/)(\.secrets\.baseline|pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$

@@ -1,0 +1,36 @@
+# traefik/static.example.yml
+#
+# Reference Traefik static configuration for internal east-west routing
+# inside the self-hosted-vps profile. Traefik does NOT serve public
+# traffic in this profile — Kong does. Traefik routes service-to-service
+# calls on the internal Docker network.
+#
+# Replace __INTERNAL_DOMAIN__ before use.
+
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+log:
+  level: INFO
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  format: json
+
+api:
+  dashboard: false   # internal-only; expose via separate auth path if needed
+  insecure: false
+
+entryPoints:
+  internal:
+    address: ":8080"
+
+providers:
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
+
+# No public certificate resolver here — public TLS terminates at Kong
+# (or, in front of Kong, at Cloudflare). Internal TLS is optional and
+# depends on the operator's mTLS strategy.

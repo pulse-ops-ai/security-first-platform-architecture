@@ -1,0 +1,30 @@
+name: architecture-healthcheck
+
+# Lightweight scaffold. Verifies that the architecture documents are present
+# and that vendor names do not leak into vendor-neutral docs.
+#
+# Underlying logic lives in scripts/validate-architecture.sh so it can be run
+# locally as well as in CI.
+
+on:
+  pull_request:
+    paths:
+      - 'architecture/**'
+      - 'standards/**'
+      - 'AGENTS.md'
+      - '.github/workflows/architecture-healthcheck.yml'
+      - 'scripts/validate-architecture.sh'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  architecture-healthcheck:
+    name: Architecture documents present and implementation-neutral
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run validate-architecture
+        run: bash scripts/validate-architecture.sh

@@ -1,0 +1,87 @@
+{
+  "_comment": "Reference Keycloak realm export. Replace ALL placeholder secrets before use. Generate a real export from your IdP and overwrite this file in your solution-infra repo. Do NOT commit real client secrets, user credentials, or signing keys.",
+
+  "realm": "platform",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": false,
+  "rememberMe": false,
+  "verifyEmail": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "accessTokenLifespanForImplicitFlow": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+
+  "roles": {
+    "realm": [
+      { "name": "user",           "description": "end-user principal" },
+      { "name": "service",        "description": "service principal" },
+      { "name": "agent",          "description": "agent principal — see agent-as-client-model" }
+    ]
+  },
+
+  "clients": [
+    {
+      "clientId": "bff",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "redirectUris": ["https://__DOMAIN__/*"],
+      "webOrigins": ["https://__DOMAIN__"],
+      "_secret_comment": "Real secret comes from secret manager. Never commit.",
+      "secret": "__REPLACE_FROM_SECRET_MANAGER__"
+    },
+    {
+      "clientId": "agent-runtime",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "_secret_comment": "Workload credentials for the agent runtime. Real secret from secret manager.",
+      "secret": "__REPLACE_FROM_SECRET_MANAGER__",
+      "defaultClientScopes": ["agent-claims"]
+    }
+  ],
+
+  "clientScopes": [
+    {
+      "name": "agent-claims",
+      "description": "Adds principal_type=agent and actor placeholder claims to tokens issued for agent runtimes.",
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "principal-type-agent",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "config": {
+            "claim.name": "principal_type",
+            "claim.value": "agent",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    }
+  ],
+
+  "users": [
+    {
+      "_comment": "Placeholder demo user. Real users come from federation. Do NOT commit real users.",
+      "username": "__PLACEHOLDER_USER__",
+      "enabled": false,
+      "emailVerified": false,
+      "credentials": [],
+      "realmRoles": ["user"]
+    }
+  ]
+}

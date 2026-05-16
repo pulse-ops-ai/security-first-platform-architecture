@@ -38,6 +38,15 @@ Examples:
 6. Include repo/project/tag metadata when available.
 7. Return the created or updated Notion page link.
 
+## Output
+
+Return:
+
+- The Notion page URL of the created or updated record.
+- The target database (Platform Context Library or Prompt Playbook).
+- The record status (`Draft` by default; `Active` only when explicitly requested).
+- A one-line summary of what was saved.
+
 ## Platform Context Library page body template
 
 ```markdown

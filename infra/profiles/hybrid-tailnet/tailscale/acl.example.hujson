@@ -1,0 +1,67 @@
+// acl.example.hujson
+//
+// Reference Tailscale ACL for the hybrid-tailnet profile.
+// The tailnet bridges:
+//   - AWS-side nodes (workload subnet routers + bastions, tagged tag:aws-*)
+//   - on-prem nodes (data, devices, partner systems, tagged tag:onprem-*)
+//   - operator devices (group:platform-admins, group:platform-readers)
+//
+// End-user traffic does NOT enter via the tailnet. End users hit the AWS
+// L2 edge (API Gateway / ALB). The tailnet is east-west + operator only.
+
+{
+  "groups": {
+    "group:platform-admins":  ["__PLACEHOLDER_ADMIN_1__"],
+    "group:platform-readers": ["__PLACEHOLDER_READER_1__"],
+  },
+
+  "tagOwners": {
+    "tag:aws-subnet-router":    ["group:platform-admins"],
+    "tag:aws-bastion":          ["group:platform-admins"],
+    "tag:onprem-subnet-router": ["group:platform-admins"],
+    "tag:onprem-data":          ["group:platform-admins"],
+    "tag:agent-runtime":        ["group:platform-admins"],
+  },
+
+  "acls": [
+    // Admins reach bastions on both sides.
+    {
+      "action": "accept",
+      "src":    ["group:platform-admins"],
+      "dst":    ["tag:aws-bastion:22", "tag:onprem-subnet-router:22"]
+    },
+
+    // Read-only operators get observability surfaces.
+    {
+      "action": "accept",
+      "src":    ["group:platform-readers"],
+      "dst":    ["tag:aws-bastion:9090", "tag:onprem-subnet-router:9090"]
+    },
+
+    // AWS workloads may reach on-prem data subnets through the tailnet
+    // when an explicit business need exists. Keep narrow.
+    {
+      "action": "accept",
+      "src":    ["tag:aws-subnet-router"],
+      "dst":    ["tag:onprem-data:5432", "tag:onprem-data:443"]
+    },
+
+    // Agent runtimes (on-prem or cloud) reach the AWS L2 edge as clients.
+    // They do NOT bypass the gateway via the tailnet.
+    {
+      "action": "accept",
+      "src":    ["tag:agent-runtime"],
+      "dst":    ["tag:aws-subnet-router:443"]
+    }
+  ],
+
+  "ssh": [
+    {
+      "action":      "check",
+      "src":         ["group:platform-admins"],
+      "dst":         ["tag:aws-bastion", "tag:onprem-subnet-router"],
+      "users":       ["root", "ops"],
+      "checkPeriod": "12h"
+    }
+  ]
+}
