@@ -25,8 +25,11 @@
 #   revert:       — revert of a prior commit
 #   openspec:     — OpenSpec proposal lifecycle (open/accept/archive)
 #
-# Optional scope in parens: `feat(scope): ...`. Allowed scopes are not
-# restricted by this hook.
+# Optional scope in parens: `feat(scope): ...`. The scope itself is
+# constrained to alphanumerics plus `._/-` (see the PATTERN regex below).
+# We do not enforce a fixed scope vocabulary — any token of those
+# characters is accepted. Tighten by enumerating allowed scopes here
+# if/when the team converges on a fixed list.
 #
 # Optional breaking-change marker: `feat!: ...` or `feat(scope)!: ...`.
 #

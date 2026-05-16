@@ -1,18 +1,10 @@
----
-argument-hint: "[optional: repo path, default current dir]"
----
-
 # Repo healthcheck
 
-Run the `repo-healthcheck` skill against the supplied repo. Canonical procedure: [`../../.agents/skills/repo-healthcheck/SKILL.md`](../../.agents/skills/repo-healthcheck/SKILL.md).
-
-## User input
-
-$ARGUMENTS
+Run the `repo-healthcheck` skill against the **current repo** (the working tree this Claude Code session is operating in). Canonical procedure: [`../../.agents/skills/repo-healthcheck/SKILL.md`](../../.agents/skills/repo-healthcheck/SKILL.md).
 
 ## Instructions
 
-1. Resolve the repo path (default `.`).
+1. This command scans the current repo. To audit a different repo, `cd` to that repo's root before invoking the command.
 2. Check the Universal Floor per `standards/repo-contract.md`:
    - Root files: `README.md`, `AGENTS.md`, `LICENSE`, `security-first-adoption.md`.
    - Required dirs: `docs/`, `docs/INDEX.md`.

@@ -5,7 +5,7 @@ completion_state: architecture-complete
 opened: 2026-05-16
 target_decision_date: 2026-05-23
 accepted_date: 2026-05-16
-archived_date: 2026-05-17
+archived_date: 2026-05-16
 merged_pr: 3
 authors:
   - "@mike"

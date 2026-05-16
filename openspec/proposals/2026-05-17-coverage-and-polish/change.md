@@ -1,6 +1,6 @@
 # OpenSpec Change: Coverage Closure and Polish
 
-Companion to [`proposal.md`](proposal.md).
+Companion to [`proposal.md`](proposal.md). Two items added during PR-8 review are marked **(added in review)** below.
 
 ## Files added
 
@@ -15,7 +15,7 @@ Companion to [`proposal.md`](proposal.md).
 - `repo-healthcheck.md`
 - `doc-spine-sync.md`
 
-Each command file has YAML frontmatter (`argument-hint`), a short prose body invoking the canonical SKILL.md, and `$ARGUMENTS` substitution. They route to the canonical skill rather than duplicating its procedure.
+Each command file has a short prose body invoking the canonical SKILL.md and (where applicable) `$ARGUMENTS` substitution. Where the underlying script doesn't support a path argument, the command is scoped to "current repo only" with explicit `cd` guidance in the body **(adjusted in review)**.
 
 ### Commit-msg hook
 
@@ -48,7 +48,8 @@ The markers are HTML comments so they don't render in the doc body but the valid
 
 ### CI gates
 
-- `scripts/openspec-triage.sh` — `is_tier2_file()` updated: `scripts/*.md` and `scripts/*.txt` are Tier 1; `scripts/*.sh` / `*.py` / `*.rb` / `*.js` / `*.ts` are Tier 2; unknown extensions under `scripts/` default to Tier 2 (safer toward over-classification).
+- `scripts/openspec-triage.sh` — `is_tier2_file()` updated: `scripts/*.md` and `scripts/*.txt` are Tier 1; `scripts/*.sh` / `*.py` / `*.rb` / `*.js` / `*.ts` are Tier 2; unknown extensions under `scripts/` default to Tier 2 (safer toward over-classification). **Plus, added in review:** Dependabot actor exemption — when `GITHUB_ACTOR == 'dependabot[bot]'`, classify as Tier 1 unconditionally.
+- `scripts/validate-doc-indexes.sh` **(added in review)** — extended to emit `[BROKEN]` (relative link in `INDEX.md` resolves to a missing file) and `[ORPHAN]` (subdirectory has its own `INDEX.md` but the parent doesn't link to it) findings, alongside the existing `[UNLISTED]` finding. Closes the spec/implementation gap with the `doc-spine-sync` canonical skill.
 - `.pre-commit-config.yaml` — added `check-commit-message` hook on the `commit-msg` stage. The hook receives the message file path as `$1`.
 
 ### Indexes / docs

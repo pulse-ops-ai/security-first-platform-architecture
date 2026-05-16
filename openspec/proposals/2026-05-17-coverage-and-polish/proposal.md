@@ -26,14 +26,16 @@ This is a Tier 2 change: modifies skill bodies (adds opt-out markers), adds file
 
 ## Proposed change
 
-Six tightly-scoped follow-ups:
+Eight tightly-scoped follow-ups (six original + two added during PR-8 review):
 
 1. **Close the 16 sync warnings.** Add 8 Claude slash commands (one per scaffold skill) under `.claude/commands/`. Add `<!-- no-shim: claude -->` and `<!-- no-shim: codex -->` opt-out markers in each canonical SKILL.md body — these skills are vendor-neutral and don't need adapter shims.
-2. **Tighten triage script.** Update `is_tier2_file()` in `scripts/openspec-triage.sh` so `scripts/*.md` is Tier 1, `scripts/*.sh` / `*.py` / etc. stays Tier 2, and unknown extensions under `scripts/` err safely toward Tier 2.
+2. **Tighten triage script.** Update `is_tier2_file()` in `scripts/openspec-triage.sh` so `scripts/*.md` is Tier 1, `scripts/*.sh` / `*.py` / `*.rb` / `*.js` / `*.ts` stay Tier 2, and unknown extensions under `scripts/` err safely toward Tier 2.
 3. **Add commit-msg hook.** New `scripts/check-commit-message.sh` enforces the conventional-commits prefix the team has been using by convention. Wired into `.pre-commit-config.yaml` as the `check-commit-message` hook on the `commit-msg` stage.
 4. **Branch-protection ops runbook.** New `docs/operations/branch-protection.md` documents the desired branch-protection state for `main`, the `gh api` commands to apply or audit it, and explicit reasoning for why this isn't code-enforced.
 5. **Archive first proposal.** Move `openspec/proposals/2026-05-16-enforcement-and-skill-rigor/` to `openspec/archive/`. Update its frontmatter from `status: in_review` to `status: accepted` with `accepted_date` and `archived_date`.
 6. **Self-document.** Update `.claude/commands/README.md` to list all 10 commands by group. Update `docs/operations/INDEX.md` to link the new runbook. Update `openspec/README.md` to reflect the archive split.
+7. **Dependabot exemption in the OpenSpec triage script.** When `GITHUB_ACTOR == 'dependabot[bot]'`, classify as Tier 1 and exit `PASS` without requiring a proposal. Other CI gates (pre-commit, gitleaks, codeowners-check) still apply, so the bot cannot land arbitrary changes — only action-version bumps with pinned SHAs/tags. Without this, every weekly Dependabot PR fails the `openspec-triage` workflow.
+8. **Extend `validate-doc-indexes.sh` to emit `[BROKEN]` and `[ORPHAN]` findings.** The `doc-spine-sync` canonical SKILL.md spec called out three finding categories (UNLISTED, BROKEN, ORPHAN); the script previously emitted only UNLISTED. Closes the spec/implementation gap surfaced in PR-8 review.
 
 ## Alternatives considered
 

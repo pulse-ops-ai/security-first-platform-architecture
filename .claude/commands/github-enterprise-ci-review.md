@@ -1,18 +1,10 @@
----
-argument-hint: "[optional: repo path, default current dir]"
----
-
 # GitHub Enterprise CI review
 
-Run the `github-enterprise-ci-review` skill against the supplied repo path. Canonical procedure: [`../../.agents/skills/github-enterprise-ci-review/SKILL.md`](../../.agents/skills/github-enterprise-ci-review/SKILL.md).
-
-## User input
-
-$ARGUMENTS
+Run the `github-enterprise-ci-review` skill against the **current repo**. Canonical procedure: [`../../.agents/skills/github-enterprise-ci-review/SKILL.md`](../../.agents/skills/github-enterprise-ci-review/SKILL.md).
 
 ## Instructions
 
-1. Resolve the repo path (default `.`).
+1. This command scans the current repo's `.github/`. To audit a different repo, `cd` to that repo's root before invoking.
 2. Confirm `.github/workflows/` exists and contains the three required workflows (`architecture-healthcheck.yml`, `docs-healthcheck.yml`, `skills-healthcheck.yml`) directly or via reusable workflow reference.
 3. For each `.yml` in `.github/workflows/`:
    - Confirm triggers include `pull_request` and `push: main`.
