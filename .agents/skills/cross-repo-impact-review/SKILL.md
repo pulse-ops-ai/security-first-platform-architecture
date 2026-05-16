@@ -5,6 +5,9 @@ description: Identify which consuming repos a change affects, and confirm depend
 
 # Cross-repo impact review
 
+<!-- no-shim: claude — vendor-neutral procedure; .claude/commands/cross-repo-impact-review.md invokes canonical directly. -->
+<!-- no-shim: codex -->
+
 For changes in the architecture repo, map which solution repos must respond, and confirm a dependency record exists for each affected consumer before merge.
 
 ## Inputs

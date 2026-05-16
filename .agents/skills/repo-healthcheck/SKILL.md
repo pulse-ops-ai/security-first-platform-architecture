@@ -5,6 +5,9 @@ description: Verify a repository satisfies the security-first platform repo cont
 
 # Repo healthcheck
 
+<!-- no-shim: claude — vendor-neutral procedure; .claude/commands/repo-healthcheck.md invokes canonical directly. -->
+<!-- no-shim: codex -->
+
 Confirm that a repository's structural shape matches the [repo contract](../../../standards/repo-contract.md). This is a structural check, not a content review.
 
 ## Inputs

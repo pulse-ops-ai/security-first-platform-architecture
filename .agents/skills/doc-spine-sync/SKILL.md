@@ -5,6 +5,9 @@ description: Detect drift between INDEX.md files and the folders they should ref
 
 # Doc spine sync
 
+<!-- no-shim: claude — vendor-neutral procedure; .claude/commands/doc-spine-sync.md invokes canonical directly. -->
+<!-- no-shim: codex -->
+
 Confirm that every folder with an `INDEX.md` references its sibling markdown files, and that every link in those indexes resolves to a file that exists. Indexes are the navigation spine; drift makes the repo agent-hostile.
 
 ## Inputs

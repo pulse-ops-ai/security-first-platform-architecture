@@ -5,6 +5,9 @@ description: Review a change for control-layer integrity, trust-zone crossings, 
 
 # Security control review
 
+<!-- no-shim: claude — vendor-neutral procedure; .claude/commands/security-control-review.md invokes canonical directly. -->
+<!-- no-shim: codex -->
+
 For changes that touch the security stack, verify trust-zone crossings have the required evidence, agents remain clients (never insiders), and audit-class events emit to the audit sink rather than operational logs.
 
 ## Inputs

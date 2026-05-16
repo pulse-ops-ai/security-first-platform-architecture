@@ -87,6 +87,8 @@ is_tier3_file() {
 }
 
 is_tier2_file() {
+  # Tier 2 paths. Markdown/doc files under scripts/ are excluded because
+  # they don't change CI behavior — only the .sh scripts themselves do.
   case "$1" in
     architecture/profiles/*.md|architecture/*.md|\
     standards/*.md|\
@@ -98,9 +100,20 @@ is_tier2_file() {
     .github/workflows/*)         return 0 ;;
     .github/CODEOWNERS)          return 0 ;;
     .pre-commit-config.yaml)     return 0 ;;
-    scripts/*)                   return 0 ;;
     AGENTS.md|CLAUDE.md)         return 0 ;;
     team-os/*)                   return 0 ;;
+  esac
+  # scripts/ — only .sh files (or other code) are CI gates. Markdown
+  # like scripts/README.md is documentation and Tier 1.
+  case "$1" in
+    scripts/*.sh|scripts/*.py|scripts/*.rb|scripts/*.js|scripts/*.ts)
+      return 0 ;;
+    scripts/*.md|scripts/*.txt)
+      return 1 ;;
+    scripts/*)
+      # Unknown extension under scripts/ — err safely toward Tier 2
+      # (it might be a new executable file type).
+      return 0 ;;
   esac
   return 1
 }

@@ -5,6 +5,9 @@ description: Draft a new ADR using the template. Use when a real trade-off was m
 
 # Architecture decision record
 
+<!-- no-shim: claude — vendor-neutral procedure; .claude/commands/architecture-decision-record.md invokes canonical directly. -->
+<!-- no-shim: codex -->
+
 Capture a non-trivial decision and its rationale in an immutable ADR under `docs/decisions/`. ADRs answer *why* a decision was made; reversing one means writing a new ADR that supersedes it.
 
 ## Inputs
