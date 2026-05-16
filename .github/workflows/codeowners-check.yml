@@ -84,6 +84,7 @@ jobs:
             "@ci-owners"
             "@infra-owners"
             "@authz-owners"
+            "@security-leads"
           )
           warn=0
           for owner in "${PLACEHOLDER_OWNERS[@]}"; do
