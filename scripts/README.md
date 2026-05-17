@@ -16,6 +16,7 @@ These are intentionally simple bash scripts so they can be run locally without a
 | [`check-infra-secrets.sh`](check-infra-secrets.sh) | Scan `infra/` for 12-digit AWS account IDs, real ARNs with account IDs, and hard-coded region defaults outside example files. Reference infra must contain examples only |
 | [`check-network-as-identity.sh`](check-network-as-identity.sh) | Heuristic source-code scanner for the "trust the network as identity" anti-pattern (client-IP-as-identity, internal-CIDR-trust, mesh-only identity, fail-open authz, hard-coded long-lived credentials). Used by the `security-control-review` skill |
 | [`openspec-triage.sh`](openspec-triage.sh) | Classify a PR's diff into Tier 1/2/3 per `team-os/openspec-policy.md`; verify any required OpenSpec proposal is present and well-formed. Used by the `openspec-change-triage` skill and the `openspec-triage.yml` workflow |
+| [`repo-healthcheck.sh`](repo-healthcheck.sh) | Validate any repo against `standards/repo-contract.md`. Auto-detects architecture-repo vs consumer-repo mode via the `standards/repo-contract.md` sentinel. Consumer mode enforces the Universal Floor, the `security-first-adoption.md` frontmatter (8 scalars + 8 layer children + 4 adapter children + 3 required list keys), the conditional floor, and adapter-declaration ↔ file consistency. Used by the `repo-healthcheck` skill |
 
 ## Running locally
 
@@ -30,6 +31,7 @@ bash scripts/check-inline-secrets.sh        # scans all tracked config files
 bash scripts/check-infra-secrets.sh         # scans infra/ for account IDs and region defaults
 bash scripts/check-network-as-identity.sh . # heuristic source-tree scan
 bash scripts/openspec-triage.sh origin/main # tier classification + proposal presence
+bash scripts/repo-healthcheck.sh            # repo-contract validation; auto-detects mode
 ```
 
 Each script exits non-zero on findings. `sync-agent-skills.sh --check` exits non-zero only on hard drift; missing optional shims/commands are warnings. `check-network-as-identity.sh` produces heuristic findings; review each one before concluding.

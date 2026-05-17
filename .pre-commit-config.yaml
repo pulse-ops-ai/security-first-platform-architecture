@@ -88,6 +88,31 @@ repos:
         language: system
         pass_filenames: false
         files: ^infra/
+      - id: repo-healthcheck
+        name: repo-healthcheck (Universal Floor + adoption-record + adapter consistency)
+        entry: bash scripts/repo-healthcheck.sh
+        language: system
+        pass_filenames: false
+        # Always run on commits that touch any floor/contract-relevant
+        # path. The script auto-detects architecture-repo vs consumer
+        # mode and runs the appropriate checks.
+        files: |
+          (?x)^(
+            README\.md|
+            AGENTS\.md|
+            CLAUDE\.md|
+            LICENSE|
+            security-first-adoption\.md|
+            docs/.*|
+            \.agents/skills/.*|
+            \.claude/.*|
+            \.codex/.*|
+            \.github/copilot-instructions\.md|
+            \.cursorrules|
+            openspec/README\.md|
+            standards/repo-contract\.md|
+            scripts/repo-healthcheck\.sh
+          )$
       - id: check-commit-message
         name: conventional-commits prefix on commit messages
         entry: bash scripts/check-commit-message.sh
