@@ -52,11 +52,31 @@ From your consuming repo's root:
 # Adjust the path if your sibling clone lives elsewhere.
 ARCH_REPO=../security-first-platform-architecture
 
-# Copy the consuming-repo template tree.
+# 1. Copy the consuming-repo template tree (AGENTS.md, CLAUDE.md,
+#    docs/INDEX.md, security-first-adoption.md, openspec/README.md,
+#    .agents/skills/INDEX.md).
 cp -rT "$ARCH_REPO/templates/consuming-repo/" .
 
-# Remove adapter files for tools your team does NOT use.
-# Example: trupryce uses Claude Code, not Codex.
+# 2. Copy the three required healthcheck workflows. The
+#    consuming-repo template intentionally does NOT include these
+#    today — they live in the architecture repo's own .github/
+#    and you copy or vendor them. (Tracked as a known
+#    template-completeness gap; future work may move these into
+#    templates/consuming-repo/.github/ directly.)
+mkdir -p .github/workflows
+cp "$ARCH_REPO/.github/workflows/architecture-healthcheck.yml" .github/workflows/
+cp "$ARCH_REPO/.github/workflows/docs-healthcheck.yml"         .github/workflows/
+cp "$ARCH_REPO/.github/workflows/skills-healthcheck.yml"       .github/workflows/
+
+# 3. (Optional but recommended) copy the pre-commit chain and the
+#    secret-scanning baseline. These are convenience defaults; you can
+#    customize freely.
+cp "$ARCH_REPO/.pre-commit-config.yaml" .
+cp "$ARCH_REPO/.secrets.baseline"       .
+cp "$ARCH_REPO/.gitleaks.toml"          .
+
+# 4. Remove adapter files for tools your team does NOT use.
+#    Example: trupryce uses Claude Code, not Codex.
 rm -rf .codex/                    # remove if not using Codex
 rm -f .github/copilot-instructions.md   # remove if not using Copilot
 rm -f .cursorrules                # remove if not using Cursor
@@ -73,8 +93,13 @@ docs/INDEX.md
 .agents/skills/INDEX.md            # if shipping local skills; otherwise remove
 openspec/README.md
 security-first-adoption.md
-.github/workflows/*.yml            # the three required healthchecks
+.github/workflows/architecture-healthcheck.yml   # copied in sub-step 2
+.github/workflows/docs-healthcheck.yml           # copied in sub-step 2
+.github/workflows/skills-healthcheck.yml         # copied in sub-step 2
 .claude/                           # if using Claude
+.pre-commit-config.yaml            # optional but recommended
+.secrets.baseline                  # optional but recommended
+.gitleaks.toml                     # optional but recommended
 ```
 
 ---
@@ -204,17 +229,24 @@ Commit and open a PR against the architecture repo. This PR will move to `resolv
 
 ## Step 9 — Configure your CI
 
-Back in `<solution-repo>`. The template you copied in step 2 included `.github/workflows/`. Confirm these three exist and run on `pull_request` and `push: main`:
+Back in `<solution-repo>`. Confirm the three healthcheck workflows you copied in step 2's sub-step 2 exist under `.github/workflows/` and run on `pull_request` and `push: main`:
 
 - `architecture-healthcheck.yml`
 - `docs-healthcheck.yml`
 - `skills-healthcheck.yml`
 
-If your team adopts the OpenSpec policy, also add (or reference the architecture-repo versions of):
+If your team adopts the OpenSpec policy, also copy these from the architecture repo:
 
-- `openspec-triage.yml`
-- `codeowners-check.yml`
-- `pre-commit.yml`
+- `openspec-triage.yml` — classifies PRs as Tier 1/2/3 and requires an OpenSpec proposal for Tier 2/3
+- `codeowners-check.yml` — validates `CODEOWNERS` syntax and required-path coverage
+- `pre-commit.yml` — runs the full hook chain in CI
+
+```bash
+ARCH_REPO=../security-first-platform-architecture
+cp "$ARCH_REPO/.github/workflows/openspec-triage.yml"    .github/workflows/
+cp "$ARCH_REPO/.github/workflows/codeowners-check.yml"   .github/workflows/
+cp "$ARCH_REPO/.github/workflows/pre-commit.yml"         .github/workflows/
+```
 
 For each, follow `.github/workflows/` in the architecture repo as the reference shape. Pin any third-party actions to SHA or `vN` tags (the `github-enterprise-ci-review` skill flags unpinned `uses:` lines).
 
@@ -236,17 +268,41 @@ pre-commit run --all-files
 #   ../security-first-platform-architecture/.agents/skills/repo-healthcheck/SKILL.md
 ```
 
-`repo-healthcheck` looks for:
+**What `repo-healthcheck` checks today** (per the canonical procedure in `.agents/skills/repo-healthcheck/SKILL.md`):
 
-- All Universal Floor files present
-- `security-first-adoption.md` has every required field populated
-- Adapter files match `agent_adapters_in_use:` (no leftover `CLAUDE.md` if `claude_code: false`)
+- Root files exist: `README.md`, `AGENTS.md`, `LICENSE` (and `CLAUDE.md` *if* Claude is in use)
+- Required directories exist: `docs/`, `docs/INDEX.md`, `openspec/`, `.github/workflows/`, and `.agents/skills/` + `.agents/skills/INDEX.md` *if* the repo exposes local skills
+- `.github/workflows/` contains the three required healthchecks (or references them via reusable workflows)
+- Adapter directories (`.claude/`, `.codex/`) if present, route to `AGENTS.md` rather than duplicating it
 - `AGENTS.md` is non-empty and references the architecture and team-os entrypoints
-- Any present adapter files route to `AGENTS.md` rather than duplicating it
 
-Fix any `MISSING` / `MALFORMED` findings before opening the first PR. If you see anything you can't classify, escalate to the platform team.
+**What `repo-healthcheck` does NOT check today (manual verification required for first adopters):**
 
-**Note:** `scripts/validate-architecture.sh` is the architecture repo's *own* scanner — it does not run against consuming repos. The consumer-facing validator is `repo-healthcheck`. (This was a real bug in an earlier version of the product doc; surfaced and fixed in PR #11 review.)
+- `security-first-adoption.md` field population — the file's presence is checked, but the required YAML frontmatter fields (`architecture_ref`, `profile`, `adopted_control_layers`, `owner`, `review_cadence`, etc.) are NOT validated. Manually open the file and confirm every required field is non-empty.
+- `agent_adapters_in_use:` consistency — the skill doesn't verify that the adapter declarations match the files actually present (e.g., `claude_code: false` with a `CLAUDE.md` still in the tree is a real configuration mistake that will go undetected).
+- The Universal Floor vs Vendor-Specific Adapter split from `standards/repo-contract.md` — the skill predates the PR-2 contract restructure and hasn't been updated yet (tracked as a follow-up; see "Known limitations" below).
+
+**Manual adoption-record check.** Until the skill is updated, verify your `security-first-adoption.md` by hand:
+
+```bash
+# Every required YAML field should have a non-placeholder value.
+grep -E '^[a-z_]+:[[:space:]]*$' security-first-adoption.md && \
+  echo 'FAIL: empty required fields above' || \
+  echo 'OK: no empty fields'
+
+# Adapter declarations should match files present.
+grep -E '^[[:space:]]+(claude_code|codex|github_copilot|cursor):' security-first-adoption.md
+# Cross-check against what's actually in your tree:
+ls CLAUDE.md .claude/ .codex/ .cursorrules .github/copilot-instructions.md 2>/dev/null
+```
+
+Fix any `MISSING` / `MALFORMED` findings (from the skill) and any empty-field findings (from manual check) before opening the first PR.
+
+### Known limitations of the validators (as of 2026-05-17)
+
+The `repo-healthcheck` canonical SKILL.md is partially out of date relative to the current `standards/repo-contract.md` (the Universal Floor vs Vendor-Specific Adapter contract from PR-2). Specifically: it still treats `CLAUDE.md` as universally required, doesn't list `security-first-adoption.md` in the required-files set, and doesn't validate adoption-record field population. A Tier 2 PR to update the skill is on the platform team's backlog. Until then, follow the manual checks above.
+
+**Note also:** `scripts/validate-architecture.sh` is the architecture repo's *own* scanner — it does not run against consuming repos. The consumer-facing validator is `repo-healthcheck` (plus the manual checks above). (This was caught as a runbook bug in PR #11 review and corrected here.)
 
 ---
 
