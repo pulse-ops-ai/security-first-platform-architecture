@@ -262,55 +262,46 @@ Optionally adopt `.pre-commit-config.yaml` and `.secrets.baseline` from the arch
 
 ## Step 10 — Validate
 
-Run the consumer-facing healthchecks **inside your consuming repo's directory** (`<solution-repo>/`):
+Run the consumer-facing healthchecks **inside your consuming repo's directory**:
 
 ```bash
 # Pre-commit (if you installed the hooks):
 pre-commit run --all-files
 
-# Repo healthcheck — verifies the Universal Floor against the repo contract.
-# Invoke via Claude Code: /repo-healthcheck
-# Or follow the procedure in:
-#   ../security-first-platform-architecture/.agents/skills/repo-healthcheck/SKILL.md
+# Repo healthcheck — validates the Universal Floor, the
+# security-first-adoption.md frontmatter, the conditional floor
+# (openspec/, .github/workflows/, .agents/skills/ when present), and
+# vendor-adapter consistency against the agent_adapters_in_use:
+# declarations.
+bash scripts/repo-healthcheck.sh
 ```
 
-**What `repo-healthcheck` actually checks today** (verbatim from the canonical procedure in `.agents/skills/repo-healthcheck/SKILL.md`):
-
-- Root files exist: `README.md`, `AGENTS.md`, **`CLAUDE.md`**, `LICENSE` — `CLAUDE.md` is currently required *unconditionally* by the skill. (The repo contract makes it conditional on Claude being in use; the skill predates that contract restructure. See "Known limitations" below.)
-- Required directories exist: `docs/`, `docs/INDEX.md`, **`.agents/skills/`**, **`.agents/skills/INDEX.md`**, `openspec/`, `.github/workflows/` — `.agents/skills/` is also required *unconditionally*. (Same contract gap.)
-- `.github/workflows/` contains the three required healthchecks: `architecture-healthcheck.yml`, `docs-healthcheck.yml`, `skills-healthcheck.yml` (directly or referenced via reusable workflows).
-- Adapter directories `.claude/` and `.codex/`, *if present*, route to `AGENTS.md` rather than duplicating it.
-- `AGENTS.md` is non-empty and references at least the architecture and team-os entrypoints.
-
-**Concrete consequence for first adopters.** Until the skill is updated to match the current contract, running `repo-healthcheck` on a repo that does NOT use Claude or does NOT ship local skills will produce `[MISSING] CLAUDE.md` and `[MISSING] .agents/skills/` findings. These are **known false positives** caused by the skill-vs-contract gap. The correct adopter response is to leave those findings in the report (do NOT add the files just to satisfy the skill — that would be wrong per the contract) and note them as "known false positive, tracked under repo-healthcheck skill update." When the skill catches up, the false positives go away.
-
-**What `repo-healthcheck` does NOT check today (manual verification required for first adopters):**
-
-- `security-first-adoption.md` field population — the file's presence is checked, but the required YAML frontmatter fields (`architecture_ref`, `profile`, `adopted_control_layers`, `owner`, `review_cadence`, etc.) are NOT validated. Manually open the file and confirm every required field is non-empty.
-- `agent_adapters_in_use:` consistency — the skill doesn't verify that the adapter declarations match the files actually present (e.g., `claude_code: false` with a `CLAUDE.md` still in the tree is a real configuration mistake that will go undetected).
-- The Universal Floor vs Vendor-Specific Adapter split from `standards/repo-contract.md` — the skill predates the PR-2 contract restructure and hasn't been updated yet (tracked as a follow-up; see "Known limitations" below).
-
-**Manual adoption-record check.** Until the skill is updated, verify your `security-first-adoption.md` by hand:
+If your consuming repo doesn't yet have a local copy of `scripts/repo-healthcheck.sh`, run it directly from the architecture repo:
 
 ```bash
-# Every required YAML field should have a non-placeholder value.
-grep -E '^[a-z_]+:[[:space:]]*$' security-first-adoption.md && \
-  echo 'FAIL: empty required fields above' || \
-  echo 'OK: no empty fields'
-
-# Adapter declarations should match files present.
-grep -E '^[[:space:]]+(claude_code|codex|github_copilot|cursor):' security-first-adoption.md
-# Cross-check against what's actually in your tree:
-ls CLAUDE.md .claude/ .codex/ .cursorrules .github/copilot-instructions.md 2>/dev/null
+bash ../security-first-platform-architecture/scripts/repo-healthcheck.sh .
 ```
 
-Fix any `MISSING` / `MALFORMED` findings (from the skill) and any empty-field findings (from manual check) before opening the first PR.
+The script auto-detects whether it's running in the architecture repo or a consuming repo (via the presence of `standards/repo-contract.md` as the sentinel) and runs the appropriate set of checks. In your consumer it will run the **consumer-mode** checks:
 
-### Known limitations of the validators (as of 2026-05-17)
+- All Universal Floor files / directories present.
+- `security-first-adoption.md` frontmatter has every required field populated (8 scalars, 8 `adopted_control_layers` children, 4 `agent_adapters_in_use` children, 3 required list keys).
+- The conditional floor (`openspec/README.md` if `openspec/` exists, `.agents/skills/INDEX.md` if `.agents/skills/` exists, `.github/workflows/` if owned).
+- Vendor adapters consistent with declarations: each `agent_adapters_in_use.<x>: true` has its files; each `: false` does NOT have its files; any present adapter routes to `AGENTS.md`.
+- `AGENTS.md` is non-empty and references the architecture + team-os entrypoints.
 
-The `repo-healthcheck` canonical SKILL.md is partially out of date relative to the current `standards/repo-contract.md` (the Universal Floor vs Vendor-Specific Adapter contract from PR-2). Specifically: it still treats `CLAUDE.md` as universally required, doesn't list `security-first-adoption.md` in the required-files set, and doesn't validate adoption-record field population. A Tier 2 PR to update the skill is on the platform team's backlog. Until then, follow the manual checks above.
+Findings are prefixed `[OK]` / `[INFO]` / `[WARN]` / `[ERROR]`. Only `[ERROR]` fails the check (script exits 1). The full set of categories and how to interpret each is documented in [`.agents/skills/repo-healthcheck/SKILL.md`](../../.agents/skills/repo-healthcheck/SKILL.md) — "Interpret findings."
 
-**Note also:** `scripts/validate-architecture.sh` is the architecture repo's *own* scanner — it does not run against consuming repos. The consumer-facing validator is `repo-healthcheck` (plus the manual checks above). (This was caught as a runbook bug in PR #11 review and corrected here.)
+Fix every `[ERROR]` before opening the first PR. The most common errors and their fixes:
+
+| Error | Fix |
+|---|---|
+| `frontmatter field '<key>' is empty (or comment-only)` | Open `security-first-adoption.md`, replace the template's `key: # comment` with `key: <real-value>`. |
+| `Adapter mismatch: <x> is 'false' but <file> is present` | Either set `<x>: true` if you actually use it, or remove the file. Do NOT keep both. |
+| `MISSING <adapter-file> (<x>: true)` | Either add the adapter file, or change the declaration to `false` if you don't use it. |
+| `<adapter-file> does not reference AGENTS.md` | The adapter file should be a short router pointing at `AGENTS.md`, not a duplicate contract. Edit it to include "See AGENTS.md" or equivalent. |
+
+**Note:** `scripts/validate-architecture.sh` is the architecture repo's *own* vendor-neutrality scanner — it does not run against consuming repos. The consumer-facing validator is `repo-healthcheck.sh`.
 
 ---
 
