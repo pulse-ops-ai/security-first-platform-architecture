@@ -55,7 +55,13 @@ ARCH_REPO=../security-first-platform-architecture
 # 1. Copy the consuming-repo template tree (AGENTS.md, CLAUDE.md,
 #    docs/INDEX.md, security-first-adoption.md, openspec/README.md,
 #    .agents/skills/INDEX.md).
-cp -rT "$ARCH_REPO/templates/consuming-repo/" .
+#
+#    Note the trailing `/.` on the source — that copies the *contents*
+#    of consuming-repo/ into `.` rather than nesting consuming-repo/
+#    inside `.`. This form works with both GNU `cp` (Linux) and BSD
+#    `cp` (macOS). Avoid `cp -rT`, which is GNU-only and fails silently
+#    in unexpected ways on macOS.
+cp -R "$ARCH_REPO/templates/consuming-repo/." .
 
 # 2. Copy the three required healthcheck workflows. The
 #    consuming-repo template intentionally does NOT include these
@@ -268,13 +274,15 @@ pre-commit run --all-files
 #   ../security-first-platform-architecture/.agents/skills/repo-healthcheck/SKILL.md
 ```
 
-**What `repo-healthcheck` checks today** (per the canonical procedure in `.agents/skills/repo-healthcheck/SKILL.md`):
+**What `repo-healthcheck` actually checks today** (verbatim from the canonical procedure in `.agents/skills/repo-healthcheck/SKILL.md`):
 
-- Root files exist: `README.md`, `AGENTS.md`, `LICENSE` (and `CLAUDE.md` *if* Claude is in use)
-- Required directories exist: `docs/`, `docs/INDEX.md`, `openspec/`, `.github/workflows/`, and `.agents/skills/` + `.agents/skills/INDEX.md` *if* the repo exposes local skills
-- `.github/workflows/` contains the three required healthchecks (or references them via reusable workflows)
-- Adapter directories (`.claude/`, `.codex/`) if present, route to `AGENTS.md` rather than duplicating it
-- `AGENTS.md` is non-empty and references the architecture and team-os entrypoints
+- Root files exist: `README.md`, `AGENTS.md`, **`CLAUDE.md`**, `LICENSE` — `CLAUDE.md` is currently required *unconditionally* by the skill. (The repo contract makes it conditional on Claude being in use; the skill predates that contract restructure. See "Known limitations" below.)
+- Required directories exist: `docs/`, `docs/INDEX.md`, **`.agents/skills/`**, **`.agents/skills/INDEX.md`**, `openspec/`, `.github/workflows/` — `.agents/skills/` is also required *unconditionally*. (Same contract gap.)
+- `.github/workflows/` contains the three required healthchecks: `architecture-healthcheck.yml`, `docs-healthcheck.yml`, `skills-healthcheck.yml` (directly or referenced via reusable workflows).
+- Adapter directories `.claude/` and `.codex/`, *if present*, route to `AGENTS.md` rather than duplicating it.
+- `AGENTS.md` is non-empty and references at least the architecture and team-os entrypoints.
+
+**Concrete consequence for first adopters.** Until the skill is updated to match the current contract, running `repo-healthcheck` on a repo that does NOT use Claude or does NOT ship local skills will produce `[MISSING] CLAUDE.md` and `[MISSING] .agents/skills/` findings. These are **known false positives** caused by the skill-vs-contract gap. The correct adopter response is to leave those findings in the report (do NOT add the files just to satisfy the skill — that would be wrong per the contract) and note them as "known false positive, tracked under repo-healthcheck skill update." When the skill catches up, the false positives go away.
 
 **What `repo-healthcheck` does NOT check today (manual verification required for first adopters):**
 
