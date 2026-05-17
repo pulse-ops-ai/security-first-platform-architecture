@@ -45,12 +45,19 @@ No cutover. Each change is additive and independently revertible.
 
 ## Definition of done
 
-`completion_state: architecture-complete`:
+`completion_state: architecture-complete`.
+
+> **Retro-fix note (added in PR-8):** original DoD marked all items `[x]` regardless of whether they could be true while the PR was open. Split into pre-merge and post-merge per the PR-7 / PR-8 review pattern. No content change to the historical record — only the checkbox-state corrected for accuracy.
+
+### Pre-merge (verified in PR #3)
 
 - [x] All architecture-side tasks resolved
 - [x] Healthcheck workflows green on the architecture repo (`pre-commit`, `architecture-healthcheck`, `docs-healthcheck`, `skills-healthcheck`)
-- [x] New workflows green on first run after merge (`openspec-triage`, `codeowners-check`)
 - [x] No ADR required (Tier 2)
 - [x] Architecture-side dependency records: none required (no consumer impact)
-- [x] Proposal status moved from `in_review` → `accepted` on merge
-- [x] After PR merge: proposal directory moves to `openspec/archive/` once first PR-since-merge passes the new gates successfully
+
+### Post-merge (verified after PR #3 merged)
+
+- [x] New workflows green on first run after merge (`openspec-triage`, `codeowners-check`) — confirmed by subsequent PR runs
+- [x] Proposal status moved from `in_review` → `accepted` (verified at archive time)
+- [x] Proposal directory moved to `openspec/archive/` once first PR-since-merge passed the new gates successfully (PR #8 was the archiving PR)
