@@ -47,12 +47,19 @@ No cutover. Each change is additive and independently revertible. The new commit
 
 ## Definition of done
 
-`completion_state: architecture-complete`:
+`completion_state: architecture-complete`.
+
+> **Retro-fix note (added in PR #12, 2026-05-17):** the original DoD merged in PR #8 marked all items `[x]` regardless of whether they could be true while the PR was open. PR #12 split it into pre-merge and post-merge per the pattern introduced in PR #11. No content change to the historical record — only the checkbox-state corrected for accuracy.
+
+### Pre-merge (verified in PR #8)
 
 - [x] All architecture-side tasks resolved
 - [x] `sync-agent-skills --check`: 0 errors, 0 warnings (was 16 warnings)
-- [x] Healthcheck + openspec-triage + codeowners-check + pre-commit workflows green on `main` after merge
 - [x] No ADR required (Tier 2)
 - [x] No dependency records (no consumer impact)
-- [x] Proposal status moved from `in_review` → `accepted` on merge
-- [x] After PR merge: proposal directory moves to `openspec/archive/` (this proposal's own archive happens in the next PR — the recursion stops naturally)
+
+### Post-merge (verified after PR #8 merged)
+
+- [x] Healthcheck + openspec-triage + codeowners-check + pre-commit workflows green on `main` after merge — confirmed
+- [x] Proposal status moved from `in_review` → `accepted` (verified at archive time)
+- [x] Proposal directory moved to `openspec/archive/` — PR #9 archived this proposal

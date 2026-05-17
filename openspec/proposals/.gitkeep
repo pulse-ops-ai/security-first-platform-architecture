@@ -1,0 +1,17 @@
+# This file exists so `openspec/proposals/` survives empty periods
+# (between the last proposal archiving and the next being opened).
+# Without it, git would clean up the empty directory and references
+# to the path would break.
+#
+# Current consumers of the directory path (as of 2026-05-17):
+#   - scripts/openspec-triage.sh — looks for proposal directories
+#     under openspec/proposals/YYYY-MM-DD-*/ in PR diffs.
+#   - team-os/openspec-policy.md — describes openspec/proposals/ as
+#     the lifecycle home for in-flight proposals.
+#   - standards/openspec-standard.md — defines the directory layout.
+#   - openspec/README.md — the OpenSpec entrypoint that lists current
+#     and archived proposals; mentions the proposals/ directory.
+#
+# Do not delete this file as cruft. If you need to remove it (e.g.,
+# because openspec/proposals/ should never be empty in a future
+# convention), update the references above first.
