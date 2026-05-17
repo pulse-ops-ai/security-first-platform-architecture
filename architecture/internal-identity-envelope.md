@@ -1,5 +1,7 @@
 # Internal Identity Envelope
 
+> See [`ADR-0003`](../docs/decisions/ADR-0003-internal-identity-envelope-as-z4-trust.md) for the trade-off record — why a signed envelope and not re-called L4, mesh-only identity, or forwarded L3 tokens.
+
 The **internal identity envelope** is a signed, short-lived assertion that carries the verified principal, the authorization decision, and request context across **Zone 4** (internal trusted services). It is the mechanism by which services avoid network-based trust.
 
 This is a **pattern**, not a product. Concrete implementations may use JWS/JOSE, PASETO, biscuit, or platform-native signed tokens.
