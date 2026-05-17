@@ -1,0 +1,5 @@
+# This file exists so `openspec/proposals/` survives empty periods
+# (between the last proposal archiving and the next being opened).
+# Without it, git would clean up the empty directory and any link
+# pointing at the directory path would break. See docs/product/INDEX.md
+# and the openspec-triage workflow for context.

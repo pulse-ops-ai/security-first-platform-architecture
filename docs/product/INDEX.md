@@ -84,7 +84,7 @@ The repo is in its **scaffold-complete phase**. The architecture, governance, en
 Anything beyond that is captured (when it exists) in:
 
 - [`../../portfolio/epics/`](../../portfolio/epics/) — multi-repo initiatives
-- [`../../openspec/proposals/`](../../openspec/proposals/) — in-flight governed changes
+- [`../../openspec/README.md`](../../openspec/README.md) — OpenSpec lifecycle, current proposals (when any are open), and the archive
 - [`../decisions/INDEX.md`](../decisions/INDEX.md) — accepted ADRs
 
 ## Who to ask
