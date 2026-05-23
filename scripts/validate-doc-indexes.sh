@@ -20,7 +20,16 @@
 
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# Target repo to validate. If passed as $1, use that path (relative or
+# absolute). Otherwise default to the script's own repo root (the
+# architecture repo when self-invoked, since the script and the repo
+# move together). The optional arg lets consumer-repo CI invoke this
+# script via a reusable workflow that runs in the consumer's checkout.
+if [[ -n "${1:-}" ]]; then
+  ROOT="$(cd "$1" && pwd)"
+else
+  ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+fi
 cd "$ROOT" || exit 1
 
 fail=0

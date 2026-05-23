@@ -1,0 +1,24 @@
+name: pre-commit
+
+# Runs your .pre-commit-config.yaml hooks against every PR and push to
+# main. Calls the reusable workflow in the architecture repo (no
+# inputs required — pre-commit operates on the calling repo's files).
+#
+# Onboarding: replace `__ARCHITECTURE_REF__` with the SHA/tag/branch
+# from your security-first-adoption.md `architecture_ref:`. Unlike the
+# other healthchecks, this workflow does NOT need architecture-ref
+# passed in `with:` (the reusable workflow runs pre-commit against the
+# caller's checkout directly).
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  call:
+    uses: pulse-ops-ai/security-first-platform-architecture/.github/workflows/pre-commit.yml@__ARCHITECTURE_REF__

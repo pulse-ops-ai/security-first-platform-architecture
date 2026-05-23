@@ -1,0 +1,17 @@
+# .gitleaks.toml
+#
+# Consumer-portable gitleaks config. Extends gitleaks defaults; adds a
+# narrow allowlist for `.secrets.baseline` so the SHA-1 hashes
+# detect-secrets stores there don't trip gitleaks's generic-api-key
+# entropy rule.
+#
+# Do not widen the allowlist without explicit team review.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Narrow allowlist — extend only with explicit review."
+paths = [
+  '''^\.secrets\.baseline$''',
+]

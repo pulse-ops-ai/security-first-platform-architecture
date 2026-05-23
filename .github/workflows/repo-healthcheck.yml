@@ -1,0 +1,76 @@
+name: repo-healthcheck
+
+# Validates the calling repo against standards/repo-contract.md via
+# scripts/repo-healthcheck.sh. The script auto-detects architecture-
+# repo vs consumer-repo mode through the presence of the
+# standards/repo-contract.md sentinel.
+#
+# Dual mode:
+#   - Architecture-repo CI (self-invoked): runs against this repo;
+#     script detects architecture-repo mode and skips consumer-only
+#     checks.
+#   - Consumer-repo CI (workflow_call): the consumer's caller
+#     workflow invokes this with `architecture-ref`; this workflow
+#     checks out both the consumer (default) and the architecture
+#     repo (for the script), then runs the script against the
+#     consumer's tree where it operates in consumer-repo mode.
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'LICENSE'
+      - 'docs/**'
+      - '.agents/skills/**'
+      - '.claude/**'
+      - '.codex/**'
+      - '.github/copilot-instructions.md'
+      - '.cursorrules'
+      - 'openspec/README.md'
+      - 'standards/repo-contract.md'
+      - 'scripts/repo-healthcheck.sh'
+      - '.github/workflows/repo-healthcheck.yml'
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      architecture-ref:
+        description: "The architecture-repo ref to use for the script. Required when called from a consumer repo; leave empty for self-invocation."
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  repo-healthcheck:
+    name: Repo follows the security-first platform contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout caller repo
+        uses: actions/checkout@v4
+
+      - name: Checkout architecture repo for scripts (consumer call only)
+        if: inputs.architecture-ref != ''
+        uses: actions/checkout@v4
+        with:
+          repository: pulse-ops-ai/security-first-platform-architecture
+          ref: ${{ inputs.architecture-ref }}
+          path: .arch-tools
+          sparse-checkout: scripts
+
+      - name: Determine script path
+        id: script
+        run: |
+          if [[ -d .arch-tools ]]; then
+            echo "path=.arch-tools/scripts/repo-healthcheck.sh" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=scripts/repo-healthcheck.sh" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run repo-healthcheck
+        run: bash "${{ steps.script.outputs.path }}" .

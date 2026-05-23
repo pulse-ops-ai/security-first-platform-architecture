@@ -5,6 +5,14 @@ name: docs-healthcheck
 # is orphaned (present in folder, missing from index).
 #
 # Underlying logic lives in scripts/validate-doc-indexes.sh.
+#
+# Dual mode:
+#   - Architecture-repo CI (self-invoked): runs scripts/validate-doc-indexes.sh
+#     directly against the checked-out architecture repo.
+#   - Consumer-repo CI (workflow_call): the consumer's caller workflow
+#     invokes this with `architecture-ref`; this workflow checks out
+#     both the consumer (default) and the architecture repo (for scripts),
+#     then runs the script against the consumer's tree.
 
 on:
   pull_request:
@@ -15,14 +23,39 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      architecture-ref:
+        description: "The architecture-repo ref to use for scripts. Required when called from a consumer repo; leave empty for self-invocation."
+        required: false
+        type: string
+        default: ''
 
 jobs:
   docs-healthcheck:
     name: Doc indexes are in sync
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout caller repo
         uses: actions/checkout@v4
 
+      - name: Checkout architecture repo for scripts (consumer call only)
+        if: inputs.architecture-ref != ''
+        uses: actions/checkout@v4
+        with:
+          repository: pulse-ops-ai/security-first-platform-architecture
+          ref: ${{ inputs.architecture-ref }}
+          path: .arch-tools
+          sparse-checkout: scripts
+
+      - name: Determine script path
+        id: script
+        run: |
+          if [[ -d .arch-tools ]]; then
+            echo "path=.arch-tools/scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run validate-doc-indexes
-        run: bash scripts/validate-doc-indexes.sh
+        run: bash "${{ steps.script.outputs.path }}" .
