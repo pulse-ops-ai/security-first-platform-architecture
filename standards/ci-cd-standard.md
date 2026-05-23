@@ -34,7 +34,7 @@ The universal-floor three are the **floor**. Repos add language/build/test/deplo
 
 - All universal-floor workflows pass (`repo-healthcheck`, `docs-healthcheck`, `pre-commit`).
 - All applicable conditional workflows pass (`skills-healthcheck` if the repo has `.agents/skills/`, etc.).
-- For Tier 2 / Tier 3 architecture-affecting changes: `openspec-change-triage` check.
+- For Tier 2 / Tier 3 architecture-affecting changes: the `openspec-triage` workflow (`.github/workflows/openspec-triage.yml`, which runs the `openspec-change-triage` skill). Branch protection should require the check named `Tier classification + proposal presence` (the job name) from this workflow.
 - Repo-specific test suites at their normal coverage threshold.
 
 ## Branch protection (recommended baseline)
