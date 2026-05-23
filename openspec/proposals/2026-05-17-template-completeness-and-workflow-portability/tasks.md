@@ -12,7 +12,7 @@ Execution plan for [`proposal.md`](proposal.md) and [`change.md`](change.md).
 |---|------|-------|--------|-----------|
 | 1 | Refactor `scripts/validate-doc-indexes.sh` to accept optional target-path arg; default to script's own repo root | @mike | completed | this PR |
 | 2 | Smoke-test the script in three modes (no arg, explicit `.`, explicit other path) | @mike | completed | this PR |
-| 3 | Add `workflow_call:` trigger to `.github/workflows/docs-healthcheck.yml` with optional `architecture-ref` input; add dual-checkout logic | @mike | completed | this PR |
+| 3 | Add `workflow_call:` trigger to `.github/workflows/docs-healthcheck.yml` with optional `architecture_ref` input; add dual-checkout logic | @mike | completed | this PR |
 | 4 | Add `workflow_call:` trigger to `.github/workflows/pre-commit.yml` (no inputs needed) | @mike | completed | this PR |
 | 5 | NEW `.github/workflows/repo-healthcheck.yml` — runs `repo-healthcheck.sh` in self-mode AND has `workflow_call:` trigger | @mike | completed | this PR |
 | 6 | Add `templates/consuming-repo/.github/workflows/{repo-healthcheck,docs-healthcheck,pre-commit}.yml` thin callers | @mike | completed | this PR |

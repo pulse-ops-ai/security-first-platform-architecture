@@ -8,7 +8,7 @@ Companion to [`proposal.md`](proposal.md).
 
 - `templates/consuming-repo/.github/workflows/repo-healthcheck.yml` — thin caller for the reusable workflow; uses `__ARCHITECTURE_REF__` placeholder.
 - `templates/consuming-repo/.github/workflows/docs-healthcheck.yml` — same shape.
-- `templates/consuming-repo/.github/workflows/pre-commit.yml` — same shape (no `architecture-ref` input needed; pre-commit is generic).
+- `templates/consuming-repo/.github/workflows/pre-commit.yml` — same shape (no `architecture_ref` input needed; pre-commit is generic).
 - `templates/consuming-repo/.github/CODEOWNERS` — placeholder with `@<solution-team>` / `@<consumer-lead>` substitution markers; rows per Universal Floor + Vendor-Specific Adapter paths.
 - `templates/consuming-repo/.pre-commit-config.yaml` — consumer-portable hook chain. INCLUDES: pre-commit-hooks (file hygiene), shellcheck, gitleaks, detect-secrets. EXCLUDES: any architecture-repo-specific scripts (validate-skills, sync-agent-skills, validate-architecture, check-infra-secrets, check-inline-secrets, openspec-triage, repo-healthcheck).
 - `templates/consuming-repo/.secrets.baseline` — empty starting baseline; consumer regenerates after first scan.
@@ -29,7 +29,7 @@ Companion to [`proposal.md`](proposal.md).
 
 ### Architecture repo — workflow refactor
 
-- `.github/workflows/docs-healthcheck.yml` — adds `workflow_call:` trigger with optional `architecture-ref` input. New conditional step that does sparse-checkout of architecture repo's `scripts/` when invoked from a consumer. Determines script path based on whether `.arch-tools/` is present. Calls `validate-doc-indexes.sh` with `.` as the target.
+- `.github/workflows/docs-healthcheck.yml` — adds `workflow_call:` trigger with optional `architecture_ref` input. New conditional step that does sparse-checkout of architecture repo's `scripts/` when invoked from a consumer. Determines script path based on whether `.arch-tools/` is present. Calls `validate-doc-indexes.sh` with `.` as the target.
 - `.github/workflows/pre-commit.yml` — adds `workflow_call:` trigger (no inputs); rest unchanged.
 
 ### Architecture repo — script refactor
@@ -38,7 +38,8 @@ Companion to [`proposal.md`](proposal.md).
 
 ### Standards + runbook
 
-- `standards/repo-contract.md` — new "What the consumer template ships" section listing the full template tree and explaining the reusable-workflow contract.
+- `standards/repo-contract.md` — new "What the consumer template ships" section listing the full template tree and explaining the reusable-workflow contract. Minor wording fix to "What this contract does NOT mandate" to reference `ci-cd-standard.md` consistently with the updated baseline.
+- `standards/ci-cd-standard.md` — restructured §Required workflows in every repo into Universal floor / Conditional / Architecture-repo-only tiers. `repo-healthcheck.yml` (introduced in PR #13) replaces `architecture-healthcheck.yml` as the universal floor; `architecture-healthcheck.yml` is now correctly scoped to the architecture repo. `pre-commit.yml` added to the floor; `skills-healthcheck.yml` made conditional ("required if the repo has `.agents/skills/`"). §Required checks on `main` updated to match.
 - `docs/operations/first-consumer-onboarding.md`:
   - Step 2's bash block: removed the workflow-copy sub-step and the pre-commit/secrets-baseline sub-step (template now has them). Kept the adapter-removal sub-step.
   - The "you should now have these files" list updated with the full template contents and an `__ARCHITECTURE_REF__` substitution callout.

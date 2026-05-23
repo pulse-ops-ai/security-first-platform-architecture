@@ -54,7 +54,7 @@ This means: a consuming repo that uses only one agent ships only that agent's ad
 |---|---|
 | `AGENTS.md`, `CLAUDE.md`, `docs/INDEX.md`, `security-first-adoption.md`, `openspec/README.md`, `.agents/skills/INDEX.md` | Universal Floor + skill catalog (remove `.agents/skills/INDEX.md` if not exposing local skills) |
 | `.claude/{skills,commands,agents}/README.md` | Claude adapter shim directory READMEs (remove the whole `.claude/` tree if not using Claude) |
-| `.github/workflows/repo-healthcheck.yml`, `docs-healthcheck.yml`, `pre-commit.yml` | Thin callers that invoke the architecture repo's reusable workflows. Each has an `__ARCHITECTURE_REF__` placeholder the adopter substitutes during onboarding. |
+| `.github/workflows/repo-healthcheck.yml`, `docs-healthcheck.yml`, `pre-commit.yml` | Thin callers that invoke the architecture repo's reusable workflows. These three ARE the universal-floor CI baseline defined in [`ci-cd-standard.md`](ci-cd-standard.md) §Required workflows. Each has an `__ARCHITECTURE_REF__` placeholder the adopter substitutes during onboarding. |
 | `.github/CODEOWNERS` | Placeholder consumer-shaped ownership map (`@<solution-team>` / `@<consumer-lead>` substitution required). |
 | `.pre-commit-config.yaml` | Consumer-portable hook chain (file hygiene + secrets + shellcheck, no architecture-repo script dependencies). |
 | `.secrets.baseline` | Empty starting baseline for `detect-secrets`. |
@@ -65,7 +65,7 @@ The template's CI works by **calling the architecture repo's reusable workflows*
 ## What this contract does NOT mandate
 
 - Programming language, build tool, framework, test runner.
-- Deploy pipeline beyond the three healthchecks named in [`ci-cd-standard.md`](ci-cd-standard.md).
+- Deploy pipeline beyond the universal-floor workflows named in [`ci-cd-standard.md`](ci-cd-standard.md).
 - Which AI coding agent(s) the team uses — or whether they use any.
 - Folder layout *inside* `docs/`, `.agents/skills/`, or `src/`.
 

@@ -10,7 +10,7 @@ name: docs-healthcheck
 #   - Architecture-repo CI (self-invoked): runs scripts/validate-doc-indexes.sh
 #     directly against the checked-out architecture repo.
 #   - Consumer-repo CI (workflow_call): the consumer's caller workflow
-#     invokes this with `architecture-ref`; this workflow checks out
+#     invokes this with `architecture_ref`; this workflow checks out
 #     both the consumer (default) and the architecture repo (for scripts),
 #     then runs the script against the consumer's tree.
 
@@ -25,7 +25,7 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      architecture-ref:
+      architecture_ref:
         description: "The architecture-repo ref to use for scripts. Required when called from a consumer repo; leave empty for self-invocation."
         required: false
         type: string
@@ -40,11 +40,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Checkout architecture repo for scripts (consumer call only)
-        if: inputs.architecture-ref != ''
+        if: inputs.architecture_ref != ''
         uses: actions/checkout@v4
         with:
           repository: pulse-ops-ai/security-first-platform-architecture
-          ref: ${{ inputs.architecture-ref }}
+          ref: ${{ inputs.architecture_ref }}
           path: .arch-tools
           sparse-checkout: scripts
 
@@ -59,7 +59,7 @@ jobs:
             echo "ERROR: cannot locate scripts/validate-doc-indexes.sh." >&2
             echo "" >&2
             echo "Self-invocation mode expects the script in the caller's checkout." >&2
-            echo "Consumer-repo callers MUST pass 'architecture-ref' in the 'with:'" >&2
+            echo "Consumer-repo callers MUST pass 'architecture_ref' in the 'with:'" >&2
             echo "block so this workflow can sparse-checkout the architecture repo." >&2
             echo "" >&2
             echo "Example consumer caller:" >&2
@@ -68,7 +68,7 @@ jobs:
             echo "    call:" >&2
             echo "      uses: pulse-ops-ai/security-first-platform-architecture/.github/workflows/docs-healthcheck.yml@<ref>" >&2
             echo "      with:" >&2
-            echo "        architecture-ref: <ref>" >&2
+            echo "        architecture_ref: <ref>" >&2
             exit 1
           fi
 

@@ -24,4 +24,4 @@ jobs:
   call:
     uses: pulse-ops-ai/security-first-platform-architecture/.github/workflows/docs-healthcheck.yml@__ARCHITECTURE_REF__
     with:
-      architecture-ref: __ARCHITECTURE_REF__
+      architecture_ref: __ARCHITECTURE_REF__

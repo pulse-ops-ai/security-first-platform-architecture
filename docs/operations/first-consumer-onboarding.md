@@ -108,7 +108,7 @@ adoption_date:        <today, ISO 8601>
 
 For *trupryce* doing first-ever onboarding: pin the most recent merged-to-main SHA (since tags will be cut in lockstep with consumer milestones — see "Open your dependency record" below).
 
-**Now propagate that ref into the workflow files.** The template ships three workflows with `__ARCHITECTURE_REF__` placeholders that must be replaced with your pinned ref (both in the `uses: ...@<ref>` line and the `with: architecture-ref:` input where present):
+**Now propagate that ref into the workflow files.** The template ships three workflows with `__ARCHITECTURE_REF__` placeholders that must be replaced with your pinned ref (both in the `uses: ...@<ref>` line and the `with: architecture_ref:` input where present):
 
 ```bash
 REF="<your pinned ref>"   # same value you put in architecture_ref:
@@ -250,10 +250,15 @@ Each one's `uses:` line should reference `pulse-ops-ai/security-first-platform-a
 grep -H "uses:" .github/workflows/*.yml
 ```
 
-**Optional additions:**
+Those three workflows ARE the universal-floor CI baseline defined in [`../../standards/ci-cd-standard.md`](../../standards/ci-cd-standard.md) §Required workflows in every repo. You don't need to add anything else to satisfy the floor.
 
-- If your team adopts the OpenSpec policy, you can copy `openspec-triage.yml` and `codeowners-check.yml` from the architecture repo's `.github/workflows/` and add `__ARCHITECTURE_REF__`-style substitution. These are not in the consumer template today because they're optional adoption signals.
+**Optional additions** (conditional on what your repo exposes):
+
+- `skills-healthcheck.yml` — required by the CI/CD standard **only if** your repo has `.agents/skills/`. Copy from the architecture repo's `.github/workflows/` and add the same `__ARCHITECTURE_REF__` substitution if you adopt local skills.
+- `openspec-triage.yml` and `codeowners-check.yml` — required only if your team adopts the OpenSpec policy or required-path ownership enforcement. Copy + substitute the same way.
 - For action pinning hygiene, the `github-enterprise-ci-review` skill flags any unpinned `uses:` lines in your workflows.
+
+`architecture-healthcheck.yml` is architecture-repo-specific (it validates the architecture repo's own `architecture/` tree). Consumers do NOT need it.
 
 The template's `.pre-commit-config.yaml`, `.secrets.baseline`, and `.gitleaks.toml` (also from step 2) cover local-dev hook hygiene. They are deliberately a **consumer-portable subset** of what the architecture repo runs on itself — no architecture-specific scripts; just file hygiene, secrets, and shellcheck.
 

@@ -29,9 +29,9 @@ Two coordinated edits, in one PR.
 
 ### 1. Make architecture-repo healthcheck workflows reusable (`workflow_call:`)
 
-- `.github/workflows/docs-healthcheck.yml` — adds `workflow_call:` trigger with optional `architecture-ref` input. When invoked from a consumer, the workflow does a dual checkout (caller for content + architecture repo for scripts) and runs `validate-doc-indexes.sh` against the caller's tree.
+- `.github/workflows/docs-healthcheck.yml` — adds `workflow_call:` trigger with optional `architecture_ref` input. When invoked from a consumer, the workflow does a dual checkout (caller for content + architecture repo for scripts) and runs `validate-doc-indexes.sh` against the caller's tree.
 - `.github/workflows/pre-commit.yml` — adds `workflow_call:` trigger (no inputs needed; pre-commit operates on the calling repo's files generically).
-- **NEW** `.github/workflows/repo-healthcheck.yml` — runs `scripts/repo-healthcheck.sh` against the calling repo. Self-mode for the architecture repo's own CI; consumer-mode via `workflow_call:` with `architecture-ref` input.
+- **NEW** `.github/workflows/repo-healthcheck.yml` — runs `scripts/repo-healthcheck.sh` against the calling repo. Self-mode for the architecture repo's own CI; consumer-mode via `workflow_call:` with `architecture_ref` input.
 - `scripts/validate-doc-indexes.sh` — refactored to accept an optional target-path argument (`bash validate-doc-indexes.sh <path>`), defaulting to the script's own repo root when not supplied. Required for the reusable workflow to run the script against the caller's tree.
 
 `skills-healthcheck.yml`, `architecture-healthcheck.yml`, `codeowners-check.yml`, and `openspec-triage.yml` are NOT made reusable in this PR — they're either architecture-repo-specific (architecture-healthcheck), or they'd need parameterization that expands scope (codeowners-check enforces architecture-repo paths). Deferred.
@@ -68,7 +68,7 @@ Plus archive cleanup:
 
 - **Repos affected:** the architecture repo only in this PR. The trupryce onboarding PR (next, in trupryce's repo) will be the first user.
 - **Layers / profiles affected:** none.
-- **Standards affected:** `standards/repo-contract.md` gains a new "What the consumer template ships" section. No contract change.
+- **Standards affected:** `standards/repo-contract.md` gains a new "What the consumer template ships" section (no contract change). `standards/ci-cd-standard.md` updated to reconcile the §Required workflows table with the post-PR-9 reality: `repo-healthcheck.yml` is now the universal floor (was `architecture-healthcheck.yml`, which is architecture-repo-specific); `pre-commit.yml` added to floor; `skills-healthcheck.yml` made conditional.
 - **Templates affected:** `templates/consuming-repo/` substantially expanded.
 - **Cross-repo contracts:** introduces the **reusable-workflow contract** between architecture repo and consumers. A consumer's `.github/workflows/repo-healthcheck.yml` carries a `uses: …@<ref>` line that pins to a specific architecture-repo ref; that ref must match the consumer's `security-first-adoption.md` `architecture_ref:`. This is documented in the new repo-contract section and in the runbook step 3.
 - **Security-boundary impact:** none directly. The reusable workflows run the same scripts they would have run otherwise; only the invocation path changes.

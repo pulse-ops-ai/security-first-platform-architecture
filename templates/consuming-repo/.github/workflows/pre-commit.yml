@@ -6,8 +6,8 @@ name: pre-commit
 #
 # Onboarding: replace `__ARCHITECTURE_REF__` with the SHA/tag/branch
 # from your security-first-adoption.md `architecture_ref:`. Unlike the
-# other healthchecks, this workflow does NOT need architecture-ref
-# passed in `with:` (the reusable workflow runs pre-commit against the
+# other healthchecks, this workflow does NOT need an `architecture_ref:`
+# input in `with:` (the reusable workflow runs pre-commit against the
 # caller's checkout directly).
 
 on:

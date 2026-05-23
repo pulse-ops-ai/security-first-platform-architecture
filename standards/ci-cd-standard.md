@@ -4,19 +4,36 @@ The minimum CI/CD baseline every repo in the workspace must meet, on **GitHub En
 
 ## Required workflows in every repo
 
-Every repo's `.github/workflows/` must include (or reference reusable workflows equivalent to) these three:
+Every repo's `.github/workflows/` must include (or reference reusable workflows equivalent to) the baseline below. The architecture repo ships reusable versions of each via `workflow_call:` — consumers should use thin caller workflows from [`templates/consuming-repo/.github/workflows/`](../templates/consuming-repo/.github/workflows/) rather than vendoring scripts.
+
+### Universal floor (every repo)
+
+| Workflow | What it verifies | Reusable? |
+|---|---|---|
+| `repo-healthcheck.yml` | Repo follows the security-first platform contract: Universal Floor files (`README.md`, `AGENTS.md`, `LICENSE`, etc.); adoption record (`security-first-adoption.md`) when in consumer mode; Vendor-Specific Adapter consistency (`CLAUDE.md` + `.claude/`, etc.). Auto-detects architecture-repo vs consumer-repo mode via the `standards/repo-contract.md` sentinel. | yes |
+| `docs-healthcheck.yml` | Every folder with multiple markdown files has an `INDEX.md`; each `INDEX.md` references existing files; no markdown orphans. | yes |
+| `pre-commit.yml` | Runs the repo's `.pre-commit-config.yaml` hooks. Verifies file hygiene, secret-scan baselines, and any consumer-specific lints. | yes |
+
+### Conditional (when the repo exposes the artifact)
+
+| Workflow | When required | What it verifies |
+|---|---|---|
+| `skills-healthcheck.yml` | The repo has `.agents/skills/` | Every `.agents/skills/<name>/` has a `SKILL.md` with YAML frontmatter and required body sections; `.agents/skills/INDEX.md` lists every skill. |
+| `openspec-triage.yml` | The repo participates in cross-repo governance via OpenSpec | Classifies PR diffs by tier; confirms a proposal directory is present for Tier 2/3 changes. |
+| `codeowners-check.yml` | The repo enforces required-path ownership | `CODEOWNERS` covers contract-critical paths. |
+
+### Architecture-repo only
 
 | Workflow | What it verifies |
 |---|---|
-| `architecture-healthcheck.yml` | Repo declares its target profile; metadata is consistent with the architecture standard; no vendor names leaking into vendor-neutral docs. |
-| `docs-healthcheck.yml` | `docs/INDEX.md` exists; every `.md` under `docs/` is referenced by an index; broken intra-repo links flagged. |
-| `skills-healthcheck.yml` | Every `.agents/skills/<name>/` has a `SKILL.md` with YAML frontmatter and required body sections; `.agents/skills/INDEX.md` lists every skill. |
+| `architecture-healthcheck.yml` | The architecture repo's own `architecture/` tree stays implementation-neutral (no vendor names leaking outside `architecture/profiles/`). Consumers don't carry an `architecture/` tree, so this check doesn't apply to them. |
 
-These three are the **floor**. Repos add language/build/test/deploy workflows on top.
+The universal-floor three are the **floor**. Repos add language/build/test/deploy workflows on top, plus the conditional workflows when they're applicable.
 
 ## Required checks on `main`
 
-- All three healthchecks pass.
+- All universal-floor workflows pass (`repo-healthcheck`, `docs-healthcheck`, `pre-commit`).
+- All applicable conditional workflows pass (`skills-healthcheck` if the repo has `.agents/skills/`, etc.).
 - For Tier 2 / Tier 3 architecture-affecting changes: `openspec-change-triage` check.
 - Repo-specific test suites at their normal coverage threshold.
 
