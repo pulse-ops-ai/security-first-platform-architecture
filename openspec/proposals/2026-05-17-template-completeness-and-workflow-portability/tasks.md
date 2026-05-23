@@ -53,7 +53,7 @@ No cutover. The change is additive: existing architecture-repo CI continues to w
 - [x] All pre-existing validators PASS
 - [x] New `repo-healthcheck.yml` workflow YAML is valid
 - [x] All four new template workflow YAMLs are valid (`check-yaml` passes)
-- [x] `openspec-triage.sh` classifies this PR as Tier 2 with proposal present
+- [x] `openspec-triage.sh` classifies this PR as **Tier 3** (path-based; triggered by `standards/repo-contract.md` being in the Tier-3 list) and PASSes with the proposal present. The proposal declares `tier: 2` to match the intent of the change (additive doc section in `repo-contract.md`, not a contract-rule change). The script-vs-intent mismatch is documented in `proposal.md` § *Note on tier classification* and matches the same over-classification pattern accepted in PR #11. No BLOCK fires; CI is unblocked.
 - [x] `pre-commit run --all-files`: all 19 hooks PASS
 - [x] No ADR required (Tier 2; the reusable-workflow contract is mechanical, not architectural)
 - [x] No dependency records (no consumer impact yet)

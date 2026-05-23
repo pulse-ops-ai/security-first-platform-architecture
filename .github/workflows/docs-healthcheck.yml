@@ -48,13 +48,28 @@ jobs:
           path: .arch-tools
           sparse-checkout: scripts
 
-      - name: Determine script path
+      - name: Determine script path (or fail with a clear consumer-mode error)
         id: script
         run: |
           if [[ -d .arch-tools ]]; then
             echo "path=.arch-tools/scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
-          else
+          elif [[ -f scripts/validate-doc-indexes.sh ]]; then
             echo "path=scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
+          else
+            echo "ERROR: cannot locate scripts/validate-doc-indexes.sh." >&2
+            echo "" >&2
+            echo "Self-invocation mode expects the script in the caller's checkout." >&2
+            echo "Consumer-repo callers MUST pass 'architecture-ref' in the 'with:'" >&2
+            echo "block so this workflow can sparse-checkout the architecture repo." >&2
+            echo "" >&2
+            echo "Example consumer caller:" >&2
+            echo "" >&2
+            echo "  jobs:" >&2
+            echo "    call:" >&2
+            echo "      uses: pulse-ops-ai/security-first-platform-architecture/.github/workflows/docs-healthcheck.yml@<ref>" >&2
+            echo "      with:" >&2
+            echo "        architecture-ref: <ref>" >&2
+            exit 1
           fi
 
       - name: Run validate-doc-indexes

@@ -7,27 +7,28 @@
 #
 #   - INCLUDED: file hygiene, YAML/JSON/TOML validation, merge conflict
 #     and large-file checks, private-key detection, shellcheck,
-#     gitleaks, detect-secrets, conventional-commits commit-msg check.
+#     gitleaks, detect-secrets.
 #   - EXCLUDED: hooks that invoke architecture-repo-specific scripts
 #     (validate-skills, sync-agent-skills, validate-architecture,
 #     check-infra-secrets, check-inline-secrets, openspec-triage,
-#     repo-healthcheck). Those checks run in CI via the reusable
-#     workflows shipped by the architecture repo — your local
-#     pre-commit pass stays fast and hands them off to GitHub Actions.
+#     repo-healthcheck, check-commit-message). Those checks run in CI
+#     via the reusable workflows shipped by the architecture repo —
+#     your local pre-commit pass stays fast and hands them off to
+#     GitHub Actions.
+#
+# If your team wants a conventional-commits commit-msg hook, add it
+# locally — the architecture repo's scripts/check-commit-message.sh is
+# a good starting point if you want to vendor it.
 #
 # Local install (run once):
 #   pip install pre-commit   # or: pipx install pre-commit
-#   pre-commit install --hook-type pre-commit --hook-type commit-msg
+#   pre-commit install
 #
 # Manual run:
 #   pre-commit run --all-files
 #
-# Versions below match the architecture repo at PR-10 time. `pre-commit
+# Versions below match the architecture repo at PR #14 time. `pre-commit
 # autoupdate` bumps them in their own PR.
-
-default_install_hook_types:
-  - pre-commit
-  - commit-msg
 
 repos:
 

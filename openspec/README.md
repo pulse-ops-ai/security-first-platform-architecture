@@ -37,7 +37,7 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
-- [`proposals/2026-05-17-template-completeness-and-workflow-portability/`](proposals/2026-05-17-template-completeness-and-workflow-portability/) — Tier 2, in_review (PR-10): consumer template now ships workflows + adapter shims + pre-commit config; architecture-repo workflows gain `workflow_call:` so consumers invoke reusables instead of vendoring scripts.
+- [`proposals/2026-05-17-template-completeness-and-workflow-portability/`](proposals/2026-05-17-template-completeness-and-workflow-portability/) — Tier 2 by intent (script reports Tier 3 due to `standards/repo-contract.md` path; additive doc section, not a contract change, documented in proposal), in_review (PR #14): consumer template now ships workflows + adapter shims + pre-commit config; architecture-repo workflows gain `workflow_call:` so consumers invoke reusables instead of vendoring scripts.
 
 ## Archived proposals
 
