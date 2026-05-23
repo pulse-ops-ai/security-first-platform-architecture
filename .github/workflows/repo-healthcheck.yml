@@ -55,7 +55,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Checkout architecture repo for scripts (consumer call only)
-        if: inputs.architecture_ref != ''
+        # Explicit `workflow_call` gate (defense in depth): in self-mode
+        # (push / pull_request / workflow_dispatch) the `inputs` context is
+        # empty, but we don't want to rely on that subtle coercion — a leaked
+        # truthy check here would silently switch self-mode to running the
+        # architecture-repo's default-branch script against the PR, masking
+        # the PR's own changes to that script. Gate on event_name explicitly.
+        if: github.event_name == 'workflow_call' && inputs.architecture_ref != ''
         uses: actions/checkout@v4
         with:
           repository: pulse-ops-ai/security-first-platform-architecture
