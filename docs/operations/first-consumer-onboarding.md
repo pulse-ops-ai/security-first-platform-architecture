@@ -254,8 +254,10 @@ Those three workflows ARE the universal-floor CI baseline defined in [`../../sta
 
 **Optional additions** (conditional on what your repo exposes):
 
-- `skills-healthcheck.yml` — required by the CI/CD standard **only if** your repo has `.agents/skills/`. Copy from the architecture repo's `.github/workflows/` and add the same `__ARCHITECTURE_REF__` substitution if you adopt local skills.
-- `openspec-triage.yml` and `codeowners-check.yml` — required only if your team adopts the OpenSpec policy or required-path ownership enforcement. Copy + substitute the same way.
+- `skills-healthcheck.yml` — required by the CI/CD standard **only if** your repo has `.agents/skills/`. This workflow is **not reusable yet** (it calls `scripts/validate-skills.sh` and `scripts/sync-agent-skills.sh` directly in the architecture repo's own checkout). Until it gains a `workflow_call:` trigger in a follow-up PR, your options if you adopt local skills are:
+  - Wait for the reusable version (preferred — no per-consumer maintenance), OR
+  - Vendor both the workflow AND the two scripts into your repo and accept that you'll need to keep them in sync with `architecture_ref` bumps yourself.
+- `openspec-triage.yml` and `codeowners-check.yml` — required only if your team adopts the OpenSpec policy or required-path ownership enforcement. **Same limitation**: not reusable yet (call `scripts/openspec-triage.sh` and architecture-repo-specific path enforcement, respectively). Vendor scripts + workflow if you must adopt now; otherwise wait for the reusable versions.
 - For action pinning hygiene, the `github-enterprise-ci-review` skill flags any unpinned `uses:` lines in your workflows.
 
 `architecture-healthcheck.yml` is architecture-repo-specific (it validates the architecture repo's own `architecture/` tree). Consumers do NOT need it.

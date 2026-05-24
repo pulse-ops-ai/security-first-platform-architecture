@@ -52,7 +52,7 @@ This means: a consuming repo that uses only one agent ships only that agent's ad
 
 | Path | What it is |
 |---|---|
-| `AGENTS.md`, `CLAUDE.md`, `docs/INDEX.md`, `security-first-adoption.md`, `openspec/README.md`, `.agents/skills/INDEX.md` | Universal Floor + skill catalog (remove `.agents/skills/INDEX.md` if not exposing local skills) |
+| `AGENTS.md`, `CLAUDE.md`, `docs/INDEX.md`, `security-first-adoption.md`, `openspec/README.md`, `.agents/skills/INDEX.md` | Universal Floor + skill catalog. If you are NOT exposing local skills, remove the entire `.agents/skills/` directory (not just `INDEX.md`) — the contract rule below requires the index to list every skill *if the directory exists*, so leaving an empty directory would be a contract violation. |
 | `.claude/{skills,commands,agents}/README.md` | Claude adapter shim directory READMEs (remove the whole `.claude/` tree if not using Claude) |
 | `.github/workflows/repo-healthcheck.yml`, `docs-healthcheck.yml`, `pre-commit.yml` | Thin callers that invoke the architecture repo's reusable workflows. These three ARE the universal-floor CI baseline defined in [`ci-cd-standard.md`](ci-cd-standard.md) §Required workflows. Each has an `__ARCHITECTURE_REF__` placeholder the adopter substitutes during onboarding. |
 | `.github/CODEOWNERS` | Placeholder consumer-shaped ownership map (`@<solution-team>` / `@<consumer-lead>` substitution required). |
