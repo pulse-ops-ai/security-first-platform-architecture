@@ -5,6 +5,14 @@ name: docs-healthcheck
 # is orphaned (present in folder, missing from index).
 #
 # Underlying logic lives in scripts/validate-doc-indexes.sh.
+#
+# Dual mode:
+#   - Architecture-repo CI (self-invoked): runs scripts/validate-doc-indexes.sh
+#     directly against the checked-out architecture repo.
+#   - Consumer-repo CI (workflow_call): the consumer's caller workflow
+#     invokes this with `architecture_ref`; this workflow checks out
+#     both the consumer (default) and the architecture repo (for scripts),
+#     then runs the script against the consumer's tree.
 
 on:
   pull_request:
@@ -15,14 +23,57 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      architecture_ref:
+        description: "The architecture-repo ref to sparse-checkout for scripts. REQUIRED for consumer-mode invocation — there is no fallback to the caller's `scripts/` directory, because doing so would let a consumer vendor a tweaked script and still pass the check."
+        required: true
+        type: string
 
 jobs:
   docs-healthcheck:
     name: Doc indexes are in sync
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout caller repo
         uses: actions/checkout@v4
 
+      - name: Checkout architecture repo for scripts (consumer call only)
+        # Explicit `workflow_call` gate: in self-mode (push / pull_request /
+        # workflow_dispatch) the `inputs` context is empty, so this step never
+        # runs there. In consumer mode, `architecture_ref` is declared
+        # `required: true` above, so GitHub Actions guarantees a non-empty
+        # value at this point — no caller-side fallback is possible.
+        if: github.event_name == 'workflow_call'
+        uses: actions/checkout@v4
+        with:
+          repository: pulse-ops-ai/security-first-platform-architecture
+          ref: ${{ inputs.architecture_ref }}
+          path: .arch-tools
+          sparse-checkout: scripts
+
+      - name: Determine script path
+        id: script
+        # Mode-strict selection: consumer mode (workflow_call) MUST use the
+        # architecture-repo checkout from the previous step; we never fall
+        # back to the caller's `scripts/` directory because doing so would
+        # let a consumer vendor a tweaked script and still pass this check.
+        # Self mode uses the script from this repo's own checkout.
+        run: |
+          if [[ "${{ github.event_name }}" == 'workflow_call' ]]; then
+            if [[ ! -f .arch-tools/scripts/validate-doc-indexes.sh ]]; then
+              echo "ERROR: consumer-mode (workflow_call) requires the architecture-repo sparse-checkout at .arch-tools/, but scripts/validate-doc-indexes.sh was not found there." >&2
+              echo "This typically means the previous checkout step did not run; verify the caller passed a valid architecture_ref." >&2
+              exit 1
+            fi
+            echo "path=.arch-tools/scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
+          else
+            if [[ ! -f scripts/validate-doc-indexes.sh ]]; then
+              echo "ERROR: self-mode expects scripts/validate-doc-indexes.sh in the caller's checkout." >&2
+              exit 1
+            fi
+            echo "path=scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run validate-doc-indexes
-        run: bash scripts/validate-doc-indexes.sh
+        run: bash "${{ steps.script.outputs.path }}" .

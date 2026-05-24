@@ -1,0 +1,26 @@
+name: repo-healthcheck
+
+# Validates this consuming repo against the security-first platform
+# repo contract by calling the reusable workflow in the architecture
+# repo. The `architecture_ref:` value below MUST match the
+# `architecture_ref:` value in your security-first-adoption.md.
+#
+# Onboarding: replace `__ARCHITECTURE_REF__` (both occurrences below)
+# with the SHA/tag/branch you've pinned in security-first-adoption.md.
+# When you bump architecture_ref later, update both occurrences here in
+# the same PR.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  call:
+    uses: pulse-ops-ai/security-first-platform-architecture/.github/workflows/repo-healthcheck.yml@__ARCHITECTURE_REF__
+    with:
+      architecture_ref: __ARCHITECTURE_REF__

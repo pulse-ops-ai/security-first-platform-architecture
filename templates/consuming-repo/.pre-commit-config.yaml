@@ -1,0 +1,73 @@
+# .pre-commit-config.yaml
+#
+# Consumer-portable pre-commit chain for repos adopting the
+# security-first platform architecture.
+#
+# Deliberately a SUBSET of the architecture repo's own .pre-commit-config.yaml:
+#
+#   - INCLUDED: file hygiene, YAML/JSON/TOML validation, merge conflict
+#     and large-file checks, private-key detection, shellcheck,
+#     gitleaks, detect-secrets.
+#   - EXCLUDED: hooks that invoke architecture-repo-specific scripts
+#     (validate-skills, sync-agent-skills, validate-architecture,
+#     check-infra-secrets, check-inline-secrets, openspec-triage,
+#     repo-healthcheck, check-commit-message). Those checks run in CI
+#     via the reusable workflows shipped by the architecture repo —
+#     your local pre-commit pass stays fast and hands them off to
+#     GitHub Actions.
+#
+# If your team wants a conventional-commits commit-msg hook, add it
+# locally — the architecture repo's scripts/check-commit-message.sh is
+# a good starting point if you want to vendor it.
+#
+# Local install (run once):
+#   pip install pre-commit   # or: pipx install pre-commit
+#   pre-commit install
+#
+# Manual run:
+#   pre-commit run --all-files
+#
+# Versions below match the architecture repo at PR #14 time. `pre-commit
+# autoupdate` bumps them in their own PR.
+
+repos:
+
+  # ----- Generic file hygiene -----
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+
+  # ----- Shell script syntax check -----
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+
+  # ----- Secret scanning: gitleaks -----
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  # ----- Secret scanning: detect-secrets -----
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: ^\.secrets\.baseline$

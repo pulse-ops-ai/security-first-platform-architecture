@@ -52,9 +52,7 @@ From your consuming repo's root:
 # Adjust the path if your sibling clone lives elsewhere.
 ARCH_REPO=../security-first-platform-architecture
 
-# 1. Copy the consuming-repo template tree (AGENTS.md, CLAUDE.md,
-#    docs/INDEX.md, security-first-adoption.md, openspec/README.md,
-#    .agents/skills/INDEX.md).
+# 1. Copy the consuming-repo template tree.
 #
 #    Note the trailing `/.` on the source — that copies the *contents*
 #    of consuming-repo/ into `.` rather than nesting consuming-repo/
@@ -63,25 +61,7 @@ ARCH_REPO=../security-first-platform-architecture
 #    in unexpected ways on macOS.
 cp -R "$ARCH_REPO/templates/consuming-repo/." .
 
-# 2. Copy the three required healthcheck workflows. The
-#    consuming-repo template intentionally does NOT include these
-#    today — they live in the architecture repo's own .github/
-#    and you copy or vendor them. (Tracked as a known
-#    template-completeness gap; future work may move these into
-#    templates/consuming-repo/.github/ directly.)
-mkdir -p .github/workflows
-cp "$ARCH_REPO/.github/workflows/architecture-healthcheck.yml" .github/workflows/
-cp "$ARCH_REPO/.github/workflows/docs-healthcheck.yml"         .github/workflows/
-cp "$ARCH_REPO/.github/workflows/skills-healthcheck.yml"       .github/workflows/
-
-# 3. (Optional but recommended) copy the pre-commit chain and the
-#    secret-scanning baseline. These are convenience defaults; you can
-#    customize freely.
-cp "$ARCH_REPO/.pre-commit-config.yaml" .
-cp "$ARCH_REPO/.secrets.baseline"       .
-cp "$ARCH_REPO/.gitleaks.toml"          .
-
-# 4. Remove adapter files for tools your team does NOT use.
+# 2. Remove adapter files for tools your team does NOT use.
 #    Example: trupryce uses Claude Code, not Codex.
 rm -rf .codex/                    # remove if not using Codex
 rm -f .github/copilot-instructions.md   # remove if not using Copilot
@@ -90,23 +70,26 @@ rm -f .cursorrules                # remove if not using Cursor
 # (Keep CLAUDE.md and .claude/ if you use Claude Code.)
 ```
 
-You should now have, at minimum, these new files:
+You should now have, at minimum, these new files (the template ships everything in one place):
 
 ```
 AGENTS.md
 CLAUDE.md                          # if using Claude
 docs/INDEX.md
-.agents/skills/INDEX.md            # if shipping local skills; otherwise remove
-openspec/README.md
 security-first-adoption.md
-.github/workflows/architecture-healthcheck.yml   # copied in sub-step 2
-.github/workflows/docs-healthcheck.yml           # copied in sub-step 2
-.github/workflows/skills-healthcheck.yml         # copied in sub-step 2
+openspec/README.md
+.agents/skills/INDEX.md            # if shipping local skills; otherwise rm -rf
 .claude/                           # if using Claude
-.pre-commit-config.yaml            # optional but recommended
-.secrets.baseline                  # optional but recommended
-.gitleaks.toml                     # optional but recommended
+.github/workflows/repo-healthcheck.yml      # thin caller for the reusable
+.github/workflows/docs-healthcheck.yml      # thin caller for the reusable
+.github/workflows/pre-commit.yml            # thin caller for the reusable
+.github/CODEOWNERS                          # placeholder consumer-shaped paths
+.pre-commit-config.yaml                     # consumer-portable hook chain
+.secrets.baseline                           # empty starting baseline
+.gitleaks.toml                              # narrow allowlist for .secrets.baseline
 ```
+
+The `.github/workflows/*.yml` files contain `__ARCHITECTURE_REF__` placeholders — step 3 below replaces them with your pinned ref.
 
 ---
 
@@ -124,6 +107,20 @@ adoption_date:        <today, ISO 8601>
 **Recommended pin:** the latest tag (`git -C "$ARCH_REPO" describe --tags --abbrev=0` from your local sibling clone, or browse the [Releases page](https://github.com/pulse-ops-ai/security-first-platform-architecture/releases)). Tag pins are the production default per [`../../team-os/cross-repo-governance.md`](../../team-os/cross-repo-governance.md) §Pinning.
 
 For *trupryce* doing first-ever onboarding: pin the most recent merged-to-main SHA (since tags will be cut in lockstep with consumer milestones — see "Open your dependency record" below).
+
+**Now propagate that ref into the workflow files.** The template ships three workflows with `__ARCHITECTURE_REF__` placeholders that must be replaced with your pinned ref (both in the `uses: ...@<ref>` line and the `with: architecture_ref:` input where present):
+
+```bash
+REF="<your pinned ref>"   # same value you put in architecture_ref:
+sed -i.bak "s|__ARCHITECTURE_REF__|$REF|g" .github/workflows/repo-healthcheck.yml \
+                                            .github/workflows/docs-healthcheck.yml \
+                                            .github/workflows/pre-commit.yml
+rm .github/workflows/*.bak
+```
+
+(On macOS `sed -i.bak` works without GNU `sed`; the `.bak` files are removed after. Adjust if your team has a preferred substitution tool.)
+
+When you bump `architecture_ref` later, redo this `sed` against the new ref in the same PR — the workflow `@ref` MUST match the adoption record's `architecture_ref`.
 
 ---
 
@@ -235,28 +232,37 @@ Commit and open a PR against the architecture repo. This PR will move to `resolv
 
 ## Step 9 — Configure your CI
 
-Back in `<solution-repo>`. Confirm the three healthcheck workflows you copied in step 2's sub-step 2 exist under `.github/workflows/` and run on `pull_request` and `push: main`:
+The template already shipped three workflows in `.github/workflows/` (step 2) and you replaced their `__ARCHITECTURE_REF__` placeholders with your pinned ref (step 3). Those workflows are **thin callers** for the reusable workflows defined in the architecture repo — there is no script-copying or workflow-authoring left for you to do.
 
-- `architecture-healthcheck.yml`
-- `docs-healthcheck.yml`
-- `skills-healthcheck.yml`
-
-If your team adopts the OpenSpec policy, also copy these from the architecture repo:
-
-- `openspec-triage.yml` — classifies PRs as Tier 1/2/3 and requires an OpenSpec proposal for Tier 2/3
-- `codeowners-check.yml` — validates `CODEOWNERS` syntax and required-path coverage
-- `pre-commit.yml` — runs the full hook chain in CI
+Confirm by listing your workflow files:
 
 ```bash
-ARCH_REPO=../security-first-platform-architecture
-cp "$ARCH_REPO/.github/workflows/openspec-triage.yml"    .github/workflows/
-cp "$ARCH_REPO/.github/workflows/codeowners-check.yml"   .github/workflows/
-cp "$ARCH_REPO/.github/workflows/pre-commit.yml"         .github/workflows/
+ls .github/workflows/
+# expected:
+# repo-healthcheck.yml
+# docs-healthcheck.yml
+# pre-commit.yml
 ```
 
-For each, follow `.github/workflows/` in the architecture repo as the reference shape. Pin any third-party actions to SHA or `vN` tags (the `github-enterprise-ci-review` skill flags unpinned `uses:` lines).
+Each one's `uses:` line should reference `pulse-ops-ai/security-first-platform-architecture/.github/workflows/<name>.yml@<your-pinned-ref>` (no `__ARCHITECTURE_REF__` placeholders remaining):
 
-Optionally adopt `.pre-commit-config.yaml` and `.secrets.baseline` from the architecture repo's templates if you want the same local-dev hook chain.
+```bash
+grep -H "uses:" .github/workflows/*.yml
+```
+
+Those three workflows ARE the universal-floor CI baseline defined in [`../../standards/ci-cd-standard.md`](../../standards/ci-cd-standard.md) §Required workflows in every repo. You don't need to add anything else to satisfy the floor.
+
+**Optional additions** (conditional on what your repo exposes):
+
+- `skills-healthcheck.yml` — required by the CI/CD standard **only if** your repo has `.agents/skills/`. This workflow is **not reusable yet** (it calls `scripts/validate-skills.sh` and `scripts/sync-agent-skills.sh` directly in the architecture repo's own checkout). Until it gains a `workflow_call:` trigger in a follow-up PR, your options if you adopt local skills are:
+  - Wait for the reusable version (preferred — no per-consumer maintenance), OR
+  - Vendor both the workflow AND the two scripts into your repo and accept that you'll need to keep them in sync with `architecture_ref` bumps yourself.
+- `openspec-triage.yml` and `codeowners-check.yml` — required only if your team adopts the OpenSpec policy or required-path ownership enforcement. **Same limitation**: not reusable yet (call `scripts/openspec-triage.sh` and architecture-repo-specific path enforcement, respectively). Vendor scripts + workflow if you must adopt now; otherwise wait for the reusable versions.
+- For action pinning hygiene, the `github-enterprise-ci-review` skill flags any unpinned `uses:` lines in your workflows.
+
+`architecture-healthcheck.yml` is architecture-repo-specific (it validates the architecture repo's own `architecture/` tree). Consumers do NOT need it.
+
+The template's `.pre-commit-config.yaml`, `.secrets.baseline`, and `.gitleaks.toml` (also from step 2) cover local-dev hook hygiene. They are deliberately a **consumer-portable subset** of what the architecture repo runs on itself — no architecture-specific scripts; just file hygiene, secrets, and shellcheck.
 
 ---
 

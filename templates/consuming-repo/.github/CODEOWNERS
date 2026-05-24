@@ -1,0 +1,37 @@
+# CODEOWNERS for <SOLUTION-REPO>
+#
+# Template — replace `@<solution-team>` and `@<consumer-lead>` with the
+# real GitHub Enterprise team and human handles for this repo.
+#
+# Syntax: <path-pattern>  <owner-1> <owner-2> ...
+#
+# Default: everything has the solution team as the catch-all owner.
+
+*                                       @<solution-team>
+
+# Adoption record + architecture contract surface — needs the
+# consumer lead's eyes specifically.
+/security-first-adoption.md             @<solution-team> @<consumer-lead>
+/AGENTS.md                              @<solution-team> @<consumer-lead>
+
+# Vendor adapter files (present only if the repo uses that tool).
+# Remove rows for adapters you don't use.
+/CLAUDE.md                              @<solution-team>
+/.claude/                               @<solution-team>
+/.codex/                                @<solution-team>
+/.github/copilot-instructions.md        @<solution-team>
+/.cursorrules                           @<solution-team>
+
+# Documentation, ops, decisions.
+/docs/                                  @<solution-team>
+/docs/decisions/                        @<solution-team> @<consumer-lead>
+
+# OpenSpec (only if the repo uses OpenSpec).
+/openspec/                              @<solution-team> @<consumer-lead>
+
+# CI and workflow configuration.
+/.github/                               @<solution-team>
+/.github/workflows/                     @<solution-team>
+
+# Repo-local skills (only if the repo exposes them).
+/.agents/skills/                        @<solution-team>

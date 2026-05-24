@@ -8,6 +8,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
+    # Reusable mode: consumer repos can invoke this workflow to run
+    # pre-commit against their own checkout using their own
+    # .pre-commit-config.yaml. No inputs required — pre-commit is a
+    # generic runner that operates on the calling repo's files.
 
 permissions:
   contents: read

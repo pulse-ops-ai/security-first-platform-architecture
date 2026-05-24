@@ -37,10 +37,11 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
-_None._ This repo is Tier-1 quiet; the next Tier 2/3 change will open a new proposal here.
+- [`proposals/2026-05-17-template-completeness-and-workflow-portability/`](proposals/2026-05-17-template-completeness-and-workflow-portability/) — Tier 2 by intent (script reports Tier 3 due to `standards/repo-contract.md` path; additive doc section, not a contract change, documented in proposal), in_review (PR #14): consumer template now ships workflows + adapter shims + pre-commit config; architecture-repo workflows gain `workflow_call:` so consumers invoke reusables instead of vendoring scripts.
 
 ## Archived proposals
 
 - [`archive/2026-05-16-enforcement-and-skill-rigor/`](archive/2026-05-16-enforcement-and-skill-rigor/) — Tier 2, accepted, architecture-complete (merged in PR #3)
 - [`archive/2026-05-17-coverage-and-polish/`](archive/2026-05-17-coverage-and-polish/) — Tier 2, accepted, architecture-complete (merged in PR #8)
 - [`archive/2026-05-17-audience-tiered-navigation/`](archive/2026-05-17-audience-tiered-navigation/) — Tier 2 by intent (script said Tier 3 due to path-based over-classification, documented), accepted, architecture-complete (merged in PR #11)
+- [`archive/2026-05-17-repo-healthcheck-alignment/`](archive/2026-05-17-repo-healthcheck-alignment/) — Tier 2, accepted, architecture-complete (merged in PR #13)

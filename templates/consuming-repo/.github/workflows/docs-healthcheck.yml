@@ -1,0 +1,27 @@
+name: docs-healthcheck
+
+# Validates the docs/ index spine: every folder with INDEX.md
+# references its sibling .md files; relative links resolve; nested
+# INDEX.md subdirectories are linked from the parent. Calls the
+# reusable workflow in the architecture repo.
+#
+# Onboarding: replace `__ARCHITECTURE_REF__` (both occurrences below)
+# with the SHA/tag/branch from your security-first-adoption.md
+# `architecture_ref:`.
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  call:
+    uses: pulse-ops-ai/security-first-platform-architecture/.github/workflows/docs-healthcheck.yml@__ARCHITECTURE_REF__
+    with:
+      architecture_ref: __ARCHITECTURE_REF__

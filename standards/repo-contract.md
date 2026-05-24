@@ -46,10 +46,26 @@ This means: a consuming repo that uses only one agent ships only that agent's ad
 - `security-first-adoption.md` must populate every required field — empty fields fail the `repo-healthcheck` skill.
 - If `.agents/skills/` exists: `.agents/skills/INDEX.md` must list every skill, and each `.agents/skills/<name>/` directory must contain a `SKILL.md` with the YAML frontmatter and body sections defined in [`agent-instructions-standard.md`](agent-instructions-standard.md).
 
+## What the consumer template ships
+
+[`../templates/consuming-repo/`](../templates/consuming-repo/) is **complete out of the box** — copying it gives a consuming repo the Universal Floor plus a working CI setup, with no requirement to author workflows or pre-commit configs from scratch:
+
+| Path | What it is |
+|---|---|
+| `AGENTS.md`, `CLAUDE.md`, `docs/INDEX.md`, `security-first-adoption.md`, `openspec/README.md`, `.agents/skills/INDEX.md` | Universal Floor + skill catalog. If you are NOT exposing local skills, remove the entire `.agents/skills/` directory (not just `INDEX.md`) — the contract rule below requires the index to list every skill *if the directory exists*, so leaving an empty directory would be a contract violation. |
+| `.claude/{skills,commands,agents}/README.md` | Claude adapter shim directory READMEs (remove the whole `.claude/` tree if not using Claude) |
+| `.github/workflows/repo-healthcheck.yml`, `docs-healthcheck.yml`, `pre-commit.yml` | Thin callers that invoke the architecture repo's reusable workflows. These three ARE the universal-floor CI baseline defined in [`ci-cd-standard.md`](ci-cd-standard.md) §Required workflows. Each has an `__ARCHITECTURE_REF__` placeholder the adopter substitutes during onboarding. |
+| `.github/CODEOWNERS` | Placeholder consumer-shaped ownership map (`@<solution-team>` / `@<consumer-lead>` substitution required). |
+| `.pre-commit-config.yaml` | Consumer-portable hook chain (file hygiene + secrets + shellcheck, no architecture-repo script dependencies). |
+| `.secrets.baseline` | Empty starting baseline for `detect-secrets`. |
+| `.gitleaks.toml` | Narrow allowlist for `.secrets.baseline` (the hashed_secret values would otherwise trip the generic-api-key rule). |
+
+The template's CI works by **calling the architecture repo's reusable workflows** rather than vendoring scripts. The adopter's `architecture_ref:` in `security-first-adoption.md` is the source of truth for which version of those reusables runs — bumping the ref is a coordinated edit across the adoption record AND the workflow `@ref` lines.
+
 ## What this contract does NOT mandate
 
 - Programming language, build tool, framework, test runner.
-- Deploy pipeline beyond the three healthchecks named in [`ci-cd-standard.md`](ci-cd-standard.md).
+- Deploy pipeline beyond the universal-floor workflows named in [`ci-cd-standard.md`](ci-cd-standard.md).
 - Which AI coding agent(s) the team uses — or whether they use any.
 - Folder layout *inside* `docs/`, `.agents/skills/`, or `src/`.
 
