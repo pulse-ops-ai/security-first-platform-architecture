@@ -18,7 +18,7 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 6 | Add new §C4 archetype palette section (intentionally distinct from trust-zone palette) | @mike | completed | this PR |
 | 7 | Add new §Text colour and contrast section (primary / secondary text rules; WCAG-AA floor) | @mike | completed | this PR |
 | 8 | Add new §Title, legend, assumptions callout section (mandatory legend when non-default styles used) | @mike | completed | this PR |
-| 9 | Add new §Diagram archetypes section (six-row table; trust-zone / topology / C4 levels / Mermaid variants) | @mike | completed | this PR |
+| 9 | Add new §Diagram archetypes section (seven-row table; trust-zone / topology / C4 levels / trust-zone sequence / C4 Dynamic / Mermaid decision-tree) | @mike | completed | this PR |
 | 10 | Add new §Grandfathering and migration section (existing diagrams remain valid) | @mike | completed | this PR |
 | 11 | Extend §Format choice and §File location convention with C4 archetype mentions | @mike | completed | this PR |
 | 12 | Extend §Trust zones with explicit stroke colours (was previously fill only) and update label colour to `#444444` per the new contrast rule | @mike | completed | this PR |

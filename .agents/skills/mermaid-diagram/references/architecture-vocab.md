@@ -191,7 +191,8 @@ C4Dynamic
     Rel(pe, l6, "2. Verified, forwarded with claims + authz_decision_id")
     Rel(l6, l7, "3. Signed envelope (per ADR-0003)")
     Rel(l7, l6, "4. Response after envelope verification")
-    Rel(l6, u, "5. Response via pe")
+    Rel(l6, pe, "5. Response")
+    Rel(pe, u, "6. Response to user")
 ```
 
 ### C4 vs the trust-zone archetype

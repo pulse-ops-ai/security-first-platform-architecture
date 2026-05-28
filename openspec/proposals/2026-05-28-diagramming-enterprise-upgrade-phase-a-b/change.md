@@ -12,7 +12,7 @@ Major expansion of the existing standard. Structure of the change:
 |---|---|
 | Intro | Lightly reworded (mentions sequence + system-context archetypes alongside trust-zone work) |
 | §Format choice | Lightly extended (C4 Container / System Context added to drawio row; C4 Dynamic added to Mermaid row) |
-| **§Diagram archetypes** | **NEW** — six-row table (trust-zone, deployment topology, C4 System Context, C4 Container, C4 Dynamic, decision tree); rules on file naming for C4 levels; cross-references to c4model.com and drawio C4 blog |
+| **§Diagram archetypes** | **NEW** — seven-row table (trust-zone / layer architecture; deployment topology; C4 System Context; C4 Container; trust-zone sequence; C4 Dynamic; decision tree / state machine); rules on file naming for C4 levels; cross-references to c4model.com and drawio C4 blog |
 | §File location convention | Lightly extended (new C4 examples: `c4-l1-system-context.drawio`, `c4-l2-containers.drawio`) |
 | §Trust zones | Added a "Stroke (border)" column to the zone table (was previously only fill); label colour changed from `#666666` to `#444444` to align with the new contrast rule |
 | §Layer ribbons | Added "Paired light fill" column; new rendering rule for "future / placeholder" ribbons (use paired fill, dashed stroke, layer-coloured label) — directly addresses the contrast-on-white failure mode from platform-edge's step-1 diagram |

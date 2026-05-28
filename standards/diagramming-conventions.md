@@ -105,7 +105,7 @@ The L6→L7 trust crossing (envelope issuance) is rendered as a **signed-arrow**
 | **Default request flow** | Orthogonal, 2px, `#333333` (dark gray), `endArrow=classic` | Synchronous request/response across layers |
 | **Async** | Dashed (`dashPattern=8 4`), 2px, `#333333` | Async dispatch, queue publish, fire-and-forget |
 | **Future / planned** | Dashed (`dashPattern=8 4`), 2px, `#c0392b` (red accent) | Connector that will be added in a later step; matches the deviation-marker palette so red consistently means "not in the current state" |
-| **Step number badge** | Filled black circle, 18×18px, white text, anchored on the edge near the source endpoint | Staged rollouts; numbers match the brief's or proposal's step list |
+| **Step number badge** | Filled black circle, 18×18px, white text. See §Step-number badges below for full spec (size, anchor choice, legend-citation rule). | Staged rollouts; numbers match the brief's or proposal's step list |
 
 Edge labels MUST set `labelBackgroundColor=#ffffff` so the text does not bleed into the line or underlying shapes. (Other background colours are allowed only when the label sits inside a coloured container where white would create a worse contrast; the default and overwhelmingly common case is white.)
 
