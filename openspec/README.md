@@ -37,6 +37,7 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
+- [`proposals/2026-05-28-reusable-workflow-event-name-hotfix/`](proposals/2026-05-28-reusable-workflow-event-name-hotfix/) — Tier 2 by script-classification, **Tier-1 hotfix by intent** (merged in PR #20, awaiting archive cleanup): reverts the PR #14 round-4 `github.event_name == 'workflow_call'` guard (always-false in reusable workflows) back to the round-3 `inputs.architecture_ref != ''` discriminator in `docs-healthcheck.yml` and `repo-healthcheck.yml`. Unblocked `platform-edge`'s step-1 PR.
 - [`proposals/2026-05-28-diagramming-conventions-and-skills/`](proposals/2026-05-28-diagramming-conventions-and-skills/) — Tier 2, in_review: new `standards/diagramming-conventions.md` defines a shared visual vocabulary (zone colours, layer ribbons, agent-as-client lane, deviation marker, envelope-crossing glyph); paired with two new canonical skills (`drawio` for spatial/architectural diagrams, `mermaid-diagram` for inline-in-markdown sequence/flow diagrams) plus vendor adapter shims and Claude slash commands. Additive; no consumer is forced to adopt.
 
 ## Archived proposals
