@@ -20,8 +20,8 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 8 | Add "Diagrams" section to `architecture/INDEX.md` between Profiles and Related decisions | @mike | completed | this PR |
 | 9 | Write this OpenSpec proposal (`proposal.md`, `change.md`, `tasks.md`) including the §Deviation calling out swatch-and-copy vs *Extras → Edit Diagram Style* | @mike | completed | this PR |
 | 10 | Append Phase C entry to `openspec/README.md` §Current proposals | @mike | completed | this PR |
-| 11 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | pending | this PR |
-| 12 | Confirm `openspec-triage.sh`: Tier 2 with proposal present | @mike | pending | this PR |
+| 11 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | completed | this PR |
+| 12 | Confirm `openspec-triage.sh`: Tier 2 with proposal present | @mike | completed | this PR |
 | 13 | Open PR | @mike | pending | this PR |
 
 ## Definition of done
@@ -36,13 +36,13 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 - [x] `architecture/diagrams/INDEX.md` catalogues both artefacts with `Last reviewed` / `Next review` columns and documents the deferred C.2 / D / E scope.
 - [x] `architecture/INDEX.md` has a "Diagrams" section pointing at `diagrams/INDEX.md` and cross-linking the standard.
 - [x] `openspec/README.md` §Current proposals lists this Phase C proposal.
-- [ ] `bash scripts/validate-skills.sh`: PASS.
-- [ ] `bash scripts/sync-agent-skills.sh --check`: PASS.
-- [ ] `bash scripts/validate-doc-indexes.sh`: PASS.
-- [ ] `bash scripts/validate-architecture.sh`: PASS (vendor-neutral).
-- [ ] `bash scripts/repo-healthcheck.sh`: PASS.
-- [ ] `pre-commit run --all-files`: 19/19 PASS.
-- [ ] `openspec-triage.sh`: Tier 2 with proposal present.
+- [x] `bash scripts/validate-skills.sh`: PASS.
+- [x] `bash scripts/sync-agent-skills.sh --check`: PASS.
+- [x] `bash scripts/validate-doc-indexes.sh`: PASS.
+- [x] `bash scripts/validate-architecture.sh`: PASS (vendor-neutral).
+- [x] `bash scripts/repo-healthcheck.sh`: PASS.
+- [x] `pre-commit run --all-files`: 19/19 PASS.
+- [x] `openspec-triage.sh`: Tier 2 with proposal present.
 - [x] No ADR required (visual tooling and reference diagram are conventions, not foundational architectural trade-offs).
 - [x] No dependency records (additive change; no consumer is forced — see proposal §Affected consumers).
 - [x] No standard / skill / template content changes (the standard's "deferred to Phase C" wording fix is deferred to the `v0.2.0` housekeeping PR).
