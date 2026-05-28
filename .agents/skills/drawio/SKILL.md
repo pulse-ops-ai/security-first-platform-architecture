@@ -20,7 +20,7 @@ When the diagram is an **architecture, trust-zone, or deployment-topology** diag
 1. **Generate drawio XML** in mxGraphModel format for the requested diagram.
 2. **Write the XML** to a `.drawio` file using the Write tool. In a consuming repo, place it under `docs/diagrams/`; in the architecture repo, under `architecture/diagrams/`. Match the naming convention from the standards doc.
 3. **Post-process edge routing** (optional): If `npx @drawio/postprocess` is available, run it on the `.drawio` file to optimize edge routing (simplify waypoints, fix edge-vertex collisions, straighten approach angles). Skip silently if not available — do not install it or ask the user about it.
-4. **If the user requested an export format** (`png`, `svg`, `pdf`), locate the drawio CLI (see [§Locating the CLI](#locating-the-cli)), export with `--embed-diagram`, then **keep both the `.drawio` source and the rendered file** when the diagram lives under `docs/diagrams/` or `architecture/diagrams/` — the standard requires both, so readers without drawio can view the diagram in GitHub. For one-off scratch diagrams outside those directories, you may delete the source after export.
+4. **If the user requested an export format** (`png`, `svg`, `pdf`), locate the drawio CLI (see [§Locating the CLI](#locating-the-cli)), export with `--embed-diagram`. For SVG, **also pass `--embed-svg-fonts false`** when the target lives under a committed `docs/diagrams/` or `architecture/diagrams/` directory — drawio's default embeds fonts as base64 and routinely produces files >1 MB that trip repo-level max-file-size pre-commit hooks; setting it false typically drops a full-page export to <100 KB. Editable XML stays embedded; browsers render with system-font fallbacks. Then **keep both the `.drawio` source and the rendered file** when the diagram lives under `docs/diagrams/` or `architecture/diagrams/` — the standard requires both, so readers without drawio can view the diagram in GitHub. For one-off scratch diagrams outside those directories, you may delete the source after export.
 5. **Open the result** — the exported file if exported, or the `.drawio` file otherwise. If the open command fails, print the file path so the user can open it manually.
 6. **Add a footer** citing the source-of-truth doc, per the standard: `Source: <path> · Last reviewed: YYYY-MM-DD by <handle>`. If the diagram is architectural, this is non-negotiable — add it as a text element near the bottom edge.
 7. **Update the relevant `INDEX.md`** (`docs/diagrams/INDEX.md` or `architecture/diagrams/INDEX.md`) with the new entry, including `last_reviewed:` and `next_review:` (90 days out).
@@ -48,7 +48,7 @@ If no format is mentioned, write the `.drawio` file and open it in drawio. The u
 | Format | Embed XML | Notes |
 |--------|-----------|-------|
 | `png` | Yes (`-e`) | Viewable everywhere, editable in drawio |
-| `svg` | Yes (`-e`) | Scalable, editable in drawio (preferred for repo-committed renderings) |
+| `svg` | Yes (`-e`) | Scalable, editable in drawio (preferred for repo-committed renderings); pass `--embed-svg-fonts false` for committed SVG to stay under typical 500 KB pre-commit ceilings |
 | `pdf` | Yes (`-e`) | Printable, editable in drawio |
 | `jpg` | No | Lossy, no embedded XML support |
 
@@ -202,6 +202,7 @@ Key flags:
 - `-x` / `--export`: export mode
 - `-f` / `--format`: output format (png, svg, pdf, jpg)
 - `-e` / `--embed-diagram`: embed diagram XML in the output (PNG, SVG, PDF only)
+- `--embed-svg-fonts <true/false>`: embed fonts in SVG (default: `true`). **For committed `docs/diagrams/` or `architecture/diagrams/` SVG, pass `false`** — drawio's default base64-encodes the font glyphs into the SVG, routinely producing files past 500 KB pre-commit ceilings. With it disabled, browsers fall back to system sans-serif (Arial / Liberation Sans / Helvetica). Editable XML stays embedded.
 - `-o` / `--output`: output file path
 - `-b` / `--border`: border width around diagram (default: 0)
 - `-t` / `--transparent`: transparent background (PNG only)
