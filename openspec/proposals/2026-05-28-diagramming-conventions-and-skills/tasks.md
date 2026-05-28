@@ -1,3 +1,7 @@
+---
+completion_state: architecture-complete
+---
+
 # OpenSpec Tasks: Diagramming conventions + drawio / mermaid skills
 
 Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).

@@ -58,7 +58,7 @@ The eight control layers are rendered as **horizontal ribbons** crossing the dia
 | `L5` Operational guardrails | `#b46504` | Kong rate-limiting, kill-switch flags |
 | `L6` Orchestrator / BFF | `#a45fae` | Consumer-owned BFF; issues the envelope |
 | `L7` Service enforcement | `#d79b00` | Per-service envelope verification |
-| `L8` Semantic / agent reasoning | `#666666` (dashed) | Agent runtimes (Claude / Codex / automation) — sit beside the stack, re-enter at L1/L2 as clients |
+| `L8` Semantic / agent reasoning | `#666666` (dashed) | Whichever AI coding agent and automation runtimes the consuming team uses — sit beside the stack, re-enter at L1/L2 as clients |
 
 ### Agent-as-client lane
 
