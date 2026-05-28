@@ -66,16 +66,15 @@ A worked walkthrough is on the roadmap for the first consumer onboarding (see *C
 
 ## Current adoption state
 
-_No consumer has yet onboarded._
+| Consumer | Pinned ref | Profile | Owner | Last review |
+|---|---|---|---|---|
+| [`trupryce`](https://github.com/TruPryce/trupryce) | `v0.1.0` (tag) | `self-hosted-vps` | `@mikegtech` / `@trupryce-platform` | — (first quarterly review due 2026-08-25) |
 
-This is intentional and tracked. PRs #1 through #10 (and this PR) built the foundation — architecture, TeamOS, adoption contract, enforcement layer, foundational ADRs, audience-tiered navigation. The next visible milestone is the first consuming-repo onboarding (`trupryce` is the most likely candidate), at which point this section becomes a live table:
+`trupryce` adopted on **2026-05-25** via [TruPryce/trupryce#4](https://github.com/TruPryce/trupryce/pull/4) (merged 2026-05-27 as `2990364`). Dependency record: [`portfolio/dependencies/2026-05-25-trupryce-depends-on-security-first-platform-architecture-onboarding.md`](../../portfolio/dependencies/2026-05-25-trupryce-depends-on-security-first-platform-architecture-onboarding.md) (`resolved`).
 
-```
-Consumer       Pinned ref     Profile          Owner          Last review
-trupryce       <tag/sha>      self-hosted-vps  @<lead>        YYYY-MM-DD
-findevil       <tag/sha>      hybrid-tailnet   @<lead>        YYYY-MM-DD
-…
-```
+`trupryce` declares all eight control layers as `implemented` *because it is a standalone repo with no parent platform to consume from*. The per-layer maturity is captured by **four recorded deviations** in [`trupryce/security-first-adoption.md`](https://github.com/TruPryce/trupryce/blob/main/security-first-adoption.md) — most notably DEV-002 (service-to-service trust uses a shared-secret header, not the Z4 envelope from [`ADR-0003`](../decisions/ADR-0003-internal-identity-envelope-as-z4-trust.md)). Each deviation has a compensating control and a scheduled remediation.
+
+Future consumers extend this table. The same shape applies whether a consumer is greenfield or migrating a legacy stack — the `deviations:` field is where reality lives.
 
 ## Roadmap stance
 
