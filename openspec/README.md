@@ -37,7 +37,7 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
-_None open._
+- [`proposals/2026-05-28-diagramming-enterprise-upgrade-phase-a-b/`](proposals/2026-05-28-diagramming-enterprise-upgrade-phase-a-b/) — Tier 2, in_review: enterprise-grade upgrade to `standards/diagramming-conventions.md` covering visual polish + connectors (Phase A: paired light-fills per layer, text-colour rule, WCAG-AA contrast floor, connector conventions, step-number badges) and archetypes + iconography (Phase B: seven-archetype table including C4 System Context / Container / Dynamic plus trust-zone sequence and decision-tree archetypes, C4 palette intentionally distinct from trust-zone palette, system-boundary convention, iconography baseline, mandatory legend, title / subtitle / assumptions callout). Mermaid `architecture-vocab.md` reference extended with C4 patterns. Additive; existing diagrams grandfathered. Phase C (drawio global-style XML, starter templates, reference diagrams, optional `validate-diagrams.sh` CI) is the next follow-up.
 
 ## Archived proposals
 

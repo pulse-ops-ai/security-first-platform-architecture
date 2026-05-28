@@ -132,6 +132,90 @@ Diamond shapes (`{...}`) are decisions; square shapes (`[...]`) are outcomes; ar
 
 ---
 
+## C4 archetypes in Mermaid (`C4Context`, `C4Container`, `C4Dynamic`)
+
+Mermaid natively supports the C4 model. Use these for the C4 archetypes defined in [`../../../../standards/diagramming-conventions.md`](../../../../standards/diagramming-conventions.md) §Diagram archetypes when the diagram should render inline in markdown rather than as a separate `.drawio` file. (For C4 diagrams that go in a dedicated file, use the drawio skill with the drawio C4 stencil library instead.)
+
+### C4 System Context (Level 1)
+
+The system as a black box plus its external actors and dependencies:
+
+```mermaid
+C4Context
+    title System Context: platform-edge
+    Person(consumer_lead, "Consumer team lead", "Operates a consuming repo (trupryce, future apps).")
+    Person(end_user, "End user", "Accesses applications routed through platform-edge.")
+    Person_Ext(agent, "Agent runtime", "Claude / Codex / automation — connects as a client per ADR-0002.")
+    System(platform_edge, "platform-edge", "Workspace-shared L1–L5 edge. Verifies identity, authorizes, and forwards to each consumer's orchestrator.")
+    System_Ext(consumer_l6, "Consumer-owned L6", "Each team's orchestrator/BFF — issues the internal identity envelope per ADR-0003.")
+    Rel(end_user, platform_edge, "HTTPS")
+    Rel(agent, platform_edge, "HTTPS (principal_type=agent)")
+    Rel(platform_edge, consumer_l6, "Forwards verified request + headers")
+    Rel(consumer_lead, consumer_l6, "Operates")
+```
+
+### C4 Container (Level 2)
+
+Inside the system: major containers (apps, services, datastores), still owned-vs-external coloured:
+
+```mermaid
+C4Container
+    title Container: platform-edge at step 4
+    System_Ext(consumer_l6, "Consumer-owned L6", "BFF, issues envelopes")
+    System_Boundary(pe, "platform-edge") {
+        Container(kong, "Kong CE 3.9", "Edge gateway", "Public L2 + L3 jwt + L4 OpenFGA plugin")
+        Container(traefik, "Traefik v3", "Internal router", "L2 east-west, require-envelope presence check")
+        Container(keycloak, "Keycloak", "L3 identity", "JWT issuance, JWKS for Kong")
+        Container(openfga, "OpenFGA", "L4 PDP", "Audit-only at step 3; fail-closed at step 5")
+        ContainerDb(redis, "Redis", "L5 counters", "Rate-limit, kill-switch state")
+    }
+    Rel(kong, keycloak, "Verify JWT (offline JWKS)")
+    Rel(kong, openfga, "Check policy decision")
+    Rel(kong, traefik, "Forward with x-request-id + authz_decision_id")
+    Rel(traefik, consumer_l6, "Forward with envelope-required header")
+    Rel(kong, redis, "Counters")
+```
+
+### C4 Dynamic (sequence-style, but with C4 actor types)
+
+Renders as a sequence diagram with C4 person/system stencils. Useful for "how a specific scenario plays out across the C4 actors":
+
+```mermaid
+C4Dynamic
+    title Dynamic: user request reaches consumer L7
+    Person(u, "End user")
+    System(pe, "platform-edge (L1–L5)")
+    System_Ext(l6, "Consumer L6 (orchestrator)")
+    System_Ext(l7, "Consumer L7 (service)")
+    Rel(u, pe, "1. HTTPS request + JWT")
+    Rel(pe, l6, "2. Verified, forwarded with claims + authz_decision_id")
+    Rel(l6, l7, "3. Signed envelope (per ADR-0003)")
+    Rel(l7, l6, "4. Response after envelope verification")
+    Rel(l6, pe, "5. Response")
+    Rel(pe, u, "6. Response to user")
+```
+
+### C4 vs the trust-zone archetype
+
+A C4 Mermaid diagram uses the **C4 palette** (owned blue, external gray) and C4 vocabulary, **NOT** the trust-zone palette or `(Zn)` participant notation. The two archetypes answer different questions:
+
+- **C4 archetype**: who and what makes up the system; ownership boundaries.
+- **Trust-zone archetype**: how a request traverses security boundaries.
+
+**Strict rule:** do not overlay one on the other in a single diagram. If both are needed, ship two diagrams and cross-link them in their captions.
+
+**Textual ADR references are allowed in C4 relationship labels** (e.g., `"Signed envelope (per ADR-0003)"`) — that is a citation to an artifact, not visual-vocabulary mixing. Embedding `Z3 → Z4` notation inside a C4 label IS visual-vocabulary mixing and is not allowed.
+
+The standard's §Diagram archetypes and §Anti-patterns codify this.
+
+### C4 reference
+
+- C4 model documentation: <https://c4model.com/>
+- C4 Container reference example: <https://c4model.com/diagrams/container>
+- Mermaid C4 syntax: <https://mermaid.js.org/syntax/c4.html>
+
+---
+
 ## Anti-patterns
 
 - **Inventing your own zone colours via `linkStyle` / `classDef`.** Mermaid colours diverge from drawio's vocabulary, and consumers reading both will get confused. Stick to the `(Zn)` annotation in participant labels.
