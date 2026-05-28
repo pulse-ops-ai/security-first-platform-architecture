@@ -1,0 +1,207 @@
+<mxfile host="app.diagrams.net" agent="security-first-platform-architecture v0.2.0-pre" version="22.0.0">
+  <diagram name="Eight-layer control model" id="eight-layer-control-model">
+    <mxGraphModel dx="1400" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Eight-layer control model" vertex="1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=24;fontStyle=1;fontColor=#222222;whiteSpace=wrap;">
+          <mxGeometry x="40" y="30" width="1320" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Canonical reference · architecture_ref v0.2.0-pre · ADR-0001 / ADR-0002 / ADR-0003" vertex="1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#444444;whiteSpace=wrap;">
+          <mxGeometry x="40" y="68" width="1320" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="stack_label" value="Request flow (downward)" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontStyle=2;fontColor=#666666;whiteSpace=wrap;">
+          <mxGeometry x="320" y="110" width="280" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="l8_label" value="L8 — Semantic / agent reasoning" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=13;fontStyle=2;fontColor=#666666;whiteSpace=wrap;">
+          <mxGeometry x="950" y="110" width="380" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext_client" value="External client&#10;(human user, browser, API caller)" vertex="1" parent="1" style="shape=umlActor;fillColor=#ffffff;strokeColor=#333333;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;html=1;spacingTop=70;">
+          <mxGeometry x="380" y="150" width="80" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext_zone" value="(Z0 — untrusted internet)" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontColor=#b85450;fontStyle=2;">
+          <mxGeometry x="480" y="180" width="200" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l1" value="L1 — Network reachability&#10;&#10;Who can address the platform at all.&#10;Public DNS, edge firewall, allow-list, tunnels." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#fde2e2;strokeColor=#9673a6;strokeWidth=2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="300" y="290" width="440" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_l1l2" value="Z0 — admission only, no zone change" vertex="1" parent="1" style="text;html=1;align=center;fontSize=12;fontColor=#b85450;fontStyle=2;">
+          <mxGeometry x="300" y="385" width="440" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l2" value="L2 — Edge gateway / routing&#10;&#10;TLS termination, request routing, WAF.&#10;The Z0 → Z1 trust crossing." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#fde2e2;strokeColor=#6c8ebf;strokeWidth=2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="300" y="410" width="440" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_l2l3" value="→ Z1 (edge perimeter; TLS terminated)" vertex="1" parent="1" style="text;html=1;align=center;fontSize=12;fontColor=#d6b656;fontStyle=2;">
+          <mxGeometry x="300" y="505" width="440" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l3" value="L3 — Identity&#10;&#10;Verify who the caller is. Issue tokens.&#10;The Z1 → Z2 trust crossing." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#fff2cc;strokeColor=#82b366;strokeWidth=2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="300" y="530" width="440" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_l3l4" value="→ Z2 (authenticated identity verified)" vertex="1" parent="1" style="text;html=1;align=center;fontSize=12;fontColor=#6c8ebf;fontStyle=2;">
+          <mxGeometry x="300" y="625" width="440" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l4" value="L4 — Authorization&#10;&#10;PDP decisions on (principal, action, resource).&#10;The Z2 → Z3 trust crossing." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#dae8fc;strokeColor=#d6b656;strokeWidth=2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="300" y="650" width="440" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_l4l5" value="→ Z3 (authorized to proceed)" vertex="1" parent="1" style="text;html=1;align=center;fontSize=12;fontColor=#82b366;fontStyle=2;">
+          <mxGeometry x="300" y="745" width="440" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l5" value="L5 — Operational guardrails&#10;&#10;Rate limits, quotas, kill switches, feature flags.&#10;Gating only — no zone crossing." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#d5e8d4;strokeColor=#b46504;strokeWidth=2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="300" y="770" width="440" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_l5l6" value="Z3 (stays within Z3; L5 gates, does not cross)" vertex="1" parent="1" style="text;html=1;align=center;fontSize=12;fontColor=#82b366;fontStyle=2;">
+          <mxGeometry x="300" y="865" width="440" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l6" value="L6 — Orchestrator / BFF&#10;&#10;Compose downstream services. Issue the internal&#10;identity envelope. The Z3 → Z4 trust crossing." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#d5e8d4;strokeColor=#a45fae;strokeWidth=2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="300" y="890" width="440" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_l6l7" value="→ Z4 (envelope issued, signed per ADR-0003)" vertex="1" parent="1" style="text;html=1;align=center;fontSize=12;fontColor=#9673a6;fontStyle=2;">
+          <mxGeometry x="300" y="985" width="440" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="envelope_glyph" value="🔒" vertex="1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=22;fontColor=#9673a6;">
+          <mxGeometry x="745" y="975" width="40" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l7" value="L7 — Service enforcement&#10;&#10;Per-service authorization, tenant scope, audit.&#10;Verifies the envelope on every hop within Z4." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#e1d5e7;strokeColor=#d79b00;strokeWidth=2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="300" y="1010" width="440" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="l8" value="L8 — Semantic / agent reasoning&#10;&#10;Whichever AI coding agent and automation runtimes&#10;the consuming team uses (Claude, Codex, in-house, …).&#10;&#10;Sits beside the stack. Re-enters the request path at&#10;L1/L2 as a client — never a back-channel into L7.&#10;Per ADR-0002, agents are clients." vertex="1" parent="1" style="rounded=1;arcSize=8;fillColor=#e8e8e8;strokeColor=#666666;strokeWidth=2;dashed=1;dashPattern=4 2;fontSize=13;fontColor=#222222;verticalAlign=top;align=center;spacingTop=6;whiteSpace=wrap;">
+          <mxGeometry x="950" y="290" width="400" height="210" as="geometry"/>
+        </mxCell>
+        <mxCell id="adr0002" value="ADR-0002 — agents are clients, not insiders" vertex="1" parent="1" style="text;html=1;align=center;fontSize=12;fontColor=#666666;fontStyle=2;">
+          <mxGeometry x="950" y="505" width="400" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_ext_l1" edge="1" parent="1" source="ext_client" target="l1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l1_l2" edge="1" parent="1" source="l1" target="l2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l2_l3" edge="1" parent="1" source="l2" target="l3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l3_l4" edge="1" parent="1" source="l3" target="l4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l4_l5" edge="1" parent="1" source="l4" target="l5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l5_l6" edge="1" parent="1" source="l5" target="l6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_l6_l7" edge="1" parent="1" source="l6" target="l7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#9673a6;strokeWidth=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;endArrow=classicThin;endFill=1;" value="Envelope crossing (ADR-0003)">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_agent_lane" edge="1" parent="1" source="l8" target="l1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#666666;strokeWidth=2;dashed=1;dashPattern=4 2;exitX=0;exitY=0.5;entryX=1;entryY=0.5;endArrow=classic;" value="agents traverse the same chain">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="legend_box" value="" vertex="1" parent="1" style="rounded=1;fillColor=#ffffff;strokeColor=#cccccc;strokeWidth=1;">
+          <mxGeometry x="40" y="1180" width="600" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend_title" value="Legend" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#222222;">
+          <mxGeometry x="60" y="1190" width="560" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_zone_hdr" value="Trust zones (background fills, vocabulary fixed workspace-wide)" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#444444;">
+          <mxGeometry x="60" y="1216" width="560" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_z0" value="Z0" vertex="1" parent="1" style="rounded=1;fillColor=#fde2e2;strokeColor=#b85450;fontSize=12;fontColor=#222222;">
+          <mxGeometry x="60" y="1236" width="40" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_z1" value="Z1" vertex="1" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontColor=#222222;">
+          <mxGeometry x="106" y="1236" width="40" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_z2" value="Z2" vertex="1" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#222222;">
+          <mxGeometry x="152" y="1236" width="40" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_z3" value="Z3" vertex="1" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#222222;">
+          <mxGeometry x="198" y="1236" width="40" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_z4" value="Z4" vertex="1" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontColor=#222222;">
+          <mxGeometry x="244" y="1236" width="40" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_zone_note" value="Z0 untrusted → Z1 edge → Z2 authn → Z3 authz → Z4 envelope" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontColor=#444444;">
+          <mxGeometry x="300" y="1236" width="320" height="22" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_conn_hdr" value="Connectors" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#444444;">
+          <mxGeometry x="60" y="1268" width="560" height="18" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_def_a" vertex="1" parent="1" style="rounded=1;fillColor=#ffffff;strokeColor=#222222;fontSize=12;" value="">
+          <mxGeometry x="60" y="1294" width="20" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_def_b" vertex="1" parent="1" style="rounded=1;fillColor=#ffffff;strokeColor=#222222;fontSize=12;" value="">
+          <mxGeometry x="160" y="1294" width="20" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_def_e" edge="1" parent="1" source="lg_def_a" target="lg_def_b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_def_lbl" value="default request flow (orthogonal, 2px, #333333)" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontColor=#444444;">
+          <mxGeometry x="200" y="1294" width="420" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_env_a" vertex="1" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" value="">
+          <mxGeometry x="60" y="1324" width="20" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_env_b" vertex="1" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" value="">
+          <mxGeometry x="160" y="1324" width="20" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_env_e" edge="1" parent="1" source="lg_env_a" target="lg_env_b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#9673a6;strokeWidth=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=classicThin;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_env_lbl" value="envelope crossing (L6 → L7 / Z3 → Z4 · ADR-0003) — 🔒 marker on the arrow" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontColor=#444444;">
+          <mxGeometry x="200" y="1324" width="420" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_agent_a" value="L8" vertex="1" parent="1" style="rounded=1;fillColor=#e8e8e8;strokeColor=#666666;dashed=1;fontSize=12;fontColor=#222222;">
+          <mxGeometry x="60" y="1354" width="30" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_agent_b" value="L1" vertex="1" parent="1" style="rounded=1;fillColor=#fde2e2;strokeColor=#9673a6;fontSize=12;fontColor=#222222;">
+          <mxGeometry x="160" y="1354" width="30" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_agent_e" edge="1" parent="1" source="lg_agent_a" target="lg_agent_b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#666666;strokeWidth=2;dashed=1;dashPattern=4 2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;endArrow=classic;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_agent_lbl" value="agent-as-client lane (dashed grey · ADR-0002)" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontColor=#444444;">
+          <mxGeometry x="200" y="1354" width="420" height="20" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lg_layer_hdr" value="Layer-ribbon strokes (border colour around each layer box)" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontStyle=1;fontColor=#444444;">
+          <mxGeometry x="60" y="1384" width="560" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="lg_layer_swatches" value="L1 #9673a6 · L2 #6c8ebf · L3 #82b366 · L4 #d6b656 · L5 #b46504 · L6 #a45fae · L7 #d79b00 · L8 #666666 (dashed)" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fontColor=#444444;">
+          <mxGeometry x="60" y="1402" width="560" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="notes_box" value="" vertex="1" parent="1" style="rounded=1;fillColor=#ffffff;strokeColor=#cccccc;strokeWidth=1;">
+          <mxGeometry x="680" y="1180" width="680" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="notes_title" value="Notes" vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontStyle=1;fontColor=#222222;">
+          <mxGeometry x="700" y="1190" width="640" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="notes_body" value="• Each layer box is filled with its OPERATING zone colour (the zone the layer receives). The arrow leaving the layer is labelled with the PRODUCED zone (the zone the request is in after the layer fires).&#10;&#10;• L1 and L2 both operate in Z0 (filled red). L2 produces Z1 (TLS-terminated edge perimeter). L3 operates in Z1 (filled yellow) and produces Z2. L4 produces Z3. L5 stays in Z3 (gating only, no zone crossing). L6 produces Z4 — the envelope crossing per ADR-0003. L7 operates entirely within Z4.&#10;&#10;• L8 sits beside the stack. Agents and automation runtimes do NOT have a back-channel into L7; they traverse the same L1 → L2 → L3 → … chain as a human user. The dashed grey arrow re-entering at L1 makes this rule visible. Per ADR-0002, agents are clients.&#10;&#10;• The 🔒 marker on the L6 → L7 arrow is a placeholder for the workspace-specific seal stencil that will ship in Phase C.2 (full template set).&#10;&#10;• This diagram is workspace-canonical and intentionally vendor-neutral. Profile-specific diagrams (e.g., self-hosted-vps deployment topology) belong in their own files." vertex="1" parent="1" style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontColor=#444444;whiteSpace=wrap;">
+          <mxGeometry x="700" y="1214" width="640" height="240" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="footer" value="Source: architecture/control-layers.md · architecture/security-boundaries.md · ADR-0001 (eight-layer model) · ADR-0002 (agents-as-clients) · ADR-0003 (internal identity envelope)&#10;Last reviewed: 2026-05-28 by @mikegtech · Next review: 2026-08-28 · Diagram ID: eight-layer-control-model · Workspace style library: architecture/diagrams/styles/workspace.drawio" vertex="1" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontColor=#444444;whiteSpace=wrap;">
+          <mxGeometry x="40" y="1480" width="1320" height="40" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
