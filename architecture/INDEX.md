@@ -28,6 +28,10 @@ For product-level framing (what this repo promises, who owns it, how consumers a
 - [`deployment-profiles.md`](deployment-profiles.md) — how to use a profile
 - [`profiles/`](profiles/) — concrete mappings (self-hosted VPS, AWS-managed, hybrid tailnet)
 
+## Diagrams
+
+- [`diagrams/INDEX.md`](diagrams/INDEX.md) — workspace-canonical reference diagrams (currently: `eight-layer-control-model.drawio`) plus the swatch-and-copy `styles/workspace.drawio` style library. Visual vocabulary, archetypes, contrast rules, and drift mitigation are specified in [`../standards/diagramming-conventions.md`](../standards/diagramming-conventions.md).
+
 ## Related decisions
 
 The architecture's load-bearing commitments are captured as ADRs. Each is immutable once accepted; reverse via a new ADR that supersedes.
