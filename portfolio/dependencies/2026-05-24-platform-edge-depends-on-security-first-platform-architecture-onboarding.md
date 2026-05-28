@@ -70,16 +70,17 @@ The dependency moves to `resolved` when ALL of:
 - [ ] Downstream `security-first-adoption.md` is populated with `architecture_ref: v0.1.1` and validated by `repo-healthcheck`.
 - [x] No ADR linked from this record (initial adoption uses existing v0.1.0 ADRs unchanged; not applicable).
 
-The second checkbox is the only remaining gate; the upstream artifact predates this record.
+The second checkbox is the only remaining gate. The upstream artifact at the *current* `upstream_ref` (`v0.1.1`) was tagged on 2026-05-28, **after** this record was opened on 2026-05-24 — so it does not predate the record in the strict sense any more. The record was originally opened against `v0.1.0` (which did predate it) and bumped to `v0.1.1` in PR #21 after `platform-edge`'s first consumer-mode CI surfaced a hotfix need. See §Ref-bump history for the audit trail.
 
 ## Coordinated landing
 
-`upstream-first` — and in the clean sense the user called out: the upstream artifact (`v0.1.0`) already exists at the named ref *before* this dependency record was opened. There is no race, no simultaneous-PR ceremony, no deprecation window needed. The order is:
+`upstream-first` — the upstream artifact at the current `upstream_ref` (`v0.1.1`) is already merged on `main` of `security-first-platform-architecture`. Originally this record pinned `v0.1.0` (which predated the record); it was bumped to `v0.1.1` after `platform-edge`'s first consumer-mode CI surfaced the reusable-workflow hotfix need — full audit trail in §Ref-bump history. Either way, there is no race, no simultaneous-PR ceremony, no deprecation window: the upstream side of the dependency was already done before each downstream action.
 
-1. **Upstream** — `v0.1.0` tagged on `main` of `security-first-platform-architecture` (already done, 2026-05-24).
-2. **Dependency record** — this file lands in `portfolio/dependencies/` (this PR).
-3. **Downstream** — `platform-edge` opens its step-1 pass-through PR pinning `architecture_ref: v0.1.1` and citing `DEP-2026-05-24-001` in its `cross_repo_dependencies:` section.
-4. **Resolution** — when step-1 merges, this record's `status:` flips to `resolved` and `resolved_date:` is filled in (a small follow-up PR in this repo, same pattern as PR #16 for trupryce).
+1. **Upstream (originally)** — `v0.1.0` tagged 2026-05-24 (record's original pin; still reachable on `main`).
+2. **Dependency record opened** — `DEP-2026-05-24-001` landed in `portfolio/dependencies/` in PR #18.
+3. **Upstream (current)** — `v0.1.1` tagged 2026-05-28, bundling the consumer-mode hotfix (PR #20) and the diagramming-foundation surface (PR #19). Record's `upstream_ref` bumped from `v0.1.0` → `v0.1.1` in PR #21.
+4. **Downstream** — `platform-edge` opens its step-1 pass-through PR pinning `architecture_ref: v0.1.1` and citing `DEP-2026-05-24-001` in its `cross_repo_dependencies:` section.
+5. **Resolution** — when step-1 merges, this record's `status:` flips to `resolved` and `resolved_date:` is filled in (a small follow-up PR in this repo, same pattern as PR #16 for trupryce).
 
 Owner on the platform-edge side: `@mikegtech`. Owner on the architecture-repo side: `@mikegtech` (platform team).
 
