@@ -146,12 +146,10 @@ C4Context
     Person(consumer_lead, "Consumer team lead", "Operates a consuming repo (trupryce, future apps).")
     Person(end_user, "End user", "Accesses applications routed through platform-edge.")
     Person_Ext(agent, "Agent runtime", "Claude / Codex / automation — connects as a client per ADR-0002.")
-    System(platform_edge, "platform-edge", "Workspace-shared L1–L5 edge: Cloudflare Tunnel → Kong → Traefik → (Keycloak, OpenFGA).")
+    System(platform_edge, "platform-edge", "Workspace-shared L1–L5 edge. Verifies identity, authorizes, and forwards to each consumer's orchestrator.")
     System_Ext(consumer_l6, "Consumer-owned L6", "Each team's orchestrator/BFF — issues the internal identity envelope per ADR-0003.")
-    System_Ext(keycloak, "Keycloak", "Workspace identity provider.")
     Rel(end_user, platform_edge, "HTTPS")
     Rel(agent, platform_edge, "HTTPS (principal_type=agent)")
-    Rel(platform_edge, keycloak, "JWT verification (offline JWKS)")
     Rel(platform_edge, consumer_l6, "Forwards verified request + headers")
     Rel(consumer_lead, consumer_l6, "Operates")
 ```

@@ -65,7 +65,9 @@ The standard's Phase-A+B additions are MUSTs **for new diagrams created after th
 
 ## Cross-repo migration steps
 
-None — `completion_state: architecture-complete`. Consumers adopt at their next routine `architecture_ref` bump. After merge, a new architecture-repo tag (`v0.2.0`) will let consumers pin to a ref that includes the upgraded standard + C4 Mermaid patterns.
+None — `completion_state: architecture-complete`. Consumers adopt at their next routine `architecture_ref` bump.
+
+The `v0.2.0` tag is **not** cut at this PR's merge. Per the revised sequencing in [`tasks.md`](tasks.md) §Post-merge and [`proposal.md`](proposal.md) §Migration plan, the tag is cut **after Phase C.1 (drawio global-style XML) and Phase C.3 (first dog-fooded reference diagram) land**, so `v0.2.0` ships as a coherent spec + tooling + working example rather than a spec for tools that don't exist yet. Until then, consumers wanting the upgraded standard pin to `main`'s SHA (discouraged for production per the cross-repo-governance pinning rules) or wait for `v0.2.0`.
 
 ## Rollback
 

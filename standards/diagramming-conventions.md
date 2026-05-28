@@ -30,7 +30,7 @@ Use the archetype that matches the question the diagram answers. Mixing archetyp
 | **C4 Dynamic** | "What is the message order for a specific scenario, in C4 vocabulary?" | Mermaid `C4Dynamic` | C4 actor stencils; relationship labels cite ADRs by ID; **no zone notation in the visual** — see anti-mixing rule. |
 | **Decision tree / state machine** | "What state transitions are possible? What decisions branch where?" | Mermaid `flowchart` / `stateDiagram-v2` | Standard flowchart vocabulary; no zone colours needed. |
 
-When a system has all four C4 levels documented, the convention is one diagram per level under `docs/diagrams/` (e.g., `c4-l1-system-context.drawio`, `c4-l2-containers.drawio`, …).
+When a system has all four C4 levels documented, the convention is one diagram per level under the repo's diagrams directory — `docs/diagrams/` in a consuming repo, `architecture/diagrams/` in the architecture repo (per §File location convention). Filename pattern: `c4-l1-system-context.drawio`, `c4-l2-containers.drawio`, etc.
 
 Cross-references: [`https://c4model.com/`](https://c4model.com/) for the full C4 methodology; [`https://www.drawio.com/blog/c4-modelling`](https://www.drawio.com/blog/c4-modelling) for the drawio C4 stencil library.
 
@@ -131,7 +131,7 @@ When a diagram crosses ownership boundaries (e.g., a consumer's services vs the 
 | **External (third party or different team)** | Dashed border, regular weight, `dashPattern=4 2` | Inside the boundary, top-left, `External: <provider>` or `Consumer-owned: <team>` |
 | **Workspace-shared (e.g., the architecture repo's reusable workflows)** | Solid border, accent stroke (`#1168bd` blue), label `Workspace-shared` | Inside the boundary, top-left |
 
-For C4 archetypes, ownership maps to C4's owned-vs-external palette (see [Iconography baseline](#iconography-baseline)).
+For C4 archetypes, ownership maps to C4's owned-vs-external palette (see [§C4 archetype palette](#c4-archetype-palette)).
 
 ### Iconography baseline
 
