@@ -8,8 +8,10 @@ The skills that produce diagrams against this vocabulary live in [`../.agents/sk
 
 | Diagram type | Format | Why |
 |---|---|---|
-| Layered architecture, trust-zone overlays, deployment topology, dependency graphs, C4 Container / System Context | **Drawio** (`.drawio` + rendered `.svg` / `.png`) | Multi-layer spatial work needs proper boxes, lanes, and corridor routing. Drawio handles it; mermaid does not. |
-| Request sequence, OAuth/OIDC flow, agent-as-client routing, incident timeline, C4 Dynamic | **Mermaid** (`mermaidjs` fenced block in markdown) | Sequence diagrams render natively in GitHub markdown; no second source-of-truth file to keep in sync. |
+| Layered architecture, trust-zone overlays, deployment topology, dependency graphs | **Drawio** (`.drawio` + rendered `.svg` / `.png`) | Multi-layer spatial work needs proper boxes, lanes, and corridor routing. Drawio handles it; Mermaid does not. |
+| C4 System Context (Level 1), C4 Container (Level 2) | **Drawio preferred** when the diagram needs spatial layout with multiple containers / external systems; **Mermaid `C4Context` / `C4Container` acceptable** when the diagram is small enough to render usefully inline in a markdown doc. Either form ships an editable source-of-truth. | Drawio scales spatially better; Mermaid wins on inline rendering. The Mermaid skill reference ([`../.agents/skills/mermaid-diagram/references/architecture-vocab.md`](../.agents/skills/mermaid-diagram/references/architecture-vocab.md) §C4 archetypes in Mermaid) has working examples; the drawio C4 stencil library is at [drawio.com/blog/c4-modelling](https://www.drawio.com/blog/c4-modelling). |
+| Trust-zone sequence (request flow, OAuth/OIDC, agent-as-client routing, incident timeline) | **Mermaid** `sequenceDiagram` with trust-zone participant notation per [`../.agents/skills/mermaid-diagram/references/architecture-vocab.md`](../.agents/skills/mermaid-diagram/references/architecture-vocab.md) §Trust-zone notation in participants. | Sequence diagrams render natively in GitHub markdown; trust-zone notation in participant labels keeps the security-boundary structure visible without colour. |
+| C4 Dynamic (sequence in C4 vocabulary) | **Mermaid** `C4Dynamic`. Per the anti-mixing rule, C4 Dynamic does NOT carry trust-zone notation in the visual; cite ADRs by ID in relationship labels instead. | C4 vocabulary stays consistent across L1/L2/L3 and Dynamic; mixing zones would violate the archetype boundary. |
 | Whiteboard sketch, RFC ideation, workshop output | Either is fine; not yet standardised | Don't optimise prematurely — promote to drawio/mermaid only if the sketch becomes a recurring reference. |
 
 `.drawio` files **must** be paired with a rendered `.svg` (preferred) or `.png` alongside, so readers without drawio can see the diagram in GitHub. The skill handles export.
@@ -24,7 +26,8 @@ Use the archetype that matches the question the diagram answers. Mixing archetyp
 | **Deployment topology** | "What runs where, and how do they talk to each other?" | Drawio | Trust-zone fills + service shapes + connectors. Often overlaid with layer ribbons. |
 | **C4 System Context (Level 1)** | "Who and what interacts with this system from the outside?" | Drawio | C4 palette (owned-system dark blue, external systems gray, persons). Zoom level: the system as a black box. |
 | **C4 Container (Level 2)** | "What major containers (apps, services, datastores) make up the system, and how do they talk?" | Drawio | C4 palette + container shapes (service / datastore / queue). Zoom level: inside the system. |
-| **C4 Dynamic / sequence** | "What is the message order for a specific scenario?" | Mermaid `sequenceDiagram` | Trust-zone notation in participant labels (per `mermaid-diagram/references/architecture-vocab.md`). |
+| **Trust-zone sequence** | "How does a request traverse the security boundaries, with timing?" | Mermaid `sequenceDiagram` | Trust-zone notation in participant labels per [`../.agents/skills/mermaid-diagram/references/architecture-vocab.md`](../.agents/skills/mermaid-diagram/references/architecture-vocab.md) §Trust-zone notation. The signature security-first sequence view. |
+| **C4 Dynamic** | "What is the message order for a specific scenario, in C4 vocabulary?" | Mermaid `C4Dynamic` | C4 actor stencils; relationship labels cite ADRs by ID; **no zone notation in the visual** — see anti-mixing rule. |
 | **Decision tree / state machine** | "What state transitions are possible? What decisions branch where?" | Mermaid `flowchart` / `stateDiagram-v2` | Standard flowchart vocabulary; no zone colours needed. |
 
 When a system has all four C4 levels documented, the convention is one diagram per level under `docs/diagrams/` (e.g., `c4-l1-system-context.drawio`, `c4-l2-containers.drawio`, …).
@@ -104,7 +107,7 @@ The L6→L7 trust crossing (envelope issuance) is rendered as a **signed-arrow**
 | **Future / planned** | Dashed (`dashPattern=8 4`), 2px, `#c0392b` (red accent) | Connector that will be added in a later step; matches the deviation-marker palette so red consistently means "not in the current state" |
 | **Step number badge** | Filled black circle, 18×18px, white text, anchored on the edge near the source endpoint | Staged rollouts; numbers match the brief's or proposal's step list |
 
-Edge labels MUST set `labelBackgroundColor` so the text does not bleed into the line or underlying shapes.
+Edge labels MUST set `labelBackgroundColor=#ffffff` so the text does not bleed into the line or underlying shapes. (Other background colours are allowed only when the label sits inside a coloured container where white would create a worse contrast; the default and overwhelmingly common case is white.)
 
 ### Step-number badges
 
@@ -186,7 +189,7 @@ Every diagram in `docs/diagrams/` or `architecture/diagrams/` MUST include:
 - **Subtitle.** Top-centre, 12pt regular, `#444444`. Profile / ref / dependency-record IDs, e.g., `self-hosted-vps profile · architecture_ref v0.1.1 · DEP-2026-05-24-001`.
 - **Source-of-truth footer.** Bottom of the diagram, 10pt, `#444444`. See [§Source-of-truth linkage](#source-of-truth-linkage).
 
-Every diagram that uses any non-default style (async / future connectors, step badges, deviation markers, ownership-boundary borders, the C4 palette overlaid on a trust-zone diagram) MUST also include:
+Every diagram that uses any non-default style (async / future connectors, step badges, deviation markers, ownership-boundary borders) MUST also include:
 
 - **Legend block.** A small bordered box in the bottom-left or bottom-right, listing each non-default style used and what it means. Plain text + sample lines. Without this, a reader cannot interpret the diagram independently.
 
@@ -236,4 +239,4 @@ Diagrams that predate this standard's Phase A+B additions (contrast floor, paire
 - **Mixing archetypes in one diagram.** A trust-zone overlay on a C4 Container diagram makes both archetypes harder to read. Pick one archetype per diagram; cross-link if both are needed.
 - **Light italic gray on white background.** Fails the contrast floor. If a piece of text is "secondary" enough to want gray, either put it on a coloured fill (where `#666666` is fine) or commit to `#444444` minimum on white.
 - **Legend by inference.** A diagram with multiple line styles, step badges, or ownership boundaries that lacks a legend forces every reader to reverse-engineer the conventions. Treat the legend as part of the diagram, not optional decoration.
-- **Step numbers without their referenced list.** A `①ⓞ` badge that doesn't name what step list it's indexing is noise. The legend should cite the OpenSpec proposal, runbook, or other artifact whose step numbers the badges follow.
+- **Step numbers without their referenced list.** A `①` badge that doesn't name what step list it's indexing is noise. The legend should cite the OpenSpec proposal, runbook, or other artifact whose step numbers the badges follow.

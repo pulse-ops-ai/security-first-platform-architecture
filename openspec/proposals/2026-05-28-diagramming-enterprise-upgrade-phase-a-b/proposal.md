@@ -78,22 +78,27 @@ That is the largest enterprise-grade-tooling win (consumers set the palette once
 
 ## Affected consumers (Tier 2/3 only)
 
-| Consumer repo | Affected artifact | Dependency record | Owner |
-|---|---|---|---|
-| trupryce | n/a — opt-in additive; no current diagram needs revision | not required | `@mikegtech` / `@trupryce-platform` |
-| platform-edge | `docs/diagrams/step-1-l1-l2-passthrough.drawio` — current diagram is grandfathered; team may apply the new contrast / legend / archetype rules at the next routine update or in a separate polish PR | not required | `@mikegtech` |
+_None._
 
-No dependency records are opened. The change is purely additive (no consumer is driven to a new ref; no existing contract surface changes); the standard's grandfathering clause makes adoption explicitly opt-in at the consumer's pace. Per the Dependency-record linkage rule in `team-os/cross-repo-governance.md`, a record is required only when a Tier 2/3 change "has downstream impact" — opt-in additive surface does not qualify.
+This is an additive expansion of the diagramming-conventions standard. The new MUSTs apply only to **diagrams created after this PR lands**; the standard's [§Grandfathering and migration](../../../standards/diagramming-conventions.md#grandfathering-and-migration) clause keeps every existing diagram valid as-is, with no migration deadline. Concretely:
+
+- **`trupryce`** ships no diagrams against the diagramming standard today; nothing in this PR changes that.
+- **`platform-edge`**'s existing `step-1: L1+L2 pass-through topology` diagram is grandfathered. The team MAY polish it against the new conventions whenever convenient (likely bundled into their step-2 PR); they MAY also leave it as-is indefinitely.
+
+Per the §Dependency-record linkage rule in [`team-os/cross-repo-governance.md`](../../../team-os/cross-repo-governance.md), a record is required only when a Tier 2/3 change "has downstream impact" — opt-in additive surface with explicit grandfathering does not qualify. This matches the PR #14 precedent (its Affected-consumers table was empty for the same reason: additive Universal-Floor expansion with no forced migration).
+
+If a future PR removes the grandfathering clause or otherwise adds enforcement (e.g., the `validate-diagrams.sh` CI hook flagging existing diagrams), THAT PR opens dependency records per-consumer; this one does not.
 
 ## Migration plan + deprecation window
 
 - **`coordinated_landing_order:`** `n/a`.
 - **`deprecation_window:`** `n/a` — additive change. Existing diagrams are grandfathered (§Grandfathering and migration); no consumer is forced to update.
 - **Migration steps:**
-  1. Merge this PR. Cut a new architecture-repo tag (`v0.2.0`) so consumers can pin to a ref that includes the upgraded standard + C4 Mermaid patterns.
-  2. Phase C follow-up PR builds the drawio global-style file (`architecture/diagrams/styles/workspace.drawio`) and the starter templates per archetype. Dog-foods the now-final standard.
-  3. `platform-edge` polishes its existing step-1 diagram at its convenience using the new conventions (likely bundles the polish into its step-2 PR rather than opening a dedicated polish PR).
-  4. Future consumer diagrams adopt the full standard from day one.
+  1. Merge this PR (Phase A+B): the standard is on `main` but **not yet tagged**.
+  2. **Phase C.1 + C.3** ship in coordinated follow-up PR(s): the drawio global-style file (`architecture/diagrams/styles/workspace.drawio`) + the first reference diagram (`architecture/diagrams/eight-layer-control-model.drawio`) produced *using the drawio skill against this PR's standard*. If that dog-foods exercise surfaces fixes to the Phase-A+B standard, they fold into the same PR so `v0.2.0` ships a validated spec.
+  3. Cut **`v0.2.0`** at main HEAD once Phase C.1 + C.3 have merged. The release notes describe the bundled surface: standard + tooling + reference diagram. See `tasks.md` §Post-merge for the rationale (dog-food first, then tag).
+  4. `platform-edge` polishes its existing step-1 diagram at its convenience using the new conventions (likely bundled into its step-2 PR rather than a dedicated polish PR).
+  5. Phase C.2 (full template set), Phase D (`validate-diagrams.sh` CI), Phase E (consumer-template `docs/diagrams/` scaffold) ship as polish in `v0.2.1` / `v0.3.0` cadence — they don't gate the tag.
 
 ## Completion criteria
 

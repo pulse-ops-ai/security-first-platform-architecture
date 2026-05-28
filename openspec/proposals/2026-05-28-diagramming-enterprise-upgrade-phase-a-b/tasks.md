@@ -45,22 +45,38 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 - [x] `pre-commit run --all-files`: 19/19 PASS.
 - [x] `openspec-triage.sh`: Tier 2 with proposal present.
 - [x] No ADR required (visual vocabulary is a convention, not a foundational architectural trade-off).
-- [x] No dependency records (additive change; no consumer is forced; opt-in adoption via grandfathering).
+- [x] No dependency records (additive change; no consumer is forced; opt-in adoption via grandfathering — see proposal §Affected consumers).
 
-### Post-merge (happens after this PR lands)
+## Per-consumer integration tasks
 
-- [ ] Cut a new architecture-repo tag `v0.2.0` reflecting the upgraded contract surface. The `DEP-2026-05-24-001` platform-edge dependency record currently targets `v0.1.1` and may stay there if `platform-edge` does not need the new conventions in its next PR; or it can be bumped to `v0.2.0` when convenient (low-stakes either way).
-- [ ] Archive this proposal: move `openspec/proposals/2026-05-28-diagramming-enterprise-upgrade-phase-a-b/` to `openspec/archive/`; update frontmatter (`status: accepted`, `accepted_date`, `archived_date`, `merged_pr: <N>`). Per the `PR-N+1 archives PR-N` convention; can be combined with the `v0.2.0` housekeeping PR.
-- [ ] **Phase C PR(s)** — the big enterprise-grade tooling deliverables. Three sub-pieces, each shippable independently:
-  - **C.1** — `architecture/diagrams/styles/workspace.drawio` global-style XML file. Sets the workspace palette (zone fills + paired strokes, layer-ribbon strokes + paired fills, text colours, default edge style, step-badge style) so consumers import once via *Extras → Edit Diagram Style* and inherit it across all diagrams.
-  - **C.2** — `architecture/diagrams/templates/` starter `.drawio` per archetype (trust-zone, deployment-topology, C4 System Context, C4 Container). Each ships with placeholder content using the correct vocabulary; consumers `cp` and fill in.
-  - **C.3** — `architecture/diagrams/` first-class reference diagrams produced *using the drawio skill against the Phase-A+B standard* — dog-food validation. Minimum set: `eight-layer-control-model.drawio` (canonical reference) + `self-hosted-vps-deployment-topology.drawio` (the profile both current consumers use). Ships paired `.svg` renderings.
-- [ ] **Optional later** — `scripts/validate-diagrams.sh` + pre-commit hook flagging stale `Last reviewed:` footers (>90 days when the diagram or its cited doc changes) AND contrast-floor checks against the rendered `.svg`. Closes the drift-mitigation loop the standard sketches in §Drift mitigation.
-- [ ] **Optional later** — extend `templates/consuming-repo/` with a stub `docs/diagrams/` directory + starter `INDEX.md` referencing the new conventions.
+**n/a** — no consumer is required to integrate.
+
+Existing diagrams are explicitly grandfathered (proposal §Affected consumers; standard §Grandfathering and migration). `trupryce` ships no diagrams today; `platform-edge`'s step-1 diagram remains valid as-is and the team may polish it against the new conventions whenever convenient (typically bundled into its next routine PR). No consumer-side tasks block this PR.
+
+## Post-merge
+
+The original sequencing in this proposal's first revision was *"merge Phase A+B → tag v0.2.0 → Phase C"*. We have since revised to tag **after** Phase C lands. Two reasons:
+
+1. **Phase C is the dog-food validation.** Phase C.3 produces the first reference diagrams *using the drawio skill against the Phase-A+B standard*. If that exercise surfaces issues in the standard (a poorly-rendering palette entry, an under-specified convention), we want to fix them in the standard **before** consumers pin to it, not after. Tagging between Phase A+B and Phase C locks in any standards bugs we haven't yet discovered.
+2. **`v0.2.0` should feel complete.** Enterprises evaluate documentation kits by what's usable today, not what's promised next. A `v0.2.0` that ships standard + global-style file + at least one validated reference diagram is a coherent release; one that ships the standard alone reads as "spec for tools that don't exist yet."
+
+Revised sequencing:
+
+- [ ] **Phase C.1 + C.3** — the validation-and-tooling pair. Ship together as one PR (or two coordinated PRs landing back-to-back):
+  - **C.1** — `architecture/diagrams/styles/workspace.drawio` global-style XML. Sets the workspace palette (zone fills + paired strokes, layer-ribbon strokes + paired fills, text colours, default edge style, step-badge style) so consumers import once via *Extras → Edit Diagram Style* and inherit it across every diagram. This is the largest enterprise-grade tooling win.
+  - **C.3** — first reference diagram produced *using the drawio skill against the Phase-A+B standard, importing the C.1 global-style file*. Minimum: `architecture/diagrams/eight-layer-control-model.drawio` (the canonical reference every consumer benefits from). Ships paired `.svg`. Dog-foods both the skill and the standard.
+  - If Phase C.3 surfaces Phase-A+B standard fixes, fold them into this PR (or a small predecessor PR) rather than letting v0.2.0 ship a known-flawed spec.
+- [ ] **Cut `v0.2.0` tag** at main HEAD once Phase C.1 + C.3 have merged. Release notes cite Phase A+B + Phase C.1 + C.3 as the bundled surface. The `DEP-2026-05-24-001` platform-edge dependency record currently targets `v0.1.1` and may stay there if `platform-edge` does not need the new conventions in its next PR; or it can be bumped to `v0.2.0` when convenient (low-stakes either way).
+- [ ] Archive this proposal: move `openspec/proposals/2026-05-28-diagramming-enterprise-upgrade-phase-a-b/` to `openspec/archive/`; update frontmatter (`status: accepted`, `accepted_date`, `archived_date`, `merged_pr: <N>`). Per the `PR-N+1 archives PR-N` convention; combine with the `v0.2.0` housekeeping PR.
+- [ ] **Phase C.2 / D / E (post-`v0.2.0`)** — polish that doesn't gate the tag:
+  - **C.2** — full set of starter `.drawio` templates per archetype (trust-zone, deployment-topology, C4 System Context, C4 Container, C4 Dynamic). Each ships with placeholder content using the correct vocabulary; consumers `cp` and fill in. Could ship as `v0.2.1` or fold into `v0.3.0`.
+  - **C.3 expansion** — add `self-hosted-vps-deployment-topology.drawio` and other profile-illustrative diagrams marked clearly as illustrative; consumers still draw their own.
+  - **D** — `scripts/validate-diagrams.sh` + pre-commit hook flagging stale `Last reviewed:` footers (>90 days when the diagram or its cited doc changes) AND contrast-floor checks against the rendered `.svg`. Closes the drift-mitigation loop sketched in standard §Drift mitigation.
+  - **E** — extend `templates/consuming-repo/` with a stub `docs/diagrams/` directory + starter `INDEX.md` referencing the new conventions.
 
 ## Notes
 
-- The original (PR #19) diagramming-conventions standard called out "Profile-specific reference diagrams from the architecture repo" as an anti-pattern, and that anti-pattern stays. Phase C's reference diagrams are *limited examples* (eight-layer + one profile) marked clearly as such; consumers still draw their own deployments rather than the architecture repo's "correct" one.
-- The contrast floor is a self-enforced quality bar for now. Adding the CI check (`validate-diagrams.sh` with contrast detection) is in the Phase-C tasks but is deliberately a separate ship — it requires either a headless SVG-rendering check or a metadata-only proxy in the `.drawio` XML; both have implementation gotchas worth getting right separately.
-- The C4 archetype additions are intentionally light-touch. We don't ship C4 *templates* in this PR (that's Phase C); we just codify the vocabulary, the palette, and the Mermaid syntax so the next consumer needing a C4 diagram has a shared shape to follow.
-- "Phase C" in this proposal is illustrative; it will be one or more separate proposals when the work is staged. Splitting C.1 / C.2 / C.3 is a sequencing question for that future PR series, not this one.
+- The original (PR #19) diagramming-conventions standard called out "Profile-specific reference diagrams from the architecture repo" as an anti-pattern, and that anti-pattern stays. Phase C's reference diagrams are *limited examples* (eight-layer canonical + at most one profile-illustrative) marked clearly as such; consumers still draw their own deployments rather than the architecture repo's "correct" one.
+- The contrast floor is a self-enforced quality bar in `v0.2.0`. The CI check (`validate-diagrams.sh` with contrast detection) is deliberately deferred to Phase D — it requires either a headless SVG-rendering check or a metadata-only proxy in the `.drawio` XML; both have implementation gotchas worth getting right separately.
+- The C4 archetype additions in this PR are intentionally light-touch — vocabulary + palette + Mermaid syntax. C4 *templates* land in Phase C.2.
+- "Phase C / D / E" labels in this proposal are illustrative; each will be a separate OpenSpec proposal when the work is staged. Splitting is a sequencing question for those future PRs, not this one.

@@ -6,7 +6,7 @@ Companion to [`proposal.md`](proposal.md).
 
 ### `standards/diagramming-conventions.md`
 
-Major expansion. Original file: 110 lines. After this change: ~280 lines. Structure:
+Major expansion of the existing standard. Structure of the change:
 
 | Section | State |
 |---|---|

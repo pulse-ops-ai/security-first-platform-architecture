@@ -191,19 +191,23 @@ C4Dynamic
     System_Ext(l7, "Consumer L7 (service)")
     Rel(u, pe, "1. HTTPS request + JWT")
     Rel(pe, l6, "2. Verified, forwarded with claims + authz_decision_id")
-    Rel(l6, l7, "3. Signed envelope (ADR-0003, Z3 → Z4)")
+    Rel(l6, l7, "3. Signed envelope (per ADR-0003)")
     Rel(l7, l6, "4. Response after envelope verification")
     Rel(l6, u, "5. Response via pe")
 ```
 
 ### C4 vs the trust-zone archetype
 
-A C4 Mermaid diagram uses the **C4 palette** (owned blue, external gray) NOT the trust-zone palette. The two archetypes answer different questions:
+A C4 Mermaid diagram uses the **C4 palette** (owned blue, external gray) and C4 vocabulary, **NOT** the trust-zone palette or `(Zn)` participant notation. The two archetypes answer different questions:
 
 - **C4 archetype**: who and what makes up the system; ownership boundaries.
 - **Trust-zone archetype**: how a request traverses security boundaries.
 
-Do not overlay one on the other in a single diagram. If both are needed, ship two diagrams and cross-link them in their captions. The standard's §Diagram archetypes and §Anti-patterns codify this.
+**Strict rule:** do not overlay one on the other in a single diagram. If both are needed, ship two diagrams and cross-link them in their captions.
+
+**Textual ADR references are allowed in C4 relationship labels** (e.g., `"Signed envelope (per ADR-0003)"`) — that is a citation to an artifact, not visual-vocabulary mixing. Embedding `Z3 → Z4` notation inside a C4 label IS visual-vocabulary mixing and is not allowed.
+
+The standard's §Diagram archetypes and §Anti-patterns codify this.
 
 ### C4 reference
 
