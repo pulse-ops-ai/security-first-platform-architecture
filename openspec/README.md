@@ -37,7 +37,7 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
-_None open._
+- [`proposals/2026-05-28-reusable-workflow-event-name-hotfix/`](proposals/2026-05-28-reusable-workflow-event-name-hotfix/) — Tier 2 by script-classification, **Tier-1 hotfix by intent**, in_review: reverts the PR #14 round-4 `github.event_name == 'workflow_call'` guard (always-false in reusable workflows) back to the round-3 `inputs.architecture_ref != ''` discriminator in `docs-healthcheck.yml` and `repo-healthcheck.yml`. Unblocks `platform-edge`'s step-1 PR. Will drive a `v0.1.1` tag after merge.
 
 ## Archived proposals
 
