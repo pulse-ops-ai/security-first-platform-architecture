@@ -1,3 +1,7 @@
+---
+completion_state: architecture-complete
+---
+
 # OpenSpec Tasks: Reusable-workflow event-name guard hotfix
 
 Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
