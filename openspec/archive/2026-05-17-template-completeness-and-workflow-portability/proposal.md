@@ -1,9 +1,12 @@
 ---
 tier: 2
-status: in_review
+status: accepted
 completion_state: architecture-complete
 opened: 2026-05-17
 target_decision_date: 2026-05-24
+accepted_date: 2026-05-23
+archived_date: 2026-05-24
+merged_pr: 14
 authors:
   - "@mike"
 ---
