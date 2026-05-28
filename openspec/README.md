@@ -37,8 +37,7 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
-- [`proposals/2026-05-28-reusable-workflow-event-name-hotfix/`](proposals/2026-05-28-reusable-workflow-event-name-hotfix/) — Tier 2 by script-classification, **Tier-1 hotfix by intent** (merged in PR #20, awaiting archive cleanup): reverts the PR #14 round-4 `github.event_name == 'workflow_call'` guard (always-false in reusable workflows) back to the round-3 `inputs.architecture_ref != ''` discriminator in `docs-healthcheck.yml` and `repo-healthcheck.yml`. Unblocked `platform-edge`'s step-1 PR.
-- [`proposals/2026-05-28-diagramming-conventions-and-skills/`](proposals/2026-05-28-diagramming-conventions-and-skills/) — Tier 2, in_review: new `standards/diagramming-conventions.md` defines a shared visual vocabulary (zone colours, layer ribbons, agent-as-client lane, deviation marker, envelope-crossing glyph); paired with two new canonical skills (`drawio` for spatial/architectural diagrams, `mermaid-diagram` for inline-in-markdown sequence/flow diagrams) plus vendor adapter shims and Claude slash commands. Additive; no consumer is forced to adopt.
+_None open._
 
 ## Archived proposals
 
@@ -47,3 +46,5 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 - [`archive/2026-05-17-audience-tiered-navigation/`](archive/2026-05-17-audience-tiered-navigation/) — Tier 2 by intent (script said Tier 3 due to path-based over-classification, documented), accepted, architecture-complete (merged in PR #11)
 - [`archive/2026-05-17-repo-healthcheck-alignment/`](archive/2026-05-17-repo-healthcheck-alignment/) — Tier 2, accepted, architecture-complete (merged in PR #13)
 - [`archive/2026-05-17-template-completeness-and-workflow-portability/`](archive/2026-05-17-template-completeness-and-workflow-portability/) — Tier 2 by intent (script said Tier 3 due to `standards/repo-contract.md` path; additive doc section), accepted, architecture-complete (merged in PR #14)
+- [`archive/2026-05-28-reusable-workflow-event-name-hotfix/`](archive/2026-05-28-reusable-workflow-event-name-hotfix/) — Tier 2 by script-classification, **Tier-1 hotfix by intent**, accepted, architecture-complete (merged in PR #20). Reverts the always-false `github.event_name == 'workflow_call'` guard in the reusable workflows; unblocked `platform-edge`'s first consumer-mode CI. Tagged as `v0.1.1`.
+- [`archive/2026-05-28-diagramming-conventions-and-skills/`](archive/2026-05-28-diagramming-conventions-and-skills/) — Tier 2, accepted, architecture-complete (merged in PR #19). Shipped `standards/diagramming-conventions.md` + canonical `drawio` + `mermaid-diagram` skills + vendor adapter shims + Claude slash commands. Bundled into `v0.1.1` alongside the hotfix.
