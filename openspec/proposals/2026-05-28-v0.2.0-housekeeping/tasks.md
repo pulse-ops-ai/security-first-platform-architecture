@@ -20,8 +20,8 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 8 | `git mv openspec/proposals/2026-05-28-diagramming-phase-c-style-library-and-canonical-diagram → openspec/archive/`; update its frontmatter with `merged_pr: 23` | @mike | completed | this PR |
 | 9 | Update `openspec/README.md` — remove PR #22 + PR #23 entries from §Current proposals, add them under §Archived proposals, add this housekeeping proposal under §Current proposals | @mike | completed | this PR |
 | 10 | Write this OpenSpec proposal (`proposal.md`, `change.md`, `tasks.md`) | @mike | completed | this PR |
-| 11 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | pending | this PR |
-| 12 | Confirm `bash scripts/openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | pending | this PR |
+| 11 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | completed | this PR |
+| 12 | Confirm `bash scripts/openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | completed | this PR |
 | 13 | Commit + push branch + open PR | @mike | pending | this PR |
 
 ## Definition of done
@@ -34,13 +34,13 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 - [x] `openspec/archive/2026-05-28-diagramming-phase-c-style-library-and-canonical-diagram/` exists with `status: accepted`, `merged_pr: 23`.
 - [x] `openspec/proposals/` no longer contains either of those directories.
 - [x] `openspec/README.md` §Archived proposals lists both new entries with their merge-PR numbers; §Current proposals lists this housekeeping proposal.
-- [ ] `bash scripts/validate-skills.sh`: PASS.
-- [ ] `bash scripts/sync-agent-skills.sh --check`: PASS.
-- [ ] `bash scripts/validate-doc-indexes.sh`: PASS.
-- [ ] `bash scripts/validate-architecture.sh`: PASS.
-- [ ] `bash scripts/repo-healthcheck.sh`: PASS.
-- [ ] `pre-commit run --all-files`: 19/19 PASS.
-- [ ] `bash scripts/openspec-triage.sh origin/main`: Tier 2 with proposal present.
+- [x] `bash scripts/validate-skills.sh`: PASS.
+- [x] `bash scripts/sync-agent-skills.sh --check`: PASS.
+- [x] `bash scripts/validate-doc-indexes.sh`: PASS.
+- [x] `bash scripts/validate-architecture.sh`: PASS.
+- [x] `bash scripts/repo-healthcheck.sh`: PASS.
+- [x] `pre-commit run --all-files`: 19/19 PASS.
+- [x] `bash scripts/openspec-triage.sh origin/main`: Tier 2 with proposal present.
 - [x] No ADR required (wording + skill polish).
 - [x] No dependency records (opt-in additive — see `proposal.md` §Affected consumers).
 - [x] The `v0.2.0` tag is **NOT** cut in this PR's diff. The tag is cut after merge.
