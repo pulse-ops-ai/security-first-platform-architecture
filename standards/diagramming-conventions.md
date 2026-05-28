@@ -224,7 +224,7 @@ When you change a contract or standard that has a diagram citing it, **either up
 - Whether to ship rendered diagrams in PR descriptions (recommended but optional).
 - Whether to inline diagrams into ADRs (recommended for high-impact ADRs).
 - Use of any specific drawing tool beyond drawio + mermaid; teams that prefer Excalidraw or Lucidchart may use them locally, but the canonical archive in `docs/diagrams/` or `architecture/diagrams/` must be in one of the standardised formats.
-- A drawio global-style file is **not yet shipped**; it is deferred to a Phase C follow-up that will publish `architecture/diagrams/styles/workspace.drawio` for consumers to import via *Extras → Edit Diagram Style*. Until then, the vocabulary above is the source-of-truth and individual diagrams set their own styles.
+- Use of any specific style-import mechanism. A workspace style library ships at [`../architecture/diagrams/styles/workspace.drawio`](../architecture/diagrams/styles/workspace.drawio) as a **swatch-and-copy** library (open the file, copy the swatch you want, paste into your working diagram — see [`../architecture/diagrams/styles/README.md`](../architecture/diagrams/styles/README.md) for the workflow). Consumers SHOULD use it to inherit workspace-correct styles without typing hex codes by hand, but the vocabulary above remains the source of truth and diagrams MAY set their own styles directly. A formal `<mxlibrary>` drag-and-drop shape library is a future enhancement tracked alongside `validate-diagrams.sh`.
 
 ## Grandfathering and migration
 
