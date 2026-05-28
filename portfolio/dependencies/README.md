@@ -56,4 +56,9 @@ Each record declares a `coordinated_landing_order:`. The four legal values (`ups
 
 ## Current dependency records
 
-_None yet._
+| Record | Direction | Upstream ref | Status | Owner |
+|---|---|---|---|---|
+| [`2026-05-25-trupryce-depends-on-security-first-platform-architecture-onboarding`](2026-05-25-trupryce-depends-on-security-first-platform-architecture-onboarding.md) | trupryce → architecture | `v0.1.0` (tag) | `resolved` (2026-05-27) | `@mikegtech` |
+| [`2026-05-24-platform-edge-depends-on-security-first-platform-architecture-onboarding`](2026-05-24-platform-edge-depends-on-security-first-platform-architecture-onboarding.md) | platform-edge → architecture | `v0.1.0` (tag) | `open` | `@mikegtech` |
+
+The trupryce record (the first one in this ledger) is in the **thin-prose form**, not the documented schema. A follow-up Tier 2 OpenSpec will either backfill it into the schema and add a `validate-dependency-records.sh` CI check, or revise the template to match a lighter form. The `platform-edge` record (DEP-2026-05-24-001) is the first fully schema-conformant record and sets the precedent for future ones.

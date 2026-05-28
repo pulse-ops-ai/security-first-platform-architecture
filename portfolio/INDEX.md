@@ -20,4 +20,6 @@ The `cross-repo-impact-review` skill ([`../.agents/skills/cross-repo-impact-revi
 ## Current portfolio
 
 - Epics: _none yet_
-- Dependencies: _none yet_
+- Dependencies:
+  - `DEP-2026-05-25-trupryce` — trupryce → architecture @ `v0.1.0`, `resolved` (2026-05-27). [Record](dependencies/2026-05-25-trupryce-depends-on-security-first-platform-architecture-onboarding.md).
+  - `DEP-2026-05-24-001` — platform-edge → architecture @ `v0.1.0`, `open`. [Record](dependencies/2026-05-24-platform-edge-depends-on-security-first-platform-architecture-onboarding.md).
