@@ -37,7 +37,7 @@ The `openspec-triage` workflow runs on PRs that touch architecture, standards, t
 
 ## Current proposals
 
-_None open._
+- [`proposals/2026-05-28-diagramming-conventions-and-skills/`](proposals/2026-05-28-diagramming-conventions-and-skills/) — Tier 2, in_review: new `standards/diagramming-conventions.md` defines a shared visual vocabulary (zone colours, layer ribbons, agent-as-client lane, deviation marker, envelope-crossing glyph); paired with two new canonical skills (`drawio` for spatial/architectural diagrams, `mermaid-diagram` for inline-in-markdown sequence/flow diagrams) plus vendor adapter shims and Claude slash commands. Additive; no consumer is forced to adopt.
 
 ## Archived proposals
 

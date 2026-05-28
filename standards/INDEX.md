@@ -10,6 +10,7 @@ Concrete, enforceable standards every consuming repo follows. If a rule should a
 - [`agent-instructions-standard.md`](agent-instructions-standard.md) — `AGENTS.md` and adapter rules
 - [`ci-cd-standard.md`](ci-cd-standard.md) — required workflows and checks
 - [`openspec-standard.md`](openspec-standard.md) — OpenSpec structure inside each repo
+- [`diagramming-conventions.md`](diagramming-conventions.md) — visual vocabulary for architecture, trust-zone, and deployment-topology diagrams (paired with the `drawio` and `mermaid-diagram` skills)
 
 ## Related
 

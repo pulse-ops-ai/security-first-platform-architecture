@@ -34,6 +34,13 @@ Every skill is a single folder with one `SKILL.md` that begins with YAML frontma
 | [`pull-from-notion`](pull-from-notion/SKILL.md) | Pull targeted context from the Security-First Platform Notion knowledge base |
 | [`push-to-notion`](push-to-notion/SKILL.md) | Persist decisions, summaries, or briefs back into Notion |
 
+## Diagramming
+
+| Skill | Purpose |
+|---|---|
+| [`drawio`](drawio/SKILL.md) | Author and export `.drawio` diagrams (architecture, trust-zone, deployment topology); applies the visual vocabulary in [`../../standards/diagramming-conventions.md`](../../standards/diagramming-conventions.md) |
+| [`mermaid-diagram`](mermaid-diagram/SKILL.md) | Author Mermaid sequence / flowchart / state / ER / class diagrams that render inline in GitHub markdown; companion to `drawio` for diagrams that should not live in a separate file |
+
 ## Conventions
 
 - Skill folder names are kebab-case.
