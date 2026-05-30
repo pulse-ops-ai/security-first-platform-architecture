@@ -19,9 +19,9 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 7 | Write OpenSpec proposal (`proposal.md`, `change.md`, `tasks.md`) | @mike | completed | this PR |
 | 8 | Add this proposal to `openspec/README.md` §Current proposals | @mike | completed | this PR |
 | 9 | Verify exit codes (full scan 0, `--strict` 1, changeset-fresh 0) + contrast sanity values | @mike | completed | this PR |
-| 10 | Confirm `pre-commit run --all-files`: 20/20 PASS | @mike | pending | this PR |
-| 11 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | pending | this PR |
-| 12 | Open PR (base = C.2 branch) | @mike | pending | this PR |
+| 10 | Confirm `pre-commit run --all-files`: 20/20 PASS | @mike | completed | this PR |
+| 11 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | completed | this PR |
+| 12 | Open PR (base = C.2 branch) | @mike | completed | this PR |
 
 ## Definition of done
 
@@ -34,10 +34,10 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 - [x] `validate-diagrams` pre-commit hook wired.
 - [x] Standard / INDEX / scripts-README references flipped to "shipped in v0.3.0."
 - [x] `openspec/README.md` §Current proposals lists this proposal.
-- [ ] `shellcheck` clean (via pre-commit).
-- [ ] `bash scripts/repo-healthcheck.sh`: PASS.
-- [ ] `pre-commit run --all-files`: 20/20 PASS.
-- [ ] `openspec-triage.sh`: Tier 2 with proposal present.
+- [x] `shellcheck` clean (via pre-commit).
+- [x] `bash scripts/repo-healthcheck.sh`: PASS.
+- [x] `pre-commit run --all-files`: 20/20 PASS.
+- [x] `openspec-triage.sh`: Tier 2 with proposal present.
 - [x] No ADR (tooling).
 - [x] No dependency records (additive; hard checks restate existing MUSTs).
 
