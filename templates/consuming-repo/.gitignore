@@ -1,0 +1,24 @@
+# Starter .gitignore for a consuming repo. Extend with your stack's
+# build/runtime artifacts; keep the secret and diagram-autosave patterns.
+
+# Secrets — never commit. Real tokens, admin credentials, signing keys.
+.env
+.env.*
+!.env.example
+
+# draw.io Desktop autosave / backup / temp files. drawio writes a hidden
+# `.$<name>.drawio.bkp` next to the source while a diagram is open; commit
+# only the `.drawio` source and its rendered `.svg`, never these.
+.$*.drawio.bkp
+.$*.drawio.dtmp
+
+# Editor / OS noise
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Python virtualenvs from pre-commit's local installs
+.venv/
+__pycache__/

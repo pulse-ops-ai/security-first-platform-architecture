@@ -61,10 +61,15 @@ declare -a TARGETS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --strict) STRICT=1; shift ;;
-    --stale-days) STALE_DAYS="${2:-90}"; shift 2 ;;
+    --stale-days)
+      # Require an explicit value: without one, `shift 2` fails (only one
+      # positional left) and leaves `--stale-days` at $1 → infinite loop.
+      [[ -n "${2:-}" ]] || { echo "ERROR: --stale-days requires a value" >&2; exit 2; }
+      STALE_DAYS="$2"; shift 2 ;;
     --stale-days=*) STALE_DAYS="${1#*=}"; shift ;;
     -h|--help)
-      sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'
+      # Print the whole header doc block (everything before `set -uo pipefail`).
+      sed -n '2,/^set -uo pipefail/p' "$0" | sed '/^set -uo pipefail/d; s/^# \{0,1\}//; s/^#$//'
       exit 0 ;;
     --) shift; while [[ $# -gt 0 ]]; do TARGETS+=("$1"); shift; done ;;
     -*) echo "ERROR: unknown flag: $1" >&2; exit 2 ;;
@@ -205,9 +210,22 @@ for d in "${DIAGRAMS[@]}"; do
   fi
 
   # ---- 3. contrast lint ----
-  # Examine each cell style with a fontColor; compute ratio vs fillColor
-  # (or white). Skip cells whose text is empty.
-  while IFS= read -r style; do
+  # For each TEXT-BEARING cell that sets a fontColor, compute the contrast
+  # ratio of fontColor vs its background (the cell's fillColor, or white
+  # if it has none) and flag ratios below the floor. Cells with no text —
+  # a label-less shape that still carries font styling, which drawio emits
+  # routinely — are skipped: there is nothing to read, so there is no
+  # contrast concern. (value and style are attributes of the same
+  # `<mxCell>` opening tag, so a per-line read sees both.)
+  while IFS= read -r line; do
+    # Cell text = the value="…" attribute. Absent, empty, or markup-only
+    # (entities / tags / whitespace) → nothing to read → skip.
+    case "$line" in *value=\"*) ;; *) continue ;; esac
+    val="$(printf '%s' "$line" | grep -oE 'value="[^"]*"' | head -1 | sed -E 's/^value="//; s/"$//')"
+    stripped="$(printf '%s' "$val" | sed -E 's/&#x?[0-9A-Fa-f]+;/ /g; s/&[a-zA-Z]+;/ /g; s/<[^>]*>/ /g; s/[[:space:]]//g')"
+    [[ -z "$stripped" ]] && continue
+
+    style="$(printf '%s' "$line" | grep -oE 'style="[^"]*"' | head -1 | sed -E 's/^style="//; s/"$//')"
     fc="$(style_attr "$style" fontColor)"
     [[ -z "$fc" || "$fc" == "none" ]] && continue
     [[ "$fc" =~ ^#[0-9A-Fa-f]{6}$ ]] || continue
@@ -215,8 +233,9 @@ for d in "${DIAGRAMS[@]}"; do
     if [[ -z "$bg" || "$bg" == "none" ]]; then bg="#ffffff"; fi
     [[ "$bg" =~ ^#[0-9A-Fa-f]{6}$ ]] || continue
     fsize="$(style_attr "$style" fontSize)"; fsize="${fsize:-12}"
+    [[ "$fsize" =~ ^[0-9]+$ ]] || fsize=12
     fstyle="$(style_attr "$style" fontStyle)"; fstyle="${fstyle:-0}"
-    # large text: >=18, or >=14 and bold (fontStyle bit 1 set: 1 or 3)
+    # large text: >=18, or >=14 and bold (fontStyle bit 0 set: 1 or 3)
     floor="4.5"
     if (( fsize >= 18 )) || { (( fsize >= 14 )) && { [[ "$fstyle" == "1" || "$fstyle" == "3" ]]; }; }; then
       floor="3.0"
@@ -227,7 +246,7 @@ for d in "${DIAGRAMS[@]}"; do
       msg="$name — contrast ${ratio}:1 (floor ${floor}:1) for fontColor=$fc on $bg"
       if (( STRICT == 1 )); then err "$msg"; else warn "$msg (heuristic — verify; pass --strict to fail on this)"; fi
     fi
-  done < <(grep -oE 'style="[^"]*fontColor=[^"]*"' "$d" | sed -E 's/^style="//; s/"$//')
+  done < <(grep -E 'fontColor=' "$d")
 done
 
 # ---------- summary ----------

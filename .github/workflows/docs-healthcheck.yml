@@ -2,24 +2,31 @@ name: docs-healthcheck
 
 # Verifies that every folder with multiple markdown files has an INDEX.md,
 # that each INDEX.md references existing files, and that no markdown file
-# is orphaned (present in folder, missing from index).
+# is orphaned (present in folder, missing from index) — AND that every
+# committed reference diagram has a paired SVG, a fresh source-of-truth
+# footer, and AA-contrast-safe text (lint).
 #
-# Underlying logic lives in scripts/validate-doc-indexes.sh.
+# Underlying logic lives in scripts/validate-doc-indexes.sh and
+# scripts/validate-diagrams.sh.
 #
 # Dual mode:
-#   - Architecture-repo CI (self-invoked): runs scripts/validate-doc-indexes.sh
-#     directly against the checked-out architecture repo.
+#   - Architecture-repo CI (self-invoked): runs the scripts directly
+#     against the checked-out architecture repo.
 #   - Consumer-repo CI (workflow_call): the consumer's caller workflow
 #     invokes this with `architecture_ref`; this workflow checks out
 #     both the consumer (default) and the architecture repo (for scripts),
-#     then runs the script against the consumer's tree.
+#     then runs the scripts against the consumer's tree. validate-diagrams
+#     no-ops cleanly when the consumer has no docs/diagrams/.
 
 on:
   pull_request:
     paths:
       - '**/*.md'
+      - '**/*.drawio'
+      - '**/*.svg'
       - '.github/workflows/docs-healthcheck.yml'
       - 'scripts/validate-doc-indexes.sh'
+      - 'scripts/validate-diagrams.sh'
   push:
     branches: [main]
   workflow_dispatch:
@@ -69,19 +76,35 @@ jobs:
         # script from this repo's own checkout.
         run: |
           if [[ -n "${{ inputs.architecture_ref }}" ]]; then
-            if [[ ! -f .arch-tools/scripts/validate-doc-indexes.sh ]]; then
+            scripts_dir=.arch-tools/scripts
+            if [[ ! -f "$scripts_dir/validate-doc-indexes.sh" ]]; then
               echo "ERROR: consumer-mode (workflow_call) requires the architecture-repo sparse-checkout at .arch-tools/, but scripts/validate-doc-indexes.sh was not found there." >&2
               echo "This typically means the previous checkout step did not run; verify the caller passed a valid architecture_ref." >&2
               exit 1
             fi
-            echo "path=.arch-tools/scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
           else
-            if [[ ! -f scripts/validate-doc-indexes.sh ]]; then
+            scripts_dir=scripts
+            if [[ ! -f "$scripts_dir/validate-doc-indexes.sh" ]]; then
               echo "ERROR: self-mode expects scripts/validate-doc-indexes.sh in the caller's checkout." >&2
               exit 1
             fi
-            echo "path=scripts/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
           fi
+          echo "path=$scripts_dir/validate-doc-indexes.sh" >> "$GITHUB_OUTPUT"
+          echo "diagrams_path=$scripts_dir/validate-diagrams.sh" >> "$GITHUB_OUTPUT"
 
       - name: Run validate-doc-indexes
         run: bash "${{ steps.script.outputs.path }}" .
+
+      - name: Run validate-diagrams
+        # Validates every reference diagram in the caller's tree (paired
+        # SVG + fresh footer = hard fails; contrast = warning). No-ops when
+        # there are no diagrams. Full-scan mode, so a stale footer warns
+        # rather than fails; the pre-commit hook is the changeset-mode gate.
+        # The script ships from v0.3.0; skip cleanly if an older
+        # architecture_ref predates it.
+        run: |
+          if [[ -f "${{ steps.script.outputs.diagrams_path }}" ]]; then
+            bash "${{ steps.script.outputs.diagrams_path }}" .
+          else
+            echo "validate-diagrams.sh not present at the pinned architecture_ref (pre-v0.3.0); skipping."
+          fi
