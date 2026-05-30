@@ -15,8 +15,8 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 3 | §Step-number badges: add third anchor (full-width ribbon left edge, ~28px gutter) + edge-label collision rule (B2) | @mike | completed | this PR |
 | 4 | Write OpenSpec proposal (`proposal.md`, `change.md`, `tasks.md`) | @mike | completed | this PR |
 | 5 | Add this proposal to `openspec/README.md` §Current proposals | @mike | completed | this PR |
-| 6 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | pending | this PR |
-| 7 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | pending | this PR |
+| 6 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | completed | this PR |
+| 7 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | completed | this PR |
 | 8 | Open PR | @mike | pending | this PR |
 
 ## Definition of done
@@ -27,13 +27,13 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 - [x] §Common contrast failures names the paired-fill case and points to §Layer ribbons.
 - [x] §Step-number badges lists three anchor options + a collision rule.
 - [x] `openspec/README.md` §Current proposals lists this proposal.
-- [ ] `bash scripts/validate-skills.sh`: PASS.
-- [ ] `bash scripts/sync-agent-skills.sh --check`: PASS.
-- [ ] `bash scripts/validate-doc-indexes.sh`: PASS.
-- [ ] `bash scripts/validate-architecture.sh`: PASS.
-- [ ] `bash scripts/repo-healthcheck.sh`: PASS.
-- [ ] `pre-commit run --all-files`: 19/19 PASS.
-- [ ] `openspec-triage.sh`: Tier 2 with proposal present.
+- [x] `bash scripts/validate-skills.sh`: PASS.
+- [x] `bash scripts/sync-agent-skills.sh --check`: PASS.
+- [x] `bash scripts/validate-doc-indexes.sh`: PASS.
+- [x] `bash scripts/validate-architecture.sh`: PASS.
+- [x] `bash scripts/repo-healthcheck.sh`: PASS.
+- [x] `pre-commit run --all-files`: 19/19 PASS.
+- [x] `openspec-triage.sh`: Tier 2 with proposal present.
 - [x] No ADR (wording clarification).
 - [x] No dependency records (opt-in additive).
 - [x] No skill / template changes.
