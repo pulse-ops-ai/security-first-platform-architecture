@@ -20,6 +20,22 @@ The eight-layer canonical reference is **vendor-neutral** by design — it descr
 |---|---|
 | [`styles/workspace.drawio`](styles/workspace.drawio) + [`.svg`](styles/workspace.drawio.svg) | Swatch-and-copy style library covering trust zones, layer ribbons, connectors, iconography, C4 archetype palette, envelope-crossing glyph, and text colours. Adopters open it, copy a swatch, paste into their working diagram. See [`styles/README.md`](styles/README.md) for usage. |
 
+### Archetype templates
+
+Starter templates — one per archetype in `diagramming-conventions.md` §Diagram archetypes. Copy the one whose *question* matches what you need to show, replace the `<placeholders>`, re-export the SVG. See [`templates/README.md`](templates/README.md) for the pick-by-question table and usage.
+
+| Template | Archetype | Format |
+|---|---|---|
+| [`templates/trust-zone-layer-architecture.drawio`](templates/trust-zone-layer-architecture.drawio) + [`.svg`](templates/trust-zone-layer-architecture.svg) | Trust-zone / layer architecture | drawio |
+| [`templates/deployment-topology.drawio`](templates/deployment-topology.drawio) + [`.svg`](templates/deployment-topology.svg) | Deployment topology | drawio |
+| [`templates/c4-l1-system-context.drawio`](templates/c4-l1-system-context.drawio) + [`.svg`](templates/c4-l1-system-context.svg) | C4 System Context (L1) | drawio |
+| [`templates/c4-l2-container.drawio`](templates/c4-l2-container.drawio) + [`.svg`](templates/c4-l2-container.svg) | C4 Container (L2) | drawio |
+| [`templates/trust-zone-sequence.md`](templates/trust-zone-sequence.md) | Trust-zone sequence | Mermaid |
+| [`templates/c4-dynamic.md`](templates/c4-dynamic.md) | C4 Dynamic | Mermaid |
+| [`templates/decision-tree.md`](templates/decision-tree.md) | Decision tree / state machine | Mermaid |
+
+Templates are **vendor-neutral placeholders**, not finished diagrams; they are exempt from the source-of-truth-footer requirement until copied and filled in (the footer ships as a `YYYY-MM-DD` stub).
+
 ## Conventions
 
 - Every diagram in this directory MUST have a paired rendered SVG (preferred) alongside the `.drawio` source, so readers without drawio can view it in GitHub. The skill auto-pairs on export with `--embed-diagram`, keeping the SVG itself editable.
@@ -36,13 +52,13 @@ This index is the catalog. Three additional layers of drift defence are describe
 
 ## Phase C scope and what comes next
 
-This index ships with Phase C of the diagramming kit:
+Shipped so far:
 
-- **C.1** — [`styles/workspace.drawio`](styles/workspace.drawio) (the style library).
-- **C.3** — [`eight-layer-control-model.drawio`](eight-layer-control-model.drawio) (the first reference diagram, dog-fooding the skill against the Phase-A+B standard).
+- **C.1** (`v0.2.0`) — [`styles/workspace.drawio`](styles/workspace.drawio) (the style library).
+- **C.3** (`v0.2.0`) — [`eight-layer-control-model.drawio`](eight-layer-control-model.drawio) (the canonical reference diagram).
+- **C.2** (`v0.3.0`) — [`templates/`](templates/) starter templates for all seven archetypes (trust-zone / layer, deployment topology, C4 System Context, C4 Container, plus the Mermaid trust-zone sequence, C4 Dynamic, and decision-tree). See [`templates/README.md`](templates/README.md).
 
-Deferred to a separate PR or `v0.2.1` / `v0.3.0`:
+Still ahead (each a separate OpenSpec proposal):
 
-- **C.2** — full set of starter templates per archetype (trust-zone, deployment-topology, C4 System Context, C4 Container, C4 Dynamic) under `templates/` here.
 - **D** — `scripts/validate-diagrams.sh` for stale-footer and contrast-floor enforcement.
 - **E** — extend `templates/consuming-repo/` with a stub `docs/diagrams/` and starter `INDEX.md`.

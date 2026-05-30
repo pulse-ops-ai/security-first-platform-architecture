@@ -1,0 +1,49 @@
+<mxfile host="app.diagrams.net" agent="security-first-platform-architecture template" version="22.0.0">
+  <diagram name="c4-l1-system-context (template)" id="c4-l1-template">
+    <mxGraphModel dx="1100" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="920" pageHeight="640" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="C4 System Context (Level 1) — &lt;your system&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="880" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="C4 Level 1 · the system as a black box · &lt;ref&gt;" style="text;html=1;align=center;fontSize=12;fontColor=#444444;" vertex="1" parent="1">
+          <mxGeometry x="20" y="50" width="880" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="person-user" value="&lt;End user&gt;&#xa;[Person]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427b;strokeColor=#073b6f;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="110" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="person-agent" value="&lt;Operator / agent runtime&gt;&#xa;[Person] — a client, not an insider (ADR-0002)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427b;strokeColor=#073b6f;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="110" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="owned" value="&lt;Your system&gt;&#xa;[Software System]&#xa;What this repo owns" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168bd;strokeColor=#0e5da6;fontColor=#ffffff;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="280" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext-idp" value="&lt;Identity provider&gt;&#xa;[External System]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6b6b6b;fontColor=#ffffff;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="120" y="470" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext-api" value="&lt;Third-party API&gt;&#xa;[External System]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6b6b6b;fontColor=#ffffff;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="640" y="470" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="r1" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=0.5;exitY=1;entryX=0.25;entryY=0;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="person-user" target="owned">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r2" value="uses (same path as any client)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=0.5;exitY=1;entryX=0.75;entryY=0;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="person-agent" target="owned">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r3" value="verifies identity" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=0.25;exitY=1;entryX=0.5;entryY=0;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="owned" target="ext-idp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r4" value="calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=0.75;exitY=1;entryX=0.5;entryY=0;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="owned" target="ext-api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend" value="C4 palette (standard §C4 archetype palette — intentionally distinct from the trust-zone palette):  dark blue = owned system · gray = external system · navy = person.&#xa;One archetype per diagram: do NOT add trust-zone colours here (anti-mixing rule)." style="text;html=1;fontSize=10;fontColor=#444444;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;strokeColor=#cccccc;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="560" width="660" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="footer" value="Source: &lt;cite the system's owning doc / ADRs&gt; · c4model.com · Last reviewed: YYYY-MM-DD by @handle · Next review: YYYY-MM-DD (90 days)" style="text;fontSize=10;align=center;fontColor=#444444;" vertex="1" parent="1">
+          <mxGeometry x="20" y="610" width="880" height="24" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,61 @@
+<mxfile host="app.diagrams.net" agent="security-first-platform-architecture template" version="22.0.0">
+  <diagram name="c4-l2-container (template)" id="c4-l2-template">
+    <mxGraphModel dx="1100" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="C4 Container (Level 2) — &lt;your system&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="940" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="C4 Level 2 · the containers inside the system, and how they talk · &lt;ref&gt;" style="text;html=1;align=center;fontSize=12;fontColor=#444444;" vertex="1" parent="1">
+          <mxGeometry x="20" y="50" width="940" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="person-user" value="&lt;End user&gt;&#xa;[Person]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427b;strokeColor=#073b6f;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="100" width="170" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="ext-idp" value="&lt;Identity provider&gt;&#xa;[External System]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#6b6b6b;fontColor=#ffffff;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="100" width="180" height="64" as="geometry"/>
+        </mxCell>
+        <mxCell id="boundary" value="&lt;Your system&gt; — [System Boundary]" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;fillColor=none;strokeColor=#0e5da6;fontColor=#0e5da6;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="110" y="208" width="760" height="390" as="geometry"/>
+        </mxCell>
+        <mxCell id="webapp" value="&lt;Web app&gt;&#xa;[Container: SPA / browser]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168bd;strokeColor=#0e5da6;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="270" width="190" height="74" as="geometry"/>
+        </mxCell>
+        <mxCell id="api" value="&lt;API&gt;&#xa;[Container: REST / service]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168bd;strokeColor=#0e5da6;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="270" width="190" height="74" as="geometry"/>
+        </mxCell>
+        <mxCell id="worker" value="&lt;Worker&gt;&#xa;[Container: async jobs]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168bd;strokeColor=#0e5da6;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="430" y="440" width="190" height="74" as="geometry"/>
+        </mxCell>
+        <mxCell id="db" value="&lt;Database&gt;&#xa;[Container: SQL]" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#1168bd;strokeColor=#0e5da6;fontColor=#ffffff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="690" y="300" width="140" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="r-user-web" value="uses [HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="person-user" target="webapp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r-web-api" value="calls [JSON/HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="webapp" target="api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r-api-worker" value="enqueues" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="api" target="worker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r-api-db" value="reads / writes [SQL]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="api" target="db">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r-worker-db" value="reads / writes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="worker" target="db">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="r-api-idp" value="verifies token" style="edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=16;endArrow=open;html=1;dashed=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeColor=#666666;fontSize=10;labelBackgroundColor=#ffffff;fontColor=#222222;" edge="1" parent="1" source="api" target="ext-idp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend" value="C4 palette (standard §C4 archetype palette):  dark blue = owned container · cylinder = datastore container · gray = external system · navy = person · dashed box = system boundary.&#xa;Relationship labels name the protocol/tech in brackets. One archetype per diagram (no trust-zone colours — anti-mixing rule)." style="text;html=1;fontSize=10;fontColor=#444444;align=left;verticalAlign=top;spacingLeft=6;spacingTop=4;strokeColor=#cccccc;fillColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="40" y="616" width="740" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="footer" value="Source: &lt;cite the system's owning doc / ADRs&gt; · c4model.com/diagrams/container · Last reviewed: YYYY-MM-DD by @handle · Next review: YYYY-MM-DD (90 days)" style="text;fontSize=10;align=center;fontColor=#444444;" vertex="1" parent="1">
+          <mxGeometry x="20" y="668" width="940" height="24" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
