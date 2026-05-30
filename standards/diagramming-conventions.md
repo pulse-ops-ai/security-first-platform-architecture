@@ -82,7 +82,9 @@ The eight control layers are rendered as **horizontal ribbons** crossing the dia
 | `L7` Service enforcement | `#d79b00` | `#f7ead2` | Per-service envelope verification |
 | `L8` Semantic / agent reasoning | `#666666` (dashed) | `#e8e8e8` | Whichever AI coding agent and automation runtimes the consuming team uses — sit beside the stack, re-enter at L1/L2 as clients |
 
-**Rendering rule for "future / placeholder" ribbons** (e.g., a diagram for step N that shows layers that step N+1 will populate): use the paired light fill, the per-layer stroke as a dashed border, and the per-layer stroke colour for the label text. This solves the "transparent ribbons on white background are unreadable" failure mode.
+**Rendering rule for "future / placeholder" ribbons** (e.g., a diagram for step N that shows layers that step N+1 will populate): use the paired light fill and the per-layer stroke as a dashed border. This solves the "transparent ribbons on white background are unreadable" failure mode.
+
+**Label-text colour on a paired-fill ribbon: use `#222222`, not the per-layer stroke colour.** The per-layer stroke colours are mid-tones tuned to read as a *border* against white; as *label text* they fail the [§Text colour and contrast](#text-colour-and-contrast) AA floor against their own light paired fill (e.g., L3 `#82b366` green on `#e8f0e3`, L4 `#d6b656` gold on `#f5eed7`). The per-layer colour identity is carried by the dashed stroke border and the tinted fill — the label text does not need to repeat it. Keep the label **bold** so the layer name still reads as a heading. (This corrects the v0.2.0 wording, which said to use the stroke colour for the label text and contradicted the contrast floor; existing diagrams are grandfathered.)
 
 ### Agent-as-client lane
 
@@ -117,7 +119,11 @@ For diagrams that depict a staged rollout (e.g., a consumer's L1→L5 onboarding
 - Size: 18 × 18px
 - Fill: `#000000`
 - Text: `#ffffff`, 11pt, bold, centered
-- Anchor: midpoint of the edge, or top-right corner of the activated container
+- Anchor — choose the position that does not overlap a label or line:
+  - **midpoint of the edge** (default for a connector that activates at that step); or
+  - **top-right corner of the activated container** (for a box / service); or
+  - **left edge of a full-width horizontal layer ribbon**, immediately left of the ribbon's label text, when the step activates the whole ribbon and the label already spans the ribbon's width. Reserve a left gutter (~28px) in the label's `x` offset so the badge and the first character of the label do not collide.
+- Edge labels already carry `labelBackgroundColor=#ffffff` (mandated in §Connectors), so a badge sitting next to a label rests over a white background, not bare line or text. If a badge would still overlap the label *text* itself, offset the badge along the edge or move it to the next-best anchor above so both stay legible.
 
 When numbers refer to a specific external artifact (an OpenSpec proposal's step list, a runbook's numbered steps), cite that artifact in the legend (see below). The badge by itself is not enough — the reader needs to know which step list is being indexed.
 
@@ -178,7 +184,7 @@ If a C4 diagram needs trust-zone context (rare; usually a separate diagram), cal
 **Common contrast failures to avoid:**
 
 - Light italic gray (`#888888` or lighter) on white — fails AA for body text.
-- Light layer-ribbon stroke (e.g., `#d6b656` gold) as the only colour for label text on a white background — fails AA.
+- Light layer-ribbon stroke (e.g., `#d6b656` gold) as the only colour for label text — on a white background **or on its own paired light fill** — fails AA. Use `#222222` for layer-ribbon labels (bold); let the dashed stroke border and tinted fill carry the per-layer colour identity. See [§Layer ribbons](#layer-ribbons-l1--l8).
 - White text on the light trust-zone fills — fails AA badly. Light fills always get dark text.
 
 ### Title, legend, assumptions callout
