@@ -22,9 +22,9 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 10 | Write OpenSpec proposal (`proposal.md`, `change.md`, `tasks.md`) | @mike | completed | this PR |
 | 11 | Add this proposal to `openspec/README.md` §Current proposals | @mike | completed | this PR |
 | 12 | Confirm all 4 drawio templates export to SVG without error, <35 KB | @mike | completed | this PR |
-| 13 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | pending | this PR |
-| 14 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | pending | this PR |
-| 15 | Open PR (base = v0.2.1 clarifications branch) | @mike | pending | this PR |
+| 13 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | completed | this PR |
+| 14 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | completed | this PR |
+| 15 | Open PR (base = v0.2.1 clarifications branch) | @mike | completed | this PR |
 
 ## Definition of done
 
@@ -36,13 +36,13 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 - [x] Drawio SVGs exported `-e --embed-svg-fonts false`, <35 KB, editable XML embedded.
 - [x] `architecture/diagrams/INDEX.md` lists templates + updates the Phase-C scope note.
 - [x] `openspec/README.md` §Current proposals lists this proposal.
-- [ ] `bash scripts/validate-skills.sh`: PASS.
-- [ ] `bash scripts/sync-agent-skills.sh --check`: PASS.
-- [ ] `bash scripts/validate-doc-indexes.sh`: PASS.
-- [ ] `bash scripts/validate-architecture.sh`: PASS (vendor-neutral).
-- [ ] `bash scripts/repo-healthcheck.sh`: PASS.
-- [ ] `pre-commit run --all-files`: 19/19 PASS.
-- [ ] `openspec-triage.sh`: Tier 2 with proposal present.
+- [x] `bash scripts/validate-skills.sh`: PASS.
+- [x] `bash scripts/sync-agent-skills.sh --check`: PASS.
+- [x] `bash scripts/validate-doc-indexes.sh`: PASS.
+- [x] `bash scripts/validate-architecture.sh`: PASS (vendor-neutral).
+- [x] `bash scripts/repo-healthcheck.sh`: PASS.
+- [x] `pre-commit run --all-files`: 19/19 PASS.
+- [x] `openspec-triage.sh`: Tier 2 with proposal present.
 - [x] No ADR (templates are conventions).
 - [x] No dependency records (opt-in additive).
 - [x] No standard / skill changes.
