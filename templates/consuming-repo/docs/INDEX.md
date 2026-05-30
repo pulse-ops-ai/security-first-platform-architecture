@@ -9,6 +9,7 @@ Long-form documentation for this repo.
 - `product/` — product-level documentation
 - `operations/` — operational documentation (runbooks, on-call)
 - `decisions/` — Architecture Decision Records (ADRs)
+- [`diagrams/`](diagrams/INDEX.md) — this repo's diagrams (deployment topology, trust-zone, C4), authored from the architecture repo's archetype templates and conventions
 
 ## Conventions
 
