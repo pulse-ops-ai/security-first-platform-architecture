@@ -46,7 +46,7 @@ Three edits, all in the visual-vocabulary body. No structural change.
   >   - **midpoint of the edge** (default for a connector that activates at that step); or
   >   - **top-right corner of the activated container** (for a box / service); or
   >   - **left edge of a full-width horizontal layer ribbon**, immediately left of the ribbon's label text, when the step activates the whole ribbon and the label already spans the ribbon's width. Reserve a left gutter (~28px) in the label's `x` offset so the badge and the first character of the label do not collide.
-  > - When the chosen anchor would land on top of an edge label, give the edge label `labelBackgroundColor=#ffffff` and offset the badge so both stay legible, or move the badge to the next-best anchor above.
+  > - Edge labels already carry `labelBackgroundColor=#ffffff` (mandated in §Connectors), so a badge sitting next to a label rests over a white background, not bare line or text. If a badge would still overlap the label *text* itself, offset the badge along the edge or move it to the next-best anchor above so both stay legible.
 
 - **Rationale.** Names the anchor the platform-edge diagram already had to invent (left edge of a full-width ribbon) and adds a deterministic collision rule. Keeps badge placement mechanical.
 

@@ -17,7 +17,7 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 5 | Add this proposal to `openspec/README.md` §Current proposals | @mike | completed | this PR |
 | 6 | Confirm `pre-commit run --all-files`: 19/19 PASS | @mike | completed | this PR |
 | 7 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | completed | this PR |
-| 8 | Open PR | @mike | pending | this PR |
+| 8 | Open PR | @mike | completed | this PR |
 
 ## Definition of done
 
