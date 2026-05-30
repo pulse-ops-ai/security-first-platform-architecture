@@ -17,9 +17,9 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 5 | Write OpenSpec proposal (`proposal.md`, `change.md`, `tasks.md`) | @mike | completed | this PR |
 | 6 | Add this proposal to `openspec/README.md` §Current proposals | @mike | completed | this PR |
 | 7 | Verify validate-doc-indexes passes (new index referenced, not orphaned) | @mike | completed | this PR |
-| 8 | Confirm `pre-commit run --all-files`: 20/20 PASS | @mike | pending | this PR |
-| 9 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | pending | this PR |
-| 10 | Open PR (base = D branch) | @mike | pending | this PR |
+| 8 | Confirm `pre-commit run --all-files`: 20/20 PASS | @mike | completed | this PR |
+| 9 | Confirm `openspec-triage.sh origin/main`: Tier 2 with proposal present | @mike | completed | this PR |
+| 10 | Open PR (base = D branch) | @mike | completed | this PR |
 
 ## Definition of done
 
@@ -30,11 +30,11 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 - [x] `templates/consuming-repo/docs/INDEX.md` references `diagrams/`.
 - [x] `docs-healthcheck.yml` runs `validate-diagrams` in self + consumer mode with the pre-v0.3.0 graceful skip; integrity property (no vendored script) preserved.
 - [x] `openspec/README.md` §Current proposals lists this proposal.
-- [ ] `bash scripts/validate-doc-indexes.sh .`: PASS.
-- [ ] `bash scripts/repo-healthcheck.sh`: PASS.
-- [ ] `check-yaml` on `docs-healthcheck.yml`: PASS.
-- [ ] `pre-commit run --all-files`: 20/20 PASS.
-- [ ] `openspec-triage.sh`: Tier 2 with proposal present.
+- [x] `bash scripts/validate-doc-indexes.sh .`: PASS.
+- [x] `bash scripts/repo-healthcheck.sh`: PASS.
+- [x] `check-yaml` on `docs-healthcheck.yml`: PASS.
+- [x] `pre-commit run --all-files`: 20/20 PASS.
+- [x] `openspec-triage.sh`: Tier 2 with proposal present.
 - [x] No ADR (scaffold + CI wiring).
 - [x] No dependency records (additive; opt-in).
 - [x] No standard / skill changes.
