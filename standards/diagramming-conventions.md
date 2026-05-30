@@ -179,7 +179,7 @@ If a C4 diagram needs trust-zone context (rare; usually a separate diagram), cal
 | Connector labels | `#222222` on `labelBackgroundColor=#ffffff` | Never let the label background be transparent — the line behind will degrade readability |
 | White-on-dark text | `#ffffff` on C4 owned-system / external-system fills | Bold weight to compensate for the dark fill |
 
-**Contrast floor (WCAG 2.1 AA):** body text MUST have a 4.5:1 contrast ratio against its background; large text (≥18pt, or ≥14pt bold) MUST have at least 3:1. Diagrams that fail this on the rendered `.svg` / `.png` will eventually be flagged by the (future) `validate-diagrams.sh` CI hook. Until then, treat it as a self-enforced quality bar.
+**Contrast floor (WCAG 2.1 AA):** body text MUST have a 4.5:1 contrast ratio against its background; large text (≥18pt, or ≥14pt bold) MUST have at least 3:1. `scripts/validate-diagrams.sh` (shipped in `v0.3.0`) lints this on every `.drawio` at commit time — as a warning by default, or a hard failure under `--strict` (see §Drift mitigation).
 
 **Common contrast failures to avoid:**
 
@@ -220,7 +220,7 @@ Diagrams drift faster than the docs they illustrate. Three mechanisms keep that 
 
 1. **Source-of-truth citation in every diagram footer** (required, above). Reviewers comparing the diagram to its cited doc can spot drift in seconds.
 2. **Quarterly review cadence in each `INDEX.md`.** `docs/diagrams/INDEX.md` (consuming repo) and `architecture/diagrams/INDEX.md` (architecture repo) carry a `last_reviewed:` and `next_review:` per entry. The skill's review mode validates these dates.
-3. **CI optional `validate-diagrams.sh`** *(future; not in the first release)*. A pre-commit hook that flags any `.drawio` whose footer `Last reviewed:` is more than 90 days old when the diagram or its cited doc changes — plus contrast-floor checks against the rendered `.svg`. Tracked as a follow-up.
+3. **`scripts/validate-diagrams.sh`** *(shipped in `v0.3.0`)* — a pre-commit hook (and standalone CLI) that, per reference diagram, enforces a **paired SVG**, enforces the **`Last reviewed:` footer** (missing → error; stale beyond the `--stale-days` threshold, default 90, → error when the diagram is in the changeset / warning on a full scan), and runs a **WCAG-AA contrast lint** over each text cell's `fontColor` vs. its background. Contrast findings are warnings by default (the heuristic can't always see the background behind a standalone text element) and become errors under `--strict`. The `templates/` and `styles/` subdirs are excluded (placeholder footers / tooling). It does **not** yet diff a diagram against its *cited doc* to detect that-doc-changed-but-diagram-didn't drift — that remains a reviewer responsibility per the rule below.
 
 When you change a contract or standard that has a diagram citing it, **either update the diagram in the same PR or open an issue against the consumer that owns it**. The architecture repo's CODEOWNERS will block the merge of a contract change that has unresolved diagram-drift on cited diagrams.
 
@@ -230,7 +230,7 @@ When you change a contract or standard that has a diagram citing it, **either up
 - Whether to ship rendered diagrams in PR descriptions (recommended but optional).
 - Whether to inline diagrams into ADRs (recommended for high-impact ADRs).
 - Use of any specific drawing tool beyond drawio + mermaid; teams that prefer Excalidraw or Lucidchart may use them locally, but the canonical archive in `docs/diagrams/` or `architecture/diagrams/` must be in one of the standardised formats.
-- Use of any specific style-import mechanism. A workspace style library ships at [`../architecture/diagrams/styles/workspace.drawio`](../architecture/diagrams/styles/workspace.drawio) as a **swatch-and-copy** library (open the file, copy the swatch you want, paste into your working diagram — see [`../architecture/diagrams/styles/README.md`](../architecture/diagrams/styles/README.md) for the workflow). Consumers SHOULD use it to inherit workspace-correct styles without typing hex codes by hand, but the vocabulary above remains the source of truth and diagrams MAY set their own styles directly. A formal `<mxlibrary>` drag-and-drop shape library is a future enhancement tracked alongside `validate-diagrams.sh`.
+- Use of any specific style-import mechanism. A workspace style library ships at [`../architecture/diagrams/styles/workspace.drawio`](../architecture/diagrams/styles/workspace.drawio) as a **swatch-and-copy** library (open the file, copy the swatch you want, paste into your working diagram — see [`../architecture/diagrams/styles/README.md`](../architecture/diagrams/styles/README.md) for the workflow). Consumers SHOULD use it to inherit workspace-correct styles without typing hex codes by hand, but the vocabulary above remains the source of truth and diagrams MAY set their own styles directly. A formal `<mxlibrary>` drag-and-drop shape library is a future enhancement.
 
 ## Grandfathering and migration
 

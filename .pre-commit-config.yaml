@@ -88,6 +88,16 @@ repos:
         language: system
         pass_filenames: false
         files: ^infra/
+      - id: validate-diagrams
+        name: validate-diagrams.sh (paired SVG + fresh source-of-truth footer + contrast lint)
+        entry: bash scripts/validate-diagrams.sh
+        language: system
+        # Receives the changed .drawio paths (changeset mode): a stale
+        # footer on a diagram being changed is an ERROR; contrast findings
+        # are WARN (non-blocking) unless --strict. templates/ and styles/
+        # are excluded by the script.
+        pass_filenames: true
+        files: ^(architecture/diagrams/|docs/diagrams/).*\.drawio$
       - id: repo-healthcheck
         name: repo-healthcheck (Universal Floor + adoption-record + adapter consistency)
         entry: bash scripts/repo-healthcheck.sh
