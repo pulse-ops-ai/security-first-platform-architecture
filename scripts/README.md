@@ -10,6 +10,7 @@ These are intentionally simple bash scripts so they can be run locally without a
 |---|---|
 | [`validate-architecture.sh`](validate-architecture.sh) | Confirm required architecture files exist; check for vendor-name leaks in `architecture/*.md` and vendor-file-as-universal leaks in `team-os/` and `standards/` |
 | [`validate-doc-indexes.sh`](validate-doc-indexes.sh) | Detect drift between `INDEX.md` files and the files they should reference |
+| [`validate-diagrams.sh`](validate-diagrams.sh) | Per reference diagram (`*.drawio` under `architecture/diagrams/` or `docs/diagrams/`, excluding `templates/` and `styles/`): enforce a paired SVG and a fresh `Last reviewed:` footer, and run a WCAG-AA contrast lint over each text cell. Stale footer is an error when the diagram is in the changeset (pre-commit), a warning on a full scan; contrast findings are warnings unless `--strict`. `--stale-days N` tunes the threshold. Auto-detects architecture-repo vs consumer-repo via the `standards/repo-contract.md` sentinel |
 | [`validate-skills.sh`](validate-skills.sh) | Confirm every `.agents/skills/<name>/` has a compliant `SKILL.md` (frontmatter + Procedure + Output) and that `.agents/skills/INDEX.md` lists them all |
 | [`sync-agent-skills.sh`](sync-agent-skills.sh) | `--check` enforces canonical ↔ vendor-shim drift rules and reports coverage; `--bootstrap <name> --vendor claude\|codex` scaffolds a new shim from a canonical skill |
 | [`check-inline-secrets.sh`](check-inline-secrets.sh) | Block sensitive keys being assigned literal values in YAML / env / JSON / Terraform / shell configs. Focused complement to gitleaks and detect-secrets — catches credentials hidden behind shell-style defaults like `${VAR:-literal}` that entropy scanners miss |
@@ -32,6 +33,7 @@ bash scripts/check-infra-secrets.sh         # scans infra/ for account IDs and r
 bash scripts/check-network-as-identity.sh . # heuristic source-tree scan
 bash scripts/openspec-triage.sh origin/main # tier classification + proposal presence
 bash scripts/repo-healthcheck.sh            # repo-contract validation; auto-detects mode
+bash scripts/validate-diagrams.sh           # full scan; add --strict to fail on contrast
 ```
 
 Each script exits non-zero on findings. `sync-agent-skills.sh --check` exits non-zero only on hard drift; missing optional shims/commands are warnings. `check-network-as-identity.sh` produces heuristic findings; review each one before concluding.

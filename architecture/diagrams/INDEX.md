@@ -48,7 +48,7 @@ This index is the catalog. Three additional layers of drift defence are describe
 
 1. Source-of-truth citation in every diagram's footer.
 2. Quarterly review cadence (the `Last reviewed` / `Next review` columns above; each consumer's `docs/diagrams/INDEX.md` does the same).
-3. A future `scripts/validate-diagrams.sh` (Phase D) that flags stale footer dates when the diagram or its cited doc changes, plus contrast-floor checks against the rendered `.svg`.
+3. [`scripts/validate-diagrams.sh`](../../scripts/validate-diagrams.sh) (shipped in `v0.3.0`) — a pre-commit hook that enforces a paired SVG and a fresh `Last reviewed:` footer per diagram, and runs a WCAG-AA contrast lint (warning by default, `--strict` to fail). `templates/` and `styles/` are excluded.
 
 ## Phase C scope and what comes next
 
@@ -58,7 +58,8 @@ Shipped so far:
 - **C.3** (`v0.2.0`) — [`eight-layer-control-model.drawio`](eight-layer-control-model.drawio) (the canonical reference diagram).
 - **C.2** (`v0.3.0`) — [`templates/`](templates/) starter templates for all seven archetypes (trust-zone / layer, deployment topology, C4 System Context, C4 Container, plus the Mermaid trust-zone sequence, C4 Dynamic, and decision-tree). See [`templates/README.md`](templates/README.md).
 
-Still ahead (each a separate OpenSpec proposal):
+- **D** (`v0.3.0`) — [`scripts/validate-diagrams.sh`](../../scripts/validate-diagrams.sh) for paired-SVG, stale-footer, and contrast-floor enforcement (pre-commit hook).
 
-- **D** — `scripts/validate-diagrams.sh` for stale-footer and contrast-floor enforcement.
+Still ahead (separate OpenSpec proposal):
+
 - **E** — extend `templates/consuming-repo/` with a stub `docs/diagrams/` and starter `INDEX.md`.
