@@ -14,9 +14,9 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 | 2 | Flip `status → accepted`; add `accepted_date` / `archived_date` / `merged_pr` to each | @mike | completed | this PR |
 | 3 | `openspec/README.md`: move the five from Current → Archived; add this proposal to Current | @mike | completed | this PR |
 | 4 | Write this proposal (`proposal.md`, `change.md`, `tasks.md`) | @mike | completed | this PR |
-| 5 | Confirm `validate-doc-indexes` + `pre-commit run --all-files`: PASS | @mike | pending | this PR |
-| 6 | Confirm `openspec-triage.sh origin/main` | @mike | pending | this PR |
-| 7 | Open PR | @mike | pending | this PR |
+| 5 | Confirm `validate-doc-indexes` + `pre-commit run --all-files`: PASS | @mike | completed | this PR |
+| 6 | Confirm `openspec-triage.sh origin/main` (Tier 1) | @mike | completed | this PR |
+| 7 | Open PR | @mike | completed | this PR |
 
 ## Definition of done
 
@@ -24,10 +24,10 @@ Companion to [`proposal.md`](proposal.md) and [`change.md`](change.md).
 
 - [x] `openspec/proposals/` contains only this proposal; the five are in `openspec/archive/` with `status: accepted` + dates + `merged_pr`.
 - [x] `openspec/README.md` Current lists only this proposal; Archived lists all five with tag annotations.
-- [ ] `bash scripts/validate-doc-indexes.sh .`: PASS.
-- [ ] `bash scripts/repo-healthcheck.sh`: PASS.
-- [ ] `pre-commit run --all-files`: 20/20 PASS.
-- [ ] `openspec-triage.sh`: proposal present.
+- [x] `bash scripts/validate-doc-indexes.sh .`: PASS.
+- [x] `bash scripts/repo-healthcheck.sh`: PASS.
+- [x] `pre-commit run --all-files`: 20/20 PASS.
+- [x] `openspec-triage.sh`: Tier 1 (bookkeeping); proposal present anyway.
 - [x] No ADR; no dependency records; no functional changes.
 
 ## Per-consumer integration tasks
