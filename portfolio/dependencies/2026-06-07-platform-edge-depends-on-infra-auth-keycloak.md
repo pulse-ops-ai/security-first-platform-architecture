@@ -14,14 +14,14 @@ downstream_repo:              platform-edge
 downstream_artifact:          infra/profiles/self-hosted-vps/ (Kong CE jwt plugin + JWKS-sync loader + iss-binding post-function); openspec/proposals/2026-06-07-step-2-l3-keycloak/
 dependency_type:              contract
 impact_tier:                  2
-status:                       open
+status:                       resolved
 blocking_direction:           blocks-downstream
 required_by:                  2026-07-31
 deprecation_window:           n/a
 coordinated_landing_order:    upstream-first
 owner:                        "@mikegtech"
 opened_date:                  2026-06-07
-resolved_date:
+resolved_date:                2026-06-08
 related_openspec_proposal:    platform-edge:openspec/proposals/2026-06-07-step-2-l3-keycloak/proposal.md
 notes:                        infra-auth is an INFRASTRUCTURE repo (self-hosted Keycloak on Azure Container Apps + Cloudflare Tunnel + Postgres-over-Tailscale), NOT an architecture-consuming repo — it has no security-first-adoption.md. The real dependency is on the RUNNING IdP + realm inventory, not a code artifact; hence upstream_ref is the branch, not a tagged release. platform-edge consumes the issuer; it does not run Keycloak.
 ---
@@ -48,9 +48,11 @@ platform-edge gains (in its step-2 implementation PR, not the proposal PR): a `k
 The dependency moves to `resolved` when ALL of:
 
 - [x] Upstream artifact exists at the ref recorded in `upstream_ref` *(satisfied — `trupryce-prod` realm + issuer are live at `https://auth.trupryce.ai`)*.
-- [ ] Downstream integration is merged — defined here as the platform-edge **step-2 implementation PR** (loader + `jwt` + `post-function`) merging.
-- [ ] Downstream `security-first-adoption.md` updated to `l3_identity: implemented`.
-- [ ] No ADR required (initial L3 adoption uses existing v0.3.0 contracts unchanged; not applicable).
+- [x] Downstream integration is merged — the platform-edge **step-2 implementation PR** (loader + `jwt` + `post-function`) merged 2026-06-08 (platform-edge PR #12).
+- [x] Downstream `security-first-adoption.md` updated to `l3_identity: implemented`.
+- [x] No ADR required (initial L3 adoption uses existing v0.3.0 contracts unchanged; not applicable).
+
+**Resolved 2026-06-08.** All criteria met: platform-edge consumes the `trupryce-prod` issuer via the JWKS-sync loader; Kong CE `jwt` + `iss`/`kid` post-function verify at the edge; `l3_identity: implemented`. Manual live `trupryce-prod` valid-token→200 smoke confirmed. No architecture contract changed.
 
 ## Coordinated landing
 
