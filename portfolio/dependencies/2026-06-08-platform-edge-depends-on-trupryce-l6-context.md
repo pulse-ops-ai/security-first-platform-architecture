@@ -47,24 +47,26 @@ notes:                        Audit-only first — platform-edge asks OpenFGA on
 
 The dependency moves to `resolved` when ALL of:
 
-- [ ] **TruPryce-owner confirmation gate recorded** (the eight items below).
-- [ ] Downstream integration is merged — the platform-edge **step-3/4 implementation PR** (OpenFGA audit-only + sidecar + context forwarding).
-- [ ] Downstream `security-first-adoption.md` updated to `l4_authorization: implemented` (audit-only).
-- [ ] `api.trupryce.ai` cutover exercised against the **private origin**; TruPryce logs the forwarded context.
-- [ ] No ADR required (audit-only uses existing v0.3.0 contracts; the `x-platform-edge-*` contract stays consumer-local).
+- [x] **TruPryce-owner confirmation gate recorded** (the eight items below) — TruPryce PR #52, 2026-06-13.
+- [x] Downstream integration is merged — the platform-edge step-3/4 **audit-only implementation** (PR #16) + the **cutover-route wiring** (the `trupryce-api` route → the private origin).
+- [ ] Downstream `security-first-adoption.md` updated to `l4_authorization: implemented` (audit-only) — **pending the live smoke**.
+- [ ] `api.trupryce.ai` cutover exercised against the **private origin**; TruPryce logs the forwarded context — **pending** (operator runs the smoke; evidence per the platform-edge runbook §Cutover execution).
+- [x] No ADR required (audit-only uses existing v0.3.0 contracts; the `x-platform-edge-*` contract stays consumer-local).
+
+**Status stays `open`** until the two unchecked items land (the live smoke evidence + the `l4_authorization` flip).
 
 ### TruPryce-owner confirmation gate (cutover blocker)
 
-`api.trupryce.ai` MUST NOT cut over until ALL are confirmed and recorded here:
+**Gate confirmed by TruPryce PR #52 (2026-06-13).** All eight recorded:
 
-1. [ ] Private origin URL / upstream target (`TRUPRYCE_API_UPSTREAM_URL`).
-2. [ ] Expected upstream `Host` header (if any).
-3. [ ] TruPryce orchestrator accepts + logs `x-platform-edge-*`.
-4. [ ] TruPryce correlates `x-request-id` end to end.
-5. [ ] TruPryce understands `authz_decision_id` / `x-platform-edge-authz-decision` is audit-only at first (advisory, not enforcement).
-6. [ ] Z4 envelope minting stays in the TruPryce orchestrator (platform-edge mints none).
-7. [ ] TruPryce provider enforcement stays shadow until its own I7/I8 gates.
-8. [ ] Documented `api.trupryce.ai` rollback path (DNS repoint to the previous origin).
+1. [x] Private origin URL / upstream target — `TRUPRYCE_API_UPSTREAM_URL=http://100.117.236.25:8081` (private Tailnet origin).
+2. [x] Expected upstream `Host` header — **none** (empty → the platform-edge route preserves the inbound `api.trupryce.ai` Host).
+3. [x] TruPryce orchestrator accepts + logs `x-platform-edge-*` — TruPryce `PLATFORM_EDGE_CONTEXT_ENABLED=true`; logs `platform_edge.context`.
+4. [x] TruPryce correlates `x-request-id` end to end — `platform_edge.context` keyed on `x-request-id`.
+5. [x] TruPryce understands `authz_decision_id` / `x-platform-edge-authz-decision` is audit-only at first (advisory, not enforcement).
+6. [x] Z4 envelope minting stays in the TruPryce orchestrator (platform-edge mints none).
+7. [x] TruPryce provider enforcement stays shadow until its own I7/I8 gates — providers `ENVELOPE_REQUIRED=false`.
+8. [x] Documented `api.trupryce.ai` rollback path — DNS revert to the existing Cloudflare Tunnel path (platform-edge runbook §Rollback).
 
 ## Coordinated landing
 
