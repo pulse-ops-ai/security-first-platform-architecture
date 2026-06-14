@@ -14,14 +14,14 @@ downstream_repo:              platform-edge
 downstream_artifact:          infra/profiles/self-hosted-vps/ (OpenFGA audit-only + authz-audit-sidecar + spoof-strip + context forwarding); openspec/proposals/2026-06-08-step-3-4-openfga-audit-and-l6-context/
 dependency_type:              contract
 impact_tier:                  2
-status:                       open
+status:                       resolved
 blocking_direction:           blocks-downstream
 required_by:                  2026-08-31
 deprecation_window:           n/a
 coordinated_landing_order:    downstream-first
 owner:                        "@mikegtech"
 opened_date:                  2026-06-08
-resolved_date:
+resolved_date:                2026-06-14
 related_openspec_proposal:    platform-edge:openspec/proposals/2026-06-08-step-3-4-openfga-audit-and-l6-context/proposal.md
 notes:                        Audit-only first — platform-edge asks OpenFGA on every request, logs the decision, forwards L3+L4 context, but ENFORCES NOTHING and mints NO Z4 envelope. TruPryce orchestrator remains the sole Z4 minter; TruPryce provider enforcement stays shadow until its own I7/I8 gates. The x-platform-edge-* header contract is a CONSUMER-LOCAL platform-edge<->trupryce contract this round (not yet a profile-level architecture standard). Cutover is gated on the TruPryce-owner confirmation below.
 ---
@@ -49,20 +49,20 @@ The dependency moves to `resolved` when ALL of:
 
 - [x] **TruPryce-owner confirmation gate recorded** (the eight items below) — TruPryce PR #52, 2026-06-13.
 - [x] Downstream integration is merged — the platform-edge step-3/4 **audit-only implementation** (PR #16) + the **cutover-route wiring** (the `trupryce-api` route → the private origin).
-- [ ] Downstream `security-first-adoption.md` updated to `l4_authorization: implemented` (audit-only) — **pending the live smoke**.
-- [ ] `api.trupryce.ai` cutover exercised against the **private origin**; TruPryce logs the forwarded context — **pending** (operator runs the smoke; evidence per the platform-edge runbook §Cutover execution).
+- [x] Downstream `security-first-adoption.md` updated to `l4_authorization: implemented` (audit-only) — **done 2026-06-14**.
+- [x] `api.trupryce.ai` cutover exercised against the **private origin**; TruPryce logs the forwarded context — **done 2026-06-14** (pre-DNS smoke through the edge → `100.117.236.25:8081`; audit-grade three-way `x-request-id` correlation).
 - [x] No ADR required (audit-only uses existing v0.3.0 contracts; the `x-platform-edge-*` contract stays consumer-local).
 
-**Status stays `open`.** The 2026-06-14 live pre-DNS smoke proved the platform-edge path (Tier 1 PASS) and the provider Z4 verify/shadow posture, but **reopened gate item #4** — end-to-end `x-request-id` correlation is not audit-grade (provider `envelope.verify` uses an orchestrator-internal id; platform-edge **issue #23**). Blockers before resolution: (1) the TruPryce `RequestContext` correlation fix + a rerun showing the same `x-request-id` across all three hops, (2) the recorded full-PASS smoke evidence, (3) the `l4_authorization` flip.
+**RESOLVED 2026-06-14.** The 2026-06-14 live pre-DNS smoke passed: platform-edge Tier 1 PASS and **audit-grade three-way `x-request-id` correlation** on RID `cutover-smoke-20260614-213636-listings-v3` — the same RID + `authz_decision_id` join edge `authz_audit`, orchestrator `platform_edge.context`, and provider `envelope.verify` (`result=ok`, `shadow_mode=true`; orchestrator mints the Z4 envelope; providers `ENVELOPE_REQUIRED=false`). The earlier provider-correlation gap (platform-edge **issue #23**) was fixed TruPryce-side (`RequestContext`/`AsyncLocalStorage`) and reverified. `l4_authorization: implemented` (audit-only); evidence in `platform-edge:docs/runbooks/cutover-smoke-evidence-2026-06-14.md`. Public `api.trupryce.ai` DNS go-live is the operator step; **no route in `enforce`** (enforcement = step 5).
 
-### TruPryce-owner confirmation gate (cutover blocker)
+### TruPryce-owner confirmation gate
 
-**Gate recorded via TruPryce PR #52 (2026-06-13); item #4 REOPENED by the 2026-06-14 live smoke (issue #23).**
+**Gate recorded via TruPryce PR #52 (2026-06-13); item #4 RESOLVED by the 2026-06-14 retest (issue #23 fix).**
 
 1. [x] Private origin URL / upstream target — `TRUPRYCE_API_UPSTREAM_URL=http://100.117.236.25:8081` (private Tailnet origin).
 2. [x] Expected upstream `Host` header — **none** (empty → the platform-edge route preserves the inbound `api.trupryce.ai` Host).
 3. [x] TruPryce orchestrator accepts + logs `x-platform-edge-*` — TruPryce `PLATFORM_EDGE_CONTEXT_ENABLED=true`; logs `platform_edge.context`.
-4. [ ] TruPryce correlates `x-request-id` **end to end** — **REOPENED by the 2026-06-14 live smoke.** Edge↔orchestrator correlates (`platform_edge.context` keyed on `x-request-id`), but the **provider `envelope.verify` logs an orchestrator-internal UUID, not the forwarded `x-request-id`** — no two-hop bridge; timestamp-only alignment is not audit-grade. Tracked in platform-edge **issue #23**; TruPryce fix = `RequestContext`/`AsyncLocalStorage`. Unblocks when a rerun shows the **same `x-request-id`** across edge `authz_audit` + orchestrator `platform_edge.context` + provider `envelope.verify`.
+4. [x] TruPryce correlates `x-request-id` **end to end** — **RESOLVED 2026-06-14.** After the `RequestContext`/`AsyncLocalStorage` fix (platform-edge issue #23), the retest shows the **same `x-request-id`** across edge `authz_audit` + orchestrator `platform_edge.context` + provider `envelope.verify` (RID `cutover-smoke-20260614-213636-listings-v3`) — audit-grade, not timestamp-only.
 5. [x] TruPryce understands `authz_decision_id` / `x-platform-edge-authz-decision` is audit-only at first (advisory, not enforcement).
 6. [x] Z4 envelope minting stays in the TruPryce orchestrator (platform-edge mints none).
 7. [x] TruPryce provider enforcement stays shadow until its own I7/I8 gates — providers `ENVELOPE_REQUIRED=false`.
