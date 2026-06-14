@@ -53,16 +53,16 @@ The dependency moves to `resolved` when ALL of:
 - [ ] `api.trupryce.ai` cutover exercised against the **private origin**; TruPryce logs the forwarded context — **pending** (operator runs the smoke; evidence per the platform-edge runbook §Cutover execution).
 - [x] No ADR required (audit-only uses existing v0.3.0 contracts; the `x-platform-edge-*` contract stays consumer-local).
 
-**Status stays `open`** until the two unchecked items land (the live smoke evidence + the `l4_authorization` flip).
+**Status stays `open`.** The 2026-06-14 live pre-DNS smoke proved the platform-edge path (Tier 1 PASS) and the provider Z4 verify/shadow posture, but **reopened gate item #4** — end-to-end `x-request-id` correlation is not audit-grade (provider `envelope.verify` uses an orchestrator-internal id; platform-edge **issue #23**). Blockers before resolution: (1) the TruPryce `RequestContext` correlation fix + a rerun showing the same `x-request-id` across all three hops, (2) the recorded full-PASS smoke evidence, (3) the `l4_authorization` flip.
 
 ### TruPryce-owner confirmation gate (cutover blocker)
 
-**Gate confirmed by TruPryce PR #52 (2026-06-13).** All eight recorded:
+**Gate recorded via TruPryce PR #52 (2026-06-13); item #4 REOPENED by the 2026-06-14 live smoke (issue #23).**
 
 1. [x] Private origin URL / upstream target — `TRUPRYCE_API_UPSTREAM_URL=http://100.117.236.25:8081` (private Tailnet origin).
 2. [x] Expected upstream `Host` header — **none** (empty → the platform-edge route preserves the inbound `api.trupryce.ai` Host).
 3. [x] TruPryce orchestrator accepts + logs `x-platform-edge-*` — TruPryce `PLATFORM_EDGE_CONTEXT_ENABLED=true`; logs `platform_edge.context`.
-4. [x] TruPryce correlates `x-request-id` end to end — `platform_edge.context` keyed on `x-request-id`.
+4. [ ] TruPryce correlates `x-request-id` **end to end** — **REOPENED by the 2026-06-14 live smoke.** Edge↔orchestrator correlates (`platform_edge.context` keyed on `x-request-id`), but the **provider `envelope.verify` logs an orchestrator-internal UUID, not the forwarded `x-request-id`** — no two-hop bridge; timestamp-only alignment is not audit-grade. Tracked in platform-edge **issue #23**; TruPryce fix = `RequestContext`/`AsyncLocalStorage`. Unblocks when a rerun shows the **same `x-request-id`** across edge `authz_audit` + orchestrator `platform_edge.context` + provider `envelope.verify`.
 5. [x] TruPryce understands `authz_decision_id` / `x-platform-edge-authz-decision` is audit-only at first (advisory, not enforcement).
 6. [x] Z4 envelope minting stays in the TruPryce orchestrator (platform-edge mints none).
 7. [x] TruPryce provider enforcement stays shadow until its own I7/I8 gates — providers `ENVELOPE_REQUIRED=false`.
