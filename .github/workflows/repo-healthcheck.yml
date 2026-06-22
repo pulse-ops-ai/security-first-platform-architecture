@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout caller repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout architecture repo for scripts (consumer call only)
         # Mode discriminator: `inputs.architecture_ref` is populated iff this
@@ -67,7 +67,7 @@ jobs:
         # disabled consumer-mode in PR #14 round-4 and was the root cause of
         # the first consumer's broken CI. This guard is the corrected design.
         if: inputs.architecture_ref != ''
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: pulse-ops-ai/security-first-platform-architecture
           ref: ${{ inputs.architecture_ref }}
